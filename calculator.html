@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Рассчитайте стоимость и количество материалов для укладки рельсового пути. Рельсы, шпалы, крепёж — всё в одном расчёте.">
+  <title>Калькулятор пути — Рельс-Комплект</title>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Рельс-Комплект">
+  <meta property="og:title" content="Калькулятор пути — Рельс-Комплект">
+  <meta property="og:description" content="Рассчитайте стоимость и количество материалов для укладки рельсового пути. Рельсы, шпалы, крепёж — всё в одном расчёте.">
+  <meta property="og:url" content="https://rels-komplekt.ru/calculator.html">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230369A1'/><text y='22' x='6' font-size='20' fill='white' font-family='sans-serif' font-weight='bold'>Р</text></svg>">
+</head>
+<body>
+
+  <!-- Шапка вставляется через loadComponents() из main.js -->
+  <div id="header-placeholder"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       ГЛАВНЫЙ КОНТЕНТ
+  ═══════════════════════════════════════════════════════════ -->
+  <main id="main-content">
+
+    <!-- Шапка страницы -->
+    <div class="calc-page-header">
+      <div class="container">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+          <a href="index.html" class="breadcrumbs__item">Главная</a>
+          <span class="breadcrumbs__sep" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+          <span class="breadcrumbs__item active" aria-current="page">Калькулятор</span>
+        </nav>
+        <h1 class="calc-page-header__title">Калькулятор тоннажа</h1>
+        <p class="calc-page-header__sub">Рассчитайте количество материалов и ориентировочную стоимость</p>
+      </div>
+    </div>
+
+    <!-- Wizard -->
+    <section class="section" aria-label="Калькулятор тоннажа">
+      <div class="container">
+        <div class="wizard">
+
+          <!-- Прогресс-бар -->
+          <div class="wizard__progress" role="list" aria-label="Шаги расчёта">
+            <div class="wizard__step wizard__step--active" id="progressStep1" role="listitem" aria-current="step">
+              <div class="wizard__step-circle" aria-hidden="true">1</div>
+              <span class="wizard__step-label">Рельсы</span>
+            </div>
+            <div class="wizard__connector" id="connector1" aria-hidden="true"></div>
+            <div class="wizard__step" id="progressStep2" role="listitem">
+              <div class="wizard__step-circle" aria-hidden="true">2</div>
+              <span class="wizard__step-label">Шпалы</span>
+            </div>
+            <div class="wizard__connector" id="connector2" aria-hidden="true"></div>
+            <div class="wizard__step" id="progressStep3" role="listitem">
+              <div class="wizard__step-circle" aria-hidden="true">3</div>
+              <span class="wizard__step-label">Результат</span>
+            </div>
+          </div>
+
+          <!-- ШАГ 1: Параметры рельсов -->
+          <div class="wizard__panel" id="wizardStep1" aria-labelledby="step1Title">
+            <h2 class="wizard__panel-title" id="step1Title">Параметры рельсов</h2>
+
+            <div class="form-group">
+              <label class="form-label form-label--required" for="railType">Тип рельса</label>
+              <select class="input" id="railType" required aria-required="true">
+                <option value="">— Выберите тип рельса —</option>
+                <option value="Р50"  data-kg="51.67">Р50 — 51.67 кг/м</option>
+                <option value="Р65"  data-kg="64.72">Р65 — 64.72 кг/м</option>
+                <option value="Р75"  data-kg="74.40">Р75 — 74.40 кг/м</option>
+                <option value="КР70" data-kg="70.00">КР70 — 70.00 кг/м</option>
+                <option value="КР80" data-kg="80.00">КР80 — 80.00 кг/м</option>
+                <option value="КР100" data-kg="100.00">КР100 — 100.00 кг/м</option>
+                <option value="КР120" data-kg="120.00">КР120 — 120.00 кг/м</option>
+              </select>
+              <span class="form-error" id="railTypeError" hidden></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label form-label--required" for="trackLength">Длина пути</label>
+              <div class="input-with-unit">
+                <input class="input" type="number" id="trackLength"
+                       min="1" step="1" placeholder="Введите длину в метрах"
+                       required aria-required="true">
+                <span class="input-unit">м</span>
+              </div>
+              <span class="form-error" id="trackLengthError" hidden></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" id="threadCountLabel">Количество нитей</label>
+              <div class="radio-group" role="radiogroup" aria-labelledby="threadCountLabel">
+                <label class="radio-option">
+                  <input type="radio" name="threadCount" value="1" aria-label="1 нить">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="2" y1="12" x2="22" y2="12"/><line x1="6" y1="6" x2="6" y2="18"/><line x1="18" y1="6" x2="18" y2="18"/></svg>
+                  1 нить
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="threadCount" value="2" checked aria-label="2 нити">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>
+                  2 нити
+                </label>
+              </div>
+            </div>
+
+            <div class="wizard__nav wizard__nav--right">
+              <button class="btn btn-primary btn-lg" id="step1Next">
+                Далее
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- ШАГ 2: Шпалы и скрепления -->
+          <div class="wizard__panel" id="wizardStep2" aria-labelledby="step2Title" hidden>
+            <h2 class="wizard__panel-title" id="step2Title">Шпалы и скрепления</h2>
+
+            <div class="form-group">
+              <label class="form-label" for="sleeperType">Тип шпал</label>
+              <select class="input" id="sleeperType">
+                <option value="wooden1"   data-price="2900">Деревянные тип 1 — 2 900 ₽/шт</option>
+                <option value="wooden2"   data-price="2400">Деревянные тип 2 — 2 400 ₽/шт</option>
+                <option value="concrete1" data-price="4167">Железобетонные Ш-1 — 4 167 ₽/шт</option>
+                <option value="concrete3" data-price="4167">Железобетонные Ш-3 — 4 167 ₽/шт</option>
+                <option value="none"      data-price="0">Без шпал</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="sleeperSpacingGroup">
+              <label class="form-label" for="sleeperSpacing">Шаг укладки шпал</label>
+              <select class="input" id="sleeperSpacing">
+                <option value="2.00">500 мм — 2 шт/м</option>
+                <option value="1.82">550 мм — 1.82 шт/м</option>
+                <option value="1.67">600 мм — 1.67 шт/м</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="fastenType">Тип скреплений</label>
+              <select class="input" id="fastenType">
+                <option value="kostyl">Костыльное</option>
+                <option value="klemm">Клеммное</option>
+                <option value="none">Не требуется</option>
+              </select>
+            </div>
+
+            <div class="wizard__nav wizard__nav--split">
+              <button class="btn btn-secondary btn-lg" id="step2Prev">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Назад
+              </button>
+              <button class="btn btn-primary btn-lg" id="step2Next">
+                Рассчитать
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- ШАГ 3: Результат -->
+          <div class="wizard__panel" id="wizardStep3" aria-labelledby="step3Title" hidden>
+            <h2 class="wizard__panel-title" id="step3Title">Спецификация</h2>
+
+            <!-- Итоговые карточки — заполняются calculator.js -->
+            <div class="calc-result__info" id="calcSummaryCards"></div>
+
+            <!-- Таблица позиций — заполняется calculator.js -->
+            <div class="calc-result__table-wrap">
+              <table class="calc-result__table" id="calcTable" aria-label="Спецификация материалов">
+                <thead>
+                  <tr>
+                    <th>Наименование</th>
+                    <th>Кол-во</th>
+                    <th>Ед. изм.</th>
+                    <th>Цена за ед.</th>
+                    <th>Сумма</th>
+                  </tr>
+                </thead>
+                <tbody id="calcTableBody"></tbody>
+                <tfoot id="calcTableFoot"></tfoot>
+              </table>
+            </div>
+
+            <!-- Примечание — заполняется если есть позиции с ценой по запросу -->
+            <p class="calc-price-note hidden" id="calcPriceNote">
+              * Цена на рельсы уточняется у менеджера — итоговая сумма рассчитана без рельсов.
+            </p>
+
+            <div class="wizard__result-actions">
+              <button class="btn btn-primary btn-lg" id="btnAddToCart">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                Перенести всё в заявку
+              </button>
+              <button class="btn btn-secondary btn-lg" id="btnDownloadPdf">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Скачать PDF-спецификацию
+              </button>
+              <button class="btn btn-secondary btn-lg" id="btnReset">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
+                Рассчитать заново
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /.wizard -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CTA и футер вставляются через loadComponents() из main.js -->
+  <div id="cta-placeholder"></div>
+  <div id="footer-placeholder"></div>
+
+  <!-- Модальное окно вставляется через loadComponents() из main.js -->
+  <div id="modal-placeholder"></div>
+
+  <!-- Скрипты -->
+  <script src="assets/js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="assets/js/calculator.js"></script>
+</body>
+</html>
