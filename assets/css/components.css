@@ -1702,18 +1702,19 @@
   display: flex;
   align-items: baseline;
   gap: 4px;
+  background: transparent;
 }
 
 .calc-result strong {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-cta, #0369A1);
 }
 
 .calc-result span {
   font-size: var(--font-size-sm, 14px);
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-text, #020617);
 }
 
 /* Переключатель валюты */
@@ -1746,9 +1747,9 @@
 }
 
 .currency-opt input[type="radio"]:checked + span {
-  background: var(--color-primary);
+  background: var(--color-cta, #0369A1);
   color: white;
-  border-color: var(--color-primary);
+  border-color: var(--color-cta, #0369A1);
 }
 
 /* Устаревшие классы (обратная совместимость) */
