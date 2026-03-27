@@ -1,0 +1,2855 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Конкурентный анализ — Рельс-Комплект</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; background: #f8f9fa; }
+    .kpi-card { border-radius: 12px; border: none; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .kpi-value { font-size: 2.4rem; font-weight: 700; }
+    .kpi-label { font-size: .85rem; color: #666; }
+    .diff-cheaper { color: #198754; font-weight: 600; }
+    .diff-expensive { color: #dc3545; font-weight: 600; }
+    #main-table th { cursor: pointer; user-select: none; white-space: nowrap; }
+    #main-table th:hover { background: #e9ecef; }
+    .sort-icon::after { content: " ↕"; opacity: .4; font-size: .8em; }
+    .sort-asc::after { content: " ↑"; opacity: 1; }
+    .sort-desc::after { content: " ↓"; opacity: 1; }
+    .section-header { border-left: 4px solid #1A56A0; padding-left: 12px; margin-bottom: 1rem; }
+    #search-input { max-width: 300px; }
+    tr.hidden { display: none; }
+  </style>
+</head>
+<body>
+<div class="container-fluid py-4 px-4">
+
+  <h1 class="mb-1" style="color:#1A56A0;">Конкурентный анализ</h1>
+  <p class="text-muted mb-4">Сравнение с vsp74.ru · 158 позиций в каталоге</p>
+
+  <!-- KPI карточки -->
+  <div class="row g-3 mb-5">
+    <div class="col-sm-6 col-lg-3">
+      <div class="card kpi-card p-3 h-100">
+        <div class="kpi-value text-primary">158</div>
+        <div class="kpi-label">Всего наших товаров</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="card kpi-card p-3 h-100">
+        <div class="kpi-value" style="color:#0d6efd;">130</div>
+        <div class="kpi-label">Нашли совпадение у конкурента</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="card kpi-card p-3 h-100">
+        <div class="kpi-value text-success">36</div>
+        <div class="kpi-label">Мы дешевле</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="card kpi-card p-3 h-100">
+        <div class="kpi-value text-danger">24</div>
+        <div class="kpi-label">Конкурент дешевле</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Таблица сравнения -->
+  <div class="card shadow-sm mb-5">
+    <div class="card-body">
+      <h4 class="section-header">Сравнение позиций</h4>
+
+      <!-- Фильтры -->
+      <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
+        <div class="btn-group btn-group-sm" role="group" id="filter-match">
+          <input type="radio" class="btn-check" name="match" id="m-all" value="all" checked>
+          <label class="btn btn-outline-secondary" for="m-all">Все (158)</label>
+          <input type="radio" class="btn-check" name="match" id="m-yes" value="yes">
+          <label class="btn btn-outline-secondary" for="m-yes">С совпадением (130)</label>
+          <input type="radio" class="btn-check" name="match" id="m-no" value="no">
+          <label class="btn btn-outline-secondary" for="m-no">Без совпадения (28)</label>
+        </div>
+        <div class="btn-group btn-group-sm" role="group" id="filter-price">
+          <input type="radio" class="btn-check" name="price" id="p-all" value="all" checked>
+          <label class="btn btn-outline-secondary" for="p-all">Все цены</label>
+          <input type="radio" class="btn-check" name="price" id="p-cheaper" value="cheaper">
+          <label class="btn btn-outline-success" for="p-cheaper">Мы дешевле</label>
+          <input type="radio" class="btn-check" name="price" id="p-expensive" value="expensive">
+          <label class="btn btn-outline-danger" for="p-expensive">Конкурент дешевле</label>
+        </div>
+        <input type="text" id="search-input" class="form-control form-control-sm"
+               placeholder="Поиск по названию…">
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle" id="main-table">
+          <thead class="table-light">
+            <tr>
+              <th class="sort-icon" data-col="0">Наш товар</th>
+              <th class="sort-icon text-end" data-col="1">Наша цена</th>
+              <th class="sort-icon text-end" data-col="2">Цена конкурента</th>
+              <th class="sort-icon text-end" data-col="3">Разница</th>
+              <th class="text-center">Описание</th>
+              <th class="text-center">Хар-ки</th>
+              <th class="text-center">Фото</th>
+              <th class="text-center">Ссылка</th>
+            </tr>
+          </thead>
+          <tbody>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы Р65 ДТ350, ОТ350 новые">
+          <td>Рельсы Р65 ДТ350, ОТ350 новые</td>
+          <td class="text-end">144 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+40 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы Р65 Т1 1-я группа износа до 3-х мм">
+          <td>Рельсы Р65 Т1 1-я группа износа до 3-х мм</td>
+          <td class="text-end">69 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−35 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы Р65 Т1 хранение">
+          <td>Рельсы Р65 Т1 хранение</td>
+          <td class="text-end">115 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+11 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Рельсы Р65 Т1 старогодные">
+          <td>Рельсы Р65 Т1 старогодные</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы Р50 Т1 хранение">
+          <td>Рельсы Р50 Т1 хранение</td>
+          <td class="text-end">115 000 ₽/т</td>
+          <td class="text-end">171 145 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−56 145 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r-50-dt-350-gost-51685-2000.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы Р50 1-я гр. износа старогодные">
+          <td>Рельсы Р50 1-я гр. износа старогодные</td>
+          <td class="text-end">75 000 ₽/т</td>
+          <td class="text-end">171 145 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−96 145 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r-50-dt-350-gost-51685-2000.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы Р50 старогодные без износа">
+          <td>Рельсы Р50 старогодные без износа</td>
+          <td class="text-end">90 000 ₽/т</td>
+          <td class="text-end">171 145 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−81 145 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r-50-dt-350-gost-51685-2000.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы Р50 ОТ350 новые">
+          <td>Рельсы Р50 ОТ350 новые</td>
+          <td class="text-end">150 000 ₽/т</td>
+          <td class="text-end">171 145 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−21 145 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r-50-dt-350-gost-51685-2000.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 70 хранение">
+          <td>Рельсы крановые КР 70 хранение</td>
+          <td class="text-end">115 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+11 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы крановые КР70 б/у старогодный">
+          <td>Рельсы крановые КР70 б/у старогодный</td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end">135 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−40 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-70_bez_iznosa_v_antikore.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 70 новый ГОСТ Р 53866-2010">
+          <td>Рельсы крановые КР 70 новый ГОСТ Р 53866-2010</td>
+          <td class="text-end">155 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+51 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР70 новый ГОСТ 4121-96">
+          <td>Рельсы крановые КР70 новый ГОСТ 4121-96</td>
+          <td class="text-end">143 000 ₽/т</td>
+          <td class="text-end">135 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+8 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-70_bez_iznosa_v_antikore.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 80 хранение">
+          <td>Рельсы крановые КР 80 хранение</td>
+          <td class="text-end">115 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+11 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы крановые КР 80 б/у старогодный">
+          <td>Рельсы крановые КР 80 б/у старогодный</td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−9 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 80 ГОСТ53866-2010 новые">
+          <td>Рельсы крановые КР 80 ГОСТ53866-2010 новые</td>
+          <td class="text-end">149 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+45 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 80 ГОСТ4121-96 новый">
+          <td>Рельсы крановые КР 80 ГОСТ4121-96 новый</td>
+          <td class="text-end">147 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+43 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 100 ГОСТ 53866-2010 новые">
+          <td>Рельсы крановые КР 100 ГОСТ 53866-2010 новые</td>
+          <td class="text-end">147 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+43 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 100 ГОСТ 4121-96 новые">
+          <td>Рельсы крановые КР 100 ГОСТ 4121-96 новые</td>
+          <td class="text-end">147 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+43 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 100 хранение">
+          <td>Рельсы крановые КР 100 хранение</td>
+          <td class="text-end">115 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+11 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 120 с хранения">
+          <td>Рельсы крановые КР 120 с хранения</td>
+          <td class="text-end">115 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+11 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 120 старогодный без износа">
+          <td>Рельсы крановые КР 120 старогодный без износа</td>
+          <td class="text-end">110 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+6 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы крановые КР 120 б/у старогодный с  минимальным износом">
+          <td>Рельсы крановые КР 120 б/у старогодный с  минимальным износом</td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−9 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 120 новые ГОСТ53866-2010">
+          <td>Рельсы крановые КР 120 новые ГОСТ53866-2010</td>
+          <td class="text-end">147 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+43 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 120 новые ГОСТ4121-96">
+          <td>Рельсы крановые КР 120 новые ГОСТ4121-96</td>
+          <td class="text-end">147 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+43 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 140 с/г">
+          <td>Рельсы крановые КР 140 с/г</td>
+          <td class="text-end">130 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+26 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы крановые КР 140 новые">
+          <td>Рельсы крановые КР 140 новые</td>
+          <td class="text-end">160 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+56 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р24 хранение">
+          <td>Рельс Р24 хранение</td>
+          <td class="text-end">80 000 ₽/т</td>
+          <td class="text-end">152 330 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−72 330 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р24 новый ГОСТ 6368-82">
+          <td>Рельс Р24 новый ГОСТ 6368-82</td>
+          <td class="text-end">139 000 ₽/т</td>
+          <td class="text-end">152 330 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−13 330 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р8 ГОСТ6368-82 новый">
+          <td>Рельс Р8 ГОСТ6368-82 новый</td>
+          <td class="text-end">15 000 ₽/т</td>
+          <td class="text-end">135 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−120 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-80_bez_iznosa_v_antikore.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р12 новый">
+          <td>Рельс Р12 новый</td>
+          <td class="text-end">18 000 ₽/т</td>
+          <td class="text-end">145 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−127 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-120_bez_iznosa_v_antikore.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р15 новый">
+          <td>Рельс Р15 новый</td>
+          <td class="text-end">3 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−101 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Рельс Р18 хранение">
+          <td>Рельс Р18 хранение</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">150 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-18-bez-iznosa-v-antikore-8-m-.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р18 старогодный">
+          <td>Рельс Р18 старогодный</td>
+          <td class="text-end">130 000 ₽/т</td>
+          <td class="text-end">150 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−20 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-18-bez-iznosa-v-antikore-8-m-.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельс Р18 ГОСТ6368-82 новый">
+          <td>Рельс Р18 ГОСТ6368-82 новый</td>
+          <td class="text-end">175 000 ₽/т</td>
+          <td class="text-end">150 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+25 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-18-bez-iznosa-v-antikore-8-m-.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р24 новый ГОСТ 6368-82">
+          <td>Рельс Р24 новый ГОСТ 6368-82</td>
+          <td class="text-end">145 000 ₽/т</td>
+          <td class="text-end">152 330 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−7 330 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р24 старогодный с хранения  ГОСТ 6368-82">
+          <td>Рельс Р24 старогодный с хранения  ГОСТ 6368-82</td>
+          <td class="text-end">120 000 ₽/т</td>
+          <td class="text-end">152 330 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−32 330 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы P24  восстановленные в антикоре">
+          <td>Рельсы P24  восстановленные в антикоре</td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−9 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Рельс Р33 хранение">
+          <td>Рельс Р33 хранение</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">160 880 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-33.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р33 новый ТУ 14-2Р-383-2004">
+          <td>Рельс Р33 новый ТУ 14-2Р-383-2004</td>
+          <td class="text-end">150 000 ₽/т</td>
+          <td class="text-end">160 880 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−10 880 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-33.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Рельс Р33 старогодный">
+          <td>Рельс Р33 старогодный</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">160 880 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-33.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Рельсы Р38 новый">
+          <td>Рельсы Р38 новый</td>
+          <td class="text-end">149 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+45 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р43 с хранения">
+          <td>Рельс Р43 с хранения</td>
+          <td class="text-end">98 000 ₽/т</td>
+          <td class="text-end">1 168 224 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−1 070 224 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">❌</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/kranovyj-krepezh/nakladka-temperaturnogo-styka-ts1-r43-68-5kh152kh15-4-mm.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р43">
+          <td>Рельс Р43</td>
+          <td class="text-end">129 000 ₽/т</td>
+          <td class="text-end">1 168 224 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−1 039 224 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">❌</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/kranovyj-krepezh/nakladka-temperaturnogo-styka-ts1-r43-68-5kh152kh15-4-mm.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельс Р43 новый">
+          <td>Рельс Р43 новый</td>
+          <td class="text-end">142 000 ₽/т</td>
+          <td class="text-end">1 168 224 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−1 026 224 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">❌</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/kranovyj-krepezh/nakladka-temperaturnogo-styka-ts1-r43-68-5kh152kh15-4-mm.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Haклaдкa KP100 (PC4)">
+          <td>Haклaдкa KP100 (PC4)</td>
+          <td class="text-end">1 100 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Haклaдкa KP120 (PC5)">
+          <td>Haклaдкa KP120 (PC5)</td>
+          <td class="text-end">1 430 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Haклaдкa KP70, KP80 (PC3)">
+          <td>Haклaдкa KP70, KP80 (PC3)</td>
+          <td class="text-end">790 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Плaнка прижимная П1">
+          <td>Плaнка прижимная П1</td>
+          <td class="text-end">390 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Плaнка прижимная П2">
+          <td>Плaнка прижимная П2</td>
+          <td class="text-end">320 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Плaнкa упopнaя У1">
+          <td>Плaнкa упopнaя У1</td>
+          <td class="text-end">160 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Плaнкa упopнaя У2">
+          <td>Плaнкa упopнaя У2</td>
+          <td class="text-end">180 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Плaнкa упopнaя У3">
+          <td>Плaнкa упopнaя У3</td>
+          <td class="text-end">230 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Teмпepaтуpный cтык KP70  TC3">
+          <td>Teмпepaтуpный cтык KP70  TC3</td>
+          <td class="text-end">160 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Шпала деревянная тип 1 пропитанная">
+          <td>Шпала деревянная тип 1 пропитанная</td>
+          <td class="text-end">2 900 ₽/т</td>
+          <td class="text-end">1 115 550 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−1 112 650 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">❌</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/brus-perevodnoj-propitannyj-a2.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Шпала деревянная тип 2 пропитанная">
+          <td>Шпала деревянная тип 2 пропитанная</td>
+          <td class="text-end">2 400 ₽/т</td>
+          <td class="text-end">3 078 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−678 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Брус переводной деревянный А3">
+          <td>Брус переводной деревянный А3</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Брус переводной деревянный А4">
+          <td>Брус переводной деревянный А4</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Брус переводной деревянный Б1">
+          <td>Брус переводной деревянный Б1</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Брус переводной деревянный Б2">
+          <td>Брус переводной деревянный Б2</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Шпала железобетонная Ш-3">
+          <td>Шпала железобетонная Ш-3</td>
+          <td class="text-end">4 167 ₽/т</td>
+          <td class="text-end">3 078 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+1 089 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Шпала железобетонная Ш-1">
+          <td>Шпала железобетонная Ш-1</td>
+          <td class="text-end">4 167 ₽/т</td>
+          <td class="text-end">3 078 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+1 089 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы А100 DIN 536">
+          <td>Рельсы А100 DIN 536</td>
+          <td class="text-end">20 100 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−83 900 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы А120 DIN 536">
+          <td>Рельсы А120 DIN 536</td>
+          <td class="text-end">28 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−76 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Рельсы А150 DIN 536">
+          <td>Рельсы А150 DIN 536</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы А45  DIN 536">
+          <td>Рельсы А45  DIN 536</td>
+          <td class="text-end">6 000 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−98 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы А55 DIN 536">
+          <td>Рельсы А55 DIN 536</td>
+          <td class="text-end">8 600 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−95 400 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы А65 DIN 536">
+          <td>Рельсы А65 DIN 536</td>
+          <td class="text-end">11 700 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−92 300 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Рельсы А75 DIN 536">
+          <td>Рельсы А75 DIN 536</td>
+          <td class="text-end">14 100 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−89 900 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Гайка стыковая М22">
+          <td>Гайка стыковая М22</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Гайка стыковая М24">
+          <td>Гайка стыковая М24</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">159 022 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Гайка стыковая М27">
+          <td>Гайка стыковая М27</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">186 230 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-m27kh160-s-gajkoj-i-shaiboi-m27.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Клемма ПК">
+          <td>Клемма ПК</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Комплект планок Упорная У-1, П1">
+          <td>Комплект планок Упорная У-1, П1</td>
+          <td class="text-end">990 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Шайба 2-х витковая">
+          <td>Шайба 2-х витковая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">185 806 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-stykovoj-m24kh150-s-gaikoi-shaiboi.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Шайба стыковая М22">
+          <td>Шайба стыковая М22</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Шайба стыковая М24">
+          <td>Шайба стыковая М24</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">159 022 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Шайба стыковая М27">
+          <td>Шайба стыковая М27</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">186 230 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-m27kh160-s-gajkoj-i-shaiboi-m27.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="БГШ 22 (клеммный)">
+          <td>БГШ 22 (клеммный)</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="БГШ 22 (стыковой)">
+          <td>БГШ 22 (стыковой)</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="БГШ 24 (стыковой)">
+          <td>БГШ 24 (стыковой)</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="БГШ 27 (стыковой)">
+          <td>БГШ 27 (стыковой)</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт М24х110 в сборе">
+          <td>Болт М24х110 в сборе</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">159 022 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт М24х90 в сборе">
+          <td>Болт М24х90 в сборе</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">159 022 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт стыковой М18х88 в сборе">
+          <td>Болт стыковой М18х88 в сборе</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">185 806 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-stykovoj-m24kh150-s-gaikoi-shaiboi.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт стыковой М18">
+          <td>Болт стыковой М18</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">185 806 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-stykovoj-m24kh150-s-gaikoi-shaiboi.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Бoлт cтыкoвoй M22x115 в cбope c гaйкoй и шaйбoй cтыкoвoй M22">
+          <td>Бoлт cтыкoвoй M22x115 в cбope c гaйкoй и шaйбoй cтыкoвoй M22</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт стыковой М22х135 свободный">
+          <td>Болт стыковой М22х135 свободный</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт стыковой М22х135 в cбope c гaйкoй и шaйбoй cтыкoвoй M22">
+          <td>Болт стыковой М22х135 в cбope c гaйкoй и шaйбoй cтыкoвoй M22</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт стыковой М24х150 свободный">
+          <td>Болт стыковой М24х150 свободный</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">159 022 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Бoлт cтыкoвoй M24x150 c гaйкoй M24">
+          <td>Бoлт cтыкoвoй M24x150 c гaйкoй M24</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Бoлт cтыкoвoй M24x150 в cбope c гaйкoй и шaйбoй cтыкoвoй M24">
+          <td>Бoлт cтыкoвoй M24x150 в cбope c гaйкoй и шaйбoй cтыкoвoй M24</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт стыковой М27х160 свободный">
+          <td>Болт стыковой М27х160 свободный</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">186 230 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-m27kh160-s-gajkoj-i-shaiboi-m27.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Бoлт cтыкoвoй M27x160 c гaйкoй M27">
+          <td>Бoлт cтыкoвoй M27x160 c гaйкoй M27</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Бoлт cтыкoвoй M27x160 в cбope c гaйкoй M27 и шaйбoй cтыкoвoй M27">
+          <td>Бoлт cтыкoвoй M27x160 в cбope c гaйкoй M27 и шaйбoй cтыкoвoй M27</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Бoлт cтыкoвoй M27x160 уcилeнный c гaйкoй и шaйбaми для Aпaтэк">
+          <td>Бoлт cтыкoвoй M27x160 уcилeнный c гaйкoй и шaйбaми для Aпaтэк</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Бoлт cтыкoвoй M27x160 уcилeнный c гaйкoй для Aпaтэк">
+          <td>Бoлт cтыкoвoй M27x160 уcилeнный c гaйкoй для Aпaтэк</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Костыль путевой 14х14х130">
+          <td>Костыль путевой 14х14х130</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Костыль путевой 16х16х165">
+          <td>Костыль путевой 16х16х165</td>
+          <td class="text-end">146 000 ₽/т</td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+51 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Костыль пучинный 16х16х230">
+          <td>Костыль пучинный 16х16х230</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт закладной М22х175 с гайкой">
+          <td>Болт закладной М22х175 с гайкой</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Бoлт зaклaднoй M22x225 cвoбoдный">
+          <td>Бoлт зaклaднoй M22x225 cвoбoдный</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт закладной М22х175">
+          <td>Болт закладной М22х175</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт закладной М22х175 в сборе">
+          <td>Болт закладной М22х175 в сборе</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Шуруп ЦП54  М24х195">
+          <td>Шуруп ЦП54  М24х195</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">159 022 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Шуруп путевой 24х170">
+          <td>Шуруп путевой 24х170</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт клеммный М22х75 свободный">
+          <td>Болт клеммный М22х75 свободный</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт клеммный М22х75 с гайкой">
+          <td>Болт клеммный М22х75 с гайкой</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Болт клеммный М22х75 в сборе с гайкой шайбой М25 и клеммой ПК">
+          <td>Болт клеммный М22х75 в сборе с гайкой шайбой М25 и клеммой ПК</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">199 645 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="no" data-price-rel="unknown" data-name="Бoлт клeммный M22x75 c гaйкoй и шaйбoй M25">
+          <td>Бoлт клeммный M22x75 c гaйкoй и шaйбoй M25</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">—</td>
+          <td class="text-end">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+          <td class="text-center">—</td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Противоугон П 43">
+          <td>Противоугон П 43</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Противоугон П 50">
+          <td>Противоугон П 50</td>
+          <td class="text-end">135 000 ₽/т</td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+40 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="expensive" data-name="Противоугон П 65">
+          <td>Противоугон П 65</td>
+          <td class="text-end">129 000 ₽/т</td>
+          <td class="text-end">95 000 ₽/т</td>
+          <td class="text-end"><span class="diff-expensive">+34 000 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка 1Р-50 новая">
+          <td>Накладка 1Р-50 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Накладка 1Р-50 ГОСТ 19128-73 с хранения">
+          <td>Накладка 1Р-50 ГОСТ 19128-73 с хранения</td>
+          <td class="text-end">3 390 ₽/т</td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−17 071 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Накладка 1Р-50 ГОСТ 19128-73 восстановленная">
+          <td>Накладка 1Р-50 ГОСТ 19128-73 восстановленная</td>
+          <td class="text-end">2 850 ₽/т</td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−17 611 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Накладка 1Р-50 ГОСТ 19128-73 старогодная">
+          <td>Накладка 1Р-50 ГОСТ 19128-73 старогодная</td>
+          <td class="text-end">1 700 ₽/т</td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−18 761 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка 1Р-65 ГОСТ 8193-73 хранение">
+          <td>Накладка 1Р-65 ГОСТ 8193-73 хранение</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка 1Р-65 ГОСТ 8193-73 восстановленная">
+          <td>Накладка 1Р-65 ГОСТ 8193-73 восстановленная</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка 1Р-65 ГОСТ 8193-73 старогодная">
+          <td>Накладка 1Р-65 ГОСТ 8193-73 старогодная</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Накладка 1Р-65 новая">
+          <td>Накладка 1Р-65 новая</td>
+          <td class="text-end">8 800 ₽/т</td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−11 661 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Накладка 1Р-65 новая">
+          <td>Накладка 1Р-65 новая</td>
+          <td class="text-end">8 800 ₽/т</td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−11 661 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-18 ГОСТ 8141-56 новая">
+          <td>Накладка Р-18 ГОСТ 8141-56 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-18 ГОСТ 8141-56 хранение">
+          <td>Накладка Р-18 ГОСТ 8141-56 хранение</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-18 ГОСТ 8141-56 восстановленная">
+          <td>Накладка Р-18 ГОСТ 8141-56 восстановленная</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-18 ГОСТ 8141-56 старогодная">
+          <td>Накладка Р-18 ГОСТ 8141-56 старогодная</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-33 ТУ УДП 14-2-1214-98 новая">
+          <td>Накладка Р-33 ТУ УДП 14-2-1214-98 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-33 ТУ УДП 14-2-1214-98 хранение">
+          <td>Накладка Р-33 ТУ УДП 14-2-1214-98 хранение</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-33 ТУ УДП 14-2-1214-98 восстановленная">
+          <td>Накладка Р-33 ТУ УДП 14-2-1214-98 восстановленная</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-33 ТУ УДП 14-2-1214-98 старогодная">
+          <td>Накладка Р-33 ТУ УДП 14-2-1214-98 старогодная</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-43 ГОСТ 8193-73 новая">
+          <td>Накладка Р-43 ГОСТ 8193-73 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-43 ГОСТ 8193-73 хранение">
+          <td>Накладка Р-43 ГОСТ 8193-73 хранение</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-43 ГОСТ 8193-73 восстановленная">
+          <td>Накладка Р-43 ГОСТ 8193-73 восстановленная</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка Р-43 ГОСТ 8193-73 старогодная">
+          <td>Накладка Р-43 ГОСТ 8193-73 старогодная</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">20 461 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Накладка рельсового стыка КР 70  (РС3)">
+          <td>Накладка рельсового стыка КР 70  (РС3)</td>
+          <td class="text-end">700 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−103 300 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="cheaper" data-name="Накладка рельсового стыка КР 80  (РС3)">
+          <td>Накладка рельсового стыка КР 80  (РС3)</td>
+          <td class="text-end">700 ₽/т</td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end"><span class="diff-cheaper">−103 300 ₽</span></td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка рельсового стыка КР100 (РС4)">
+          <td>Накладка рельсового стыка КР100 (РС4)</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">140 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-100_bez_iznosa_v_antikore.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Накладка рельсового стыка РС-5 (для КР 120)">
+          <td>Накладка рельсового стыка РС-5 (для КР 120)</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Прокладка подрельсовая ЦП-143">
+          <td>Прокладка подрельсовая ЦП-143</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Прокладка подрельсовая ЦП-74, ЦП-318, ЦП-356">
+          <td>Прокладка подрельсовая ЦП-74, ЦП-318, ЦП-356</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">104 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Прокладка нашпальная ЦП-328">
+          <td>Прокладка нашпальная ЦП-328</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">3 078 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Прокладка нашпальная СП-487, ЦП-487">
+          <td>Прокладка нашпальная СП-487, ЦП-487</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">3 078 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Прокладка нашпальная ЦП-67">
+          <td>Прокладка нашпальная ЦП-67</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">3 078 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Прокладка ЦП-363">
+          <td>Прокладка ЦП-363</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">5 407 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">❌</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/prokladki-rti-izolyatsiya/procladka_stikovaya_ps-65_cp_187-03_4-8mm.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Прокладка ЦП-361">
+          <td>Прокладка ЦП-361</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">5 407 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">❌</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/prokladki-rti-izolyatsiya/procladka_stikovaya_ps-65_cp_187-03_4-8mm.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Прокладка нашпальная ЦП-362">
+          <td>Прокладка нашпальная ЦП-362</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">3 078 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Прокладка нашпальная ОП-68-74">
+          <td>Прокладка нашпальная ОП-68-74</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">3 078 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка Р18">
+          <td>Подкладка Р18</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">150 000 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-18-bez-iznosa-v-antikore-8-m-.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка Р24">
+          <td>Подкладка Р24</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">152 330 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка Р33">
+          <td>Подкладка Р33</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">160 880 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-33.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка ДН 50 новая">
+          <td>Подкладка ДН 50 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">350 750 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка ДН 65 новая">
+          <td>Подкладка ДН 65 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">350 750 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка Д-43 новая">
+          <td>Подкладка Д-43 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">350 750 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка Д-50 новая">
+          <td>Подкладка Д-50 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">350 750 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка Д-65 новая">
+          <td>Подкладка Д-65 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">350 750 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка КБ-50 новая">
+          <td>Подкладка КБ-50 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">350 750 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка КБ-65 новая">
+          <td>Подкладка КБ-65 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">350 750 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка КД-50 новая">
+          <td>Подкладка КД-50 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">350 750 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+
+        <tr data-match="yes" data-price-rel="unknown" data-name="Подкладка КД-65 новая">
+          <td>Подкладка КД-65 новая</td>
+          <td class="text-end"><span class="text-muted fst-italic">по запросу</span></td>
+          <td class="text-end">350 750 ₽/т</td>
+          <td class="text-end">—</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center">✅</td>
+          <td class="text-center"><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank" class="btn btn-sm btn-outline-secondary py-0">→</a></td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="no-results" class="text-center text-muted py-3 d-none">Ничего не найдено</div>
+    </div>
+  </div>
+
+  <!-- Что добавить на сайт -->
+  <div class="card shadow-sm mb-5">
+    <div class="card-body">
+      <h4 class="section-header">Что добавить на сайт</h4>
+      <p class="text-muted small mb-3">
+        Товары, по которым у конкурента есть контент, которого нет у нас.
+        Сортировка: чем больше недостающего — тем выше.
+      </p>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Наш товар</th>
+              <th>Чего не хватает</th>
+              <th class="text-center">Кол-во пробелов</th>
+              <th>Источник</th>
+            </tr>
+          </thead>
+          <tbody>
+
+        <tr>
+          <td>Рельсы Р65 ДТ350, ОТ350 новые</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы Р65 Т1 1-я группа износа до 3-х мм</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы Р65 Т1 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы Р65 Т1 старогодные</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы Р50 Т1 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r-50-dt-350-gost-51685-2000.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы Р50 1-я гр. износа старогодные</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r-50-dt-350-gost-51685-2000.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы Р50 старогодные без износа</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r-50-dt-350-gost-51685-2000.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы Р50 ОТ350 новые</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r-50-dt-350-gost-51685-2000.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 70 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР70 б/у старогодный</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-70_bez_iznosa_v_antikore.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 70 новый ГОСТ Р 53866-2010</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР70 новый ГОСТ 4121-96</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-70_bez_iznosa_v_antikore.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 80 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 80 б/у старогодный</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 80 ГОСТ53866-2010 новые</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 80 ГОСТ4121-96 новый</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 100 ГОСТ 53866-2010 новые</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 100 ГОСТ 4121-96 новые</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 100 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 120 с хранения</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 120 старогодный без износа</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 120 б/у старогодный с  минимальным износом</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 120 новые ГОСТ53866-2010</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 120 новые ГОСТ4121-96</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 140 с/г</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы крановые КР 140 новые</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р24 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р24 новый ГОСТ 6368-82</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р8 ГОСТ6368-82 новый</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-80_bez_iznosa_v_antikore.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р12 новый</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-120_bez_iznosa_v_antikore.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р15 новый</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р18 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-18-bez-iznosa-v-antikore-8-m-.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р18 старогодный</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-18-bez-iznosa-v-antikore-8-m-.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р18 ГОСТ6368-82 новый</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-18-bez-iznosa-v-antikore-8-m-.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р24 новый ГОСТ 6368-82</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р24 старогодный с хранения  ГОСТ 6368-82</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы P24  восстановленные в антикоре</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р33 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-33.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р33 новый ТУ 14-2Р-383-2004</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-33.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р33 старогодный</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-33.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы Р38 новый</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шпала деревянная тип 2 пропитанная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шпала железобетонная Ш-3</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шпала железобетонная Ш-1</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы А100 DIN 536</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы А120 DIN 536</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы А150 DIN 536</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы А45  DIN 536</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы А55 DIN 536</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы А65 DIN 536</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельсы А75 DIN 536</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Гайка стыковая М22</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Гайка стыковая М24</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Гайка стыковая М27</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-m27kh160-s-gajkoj-i-shaiboi-m27.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шайба 2-х витковая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-stykovoj-m24kh150-s-gaikoi-shaiboi.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шайба стыковая М22</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шайба стыковая М24</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шайба стыковая М27</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-m27kh160-s-gajkoj-i-shaiboi-m27.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт М24х110 в сборе</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт М24х90 в сборе</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт стыковой М18х88 в сборе</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-stykovoj-m24kh150-s-gaikoi-shaiboi.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт стыковой М18</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-stykovoj-m24kh150-s-gaikoi-shaiboi.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт стыковой М22х135 свободный</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт стыковой М22х135 в cбope c гaйкoй и шaйбoй cтыкoвoй M22</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт стыковой М24х150 свободный</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт стыковой М27х160 свободный</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-m27kh160-s-gajkoj-i-shaiboi-m27.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Костыль путевой 14х14х130</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Костыль путевой 16х16х165</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Костыль пучинный 16х16х230</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт закладной М22х175 с гайкой</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт закладной М22х175</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт закладной М22х175 в сборе</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шуруп ЦП54  М24х195</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/shurup-putevoy-m24kh150.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шуруп путевой 24х170</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт клеммный М22х75 свободный</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт клеммный М22х75 с гайкой</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Болт клеммный М22х75 в сборе с гайкой шайбой М25 и клеммой ПК</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/bolty-putevye/bolt-klemmnyj-m22kh75-s-gaikoi-shaiboi-klemmo.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Противоугон П 43</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Противоугон П 50</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Противоугон П 65</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/protivougony/protivougon-p-50-b-u.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка 1Р-50 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка 1Р-50 ГОСТ 19128-73 с хранения</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка 1Р-50 ГОСТ 19128-73 восстановленная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка 1Р-50 ГОСТ 19128-73 старогодная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка 1Р-65 ГОСТ 8193-73 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка 1Р-65 ГОСТ 8193-73 восстановленная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка 1Р-65 ГОСТ 8193-73 старогодная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка 1Р-65 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка 1Р-65 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-18 ГОСТ 8141-56 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-18 ГОСТ 8141-56 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-18 ГОСТ 8141-56 восстановленная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-18 ГОСТ 8141-56 старогодная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-33 ТУ УДП 14-2-1214-98 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-33 ТУ УДП 14-2-1214-98 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-33 ТУ УДП 14-2-1214-98 восстановленная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-33 ТУ УДП 14-2-1214-98 старогодная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-43 ГОСТ 8193-73 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-43 ГОСТ 8193-73 хранение</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-43 ГОСТ 8193-73 восстановленная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка Р-43 ГОСТ 8193-73 старогодная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/nakladki/apatek-65-4.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка рельсового стыка КР 70  (РС3)</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка рельсового стыка КР 80  (РС3)</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка рельсового стыка КР100 (РС4)</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-kranovye/relsi_kr-100_bez_iznosa_v_antikore.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Накладка рельсового стыка РС-5 (для КР 120)</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Прокладка подрельсовая ЦП-143</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Прокладка подрельсовая ЦП-74, ЦП-318, ЦП-356</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-zheleznodorozhnye/relsy-r65-b-u-bez-iznosa-do-1mm-12-4-12-5m.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Прокладка нашпальная ЦП-328</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Прокладка нашпальная СП-487, ЦП-487</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Прокладка нашпальная ЦП-67</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Прокладка нашпальная ЦП-362</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Прокладка нашпальная ОП-68-74</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/shpaly-derevyannye-propitannye-tip-ii.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка Р18</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-18-bez-iznosa-v-antikore-8-m-.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка Р24</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-24.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка Р33</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/relsy-uzkokoleynye/relsy-r-33.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка ДН 50 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка ДН 65 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка Д-43 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка Д-50 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка Д-65 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка КБ-50 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка КБ-65 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка КД-50 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Подкладка КД-65 новая</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">таблица хар-к</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">3</td>
+          <td><a href="https://www.vsp74.ru/podkladki/podkladka-d-50.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р43 с хранения</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">2</td>
+          <td><a href="https://www.vsp74.ru/kranovyj-krepezh/nakladka-temperaturnogo-styka-ts1-r43-68-5kh152kh15-4-mm.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р43</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">2</td>
+          <td><a href="https://www.vsp74.ru/kranovyj-krepezh/nakladka-temperaturnogo-styka-ts1-r43-68-5kh152kh15-4-mm.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Рельс Р43 новый</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">2</td>
+          <td><a href="https://www.vsp74.ru/kranovyj-krepezh/nakladka-temperaturnogo-styka-ts1-r43-68-5kh152kh15-4-mm.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Шпала деревянная тип 1 пропитанная</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">2</td>
+          <td><a href="https://www.vsp74.ru/shpaly-brus-derevyannyj/brus-perevodnoj-propitannyj-a2.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Прокладка ЦП-363</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">2</td>
+          <td><a href="https://www.vsp74.ru/prokladki-rti-izolyatsiya/procladka_stikovaya_ps-65_cp_187-03_4-8mm.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+
+        <tr>
+          <td>Прокладка ЦП-361</td>
+          <td><span class="badge bg-warning text-dark me-1">описание</span> <span class="badge bg-warning text-dark me-1">фото</span></td>
+          <td class="text-center">2</td>
+          <td><a href="https://www.vsp74.ru/prokladki-rti-izolyatsiya/procladka_stikovaya_ps-65_cp_187-03_4-8mm.html" target="_blank">vsp74.ru →</a></td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function () {
+  // ---- Сортировка ----
+  const table = document.getElementById('main-table');
+  const tbody = table.querySelector('tbody');
+  let sortCol = -1, sortAsc = true;
+
+  function parseVal(td) {
+    const txt = td.textContent.trim().replace(/[^0-9.\-]/g, '');
+    const n = parseFloat(txt);
+    return isNaN(n) ? td.textContent.trim().toLowerCase() : n;
+  }
+
+  table.querySelectorAll('th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = parseInt(th.dataset.col);
+      if (sortCol === col) sortAsc = !sortAsc;
+      else { sortCol = col; sortAsc = true; }
+
+      table.querySelectorAll('th').forEach(h => {
+        h.classList.remove('sort-asc', 'sort-desc');
+        if (h.classList.contains('sort-icon')) h.className = h.className;
+      });
+      th.classList.add(sortAsc ? 'sort-asc' : 'sort-desc');
+
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.sort((a, b) => {
+        const av = parseVal(a.cells[col]);
+        const bv = parseVal(b.cells[col]);
+        if (av < bv) return sortAsc ? -1 : 1;
+        if (av > bv) return sortAsc ? 1 : -1;
+        return 0;
+      });
+      rows.forEach(r => tbody.appendChild(r));
+      applyFilters();
+    });
+  });
+
+  // ---- Фильтры ----
+  function applyFilters() {
+    const matchVal = document.querySelector('input[name="match"]:checked').value;
+    const priceVal = document.querySelector('input[name="price"]:checked').value;
+    const search = document.getElementById('search-input').value.toLowerCase();
+
+    let visible = 0;
+    tbody.querySelectorAll('tr').forEach(row => {
+      const m = row.dataset.match;
+      const p = row.dataset.priceRel;
+      const name = row.dataset.name.toLowerCase();
+
+      const matchOk = matchVal === 'all' || m === matchVal;
+      const priceOk = priceVal === 'all' || p === priceVal;
+      const searchOk = !search || name.includes(search);
+
+      if (matchOk && priceOk && searchOk) {
+        row.classList.remove('hidden');
+        visible++;
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+    document.getElementById('no-results').classList.toggle('d-none', visible > 0);
+  }
+
+  document.querySelectorAll('input[name="match"], input[name="price"]').forEach(el => {
+    el.addEventListener('change', applyFilters);
+  });
+  document.getElementById('search-input').addEventListener('input', applyFilters);
+})();
+</script>
+</body>
+</html>

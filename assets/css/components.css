@@ -371,7 +371,8 @@
 .select:focus,
 .textarea:focus {
   border-color: var(--color-cta);
-  outline: none;
+  outline: 2px solid var(--color-cta);
+  outline-offset: -1px;
   box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.12);
 }
 

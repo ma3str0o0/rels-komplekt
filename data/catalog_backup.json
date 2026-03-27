@@ -7,8 +7,7 @@
     "subcategory": "Рельсы Р65",
     "price": 144000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763495_1_1",
@@ -18,8 +17,7 @@
     "subcategory": "Рельсы Р65",
     "price": 69000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763495_1",
@@ -29,8 +27,7 @@
     "subcategory": "Рельсы Р65",
     "price": 115000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766108",
@@ -40,8 +37,7 @@
     "subcategory": "Рельсы Р65",
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763495_1_1_1",
@@ -51,8 +47,7 @@
     "subcategory": null,
     "price": 115000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763495_1_1_1_1",
@@ -62,8 +57,7 @@
     "subcategory": null,
     "price": 75000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766111",
@@ -73,8 +67,7 @@
     "subcategory": null,
     "price": 90000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766107",
@@ -84,8 +77,7 @@
     "subcategory": null,
     "price": 150000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765976",
@@ -95,8 +87,7 @@
     "subcategory": "Рельсы КР 70",
     "price": 115000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765976_2",
@@ -106,8 +97,7 @@
     "subcategory": "Рельсы КР 70",
     "price": 95000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765976_3",
@@ -117,8 +107,7 @@
     "subcategory": "Рельсы КР 70",
     "price": 155000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_2",
@@ -128,8 +117,7 @@
     "subcategory": "Рельсы КР 70",
     "price": 143000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766062",
@@ -139,8 +127,7 @@
     "subcategory": null,
     "price": 115000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766062_2",
@@ -150,8 +137,7 @@
     "subcategory": null,
     "price": 95000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_1",
@@ -161,8 +147,7 @@
     "subcategory": null,
     "price": 149000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_2_1",
@@ -172,8 +157,7 @@
     "subcategory": null,
     "price": 147000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_1_1",
@@ -183,8 +167,7 @@
     "subcategory": null,
     "price": 147000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_1_2",
@@ -194,8 +177,7 @@
     "subcategory": null,
     "price": 147000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_1_1_1",
@@ -205,8 +187,7 @@
     "subcategory": null,
     "price": 115000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766075",
@@ -216,8 +197,7 @@
     "subcategory": null,
     "price": 115000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766075_1",
@@ -227,8 +207,7 @@
     "subcategory": null,
     "price": 110000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766075_2",
@@ -238,8 +217,7 @@
     "subcategory": null,
     "price": 95000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766071",
@@ -249,8 +227,7 @@
     "subcategory": null,
     "price": 147000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766071_1",
@@ -260,8 +237,7 @@
     "subcategory": null,
     "price": 147000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766094",
@@ -271,8 +247,7 @@
     "subcategory": null,
     "price": 130000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766081",
@@ -282,8 +257,7 @@
     "subcategory": null,
     "price": 160000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011779137",
@@ -293,8 +267,7 @@
     "subcategory": null,
     "price": 80000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763105_2",
@@ -304,8 +277,7 @@
     "subcategory": null,
     "price": 139000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011779120_3",
@@ -315,8 +287,7 @@
     "subcategory": null,
     "price": 15000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011779120_4",
@@ -326,8 +297,7 @@
     "subcategory": null,
     "price": 18000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011779120_3_1",
@@ -337,8 +307,7 @@
     "subcategory": null,
     "price": 3000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011779104",
@@ -348,8 +317,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011779120_1",
@@ -359,8 +327,7 @@
     "subcategory": null,
     "price": 130000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011779120_2",
@@ -370,8 +337,7 @@
     "subcategory": null,
     "price": 175000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763105",
@@ -381,8 +347,7 @@
     "subcategory": null,
     "price": 145000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763105_1",
@@ -392,8 +357,7 @@
     "subcategory": null,
     "price": 120000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763105_2_1",
@@ -403,8 +367,7 @@
     "subcategory": null,
     "price": 95000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766100",
@@ -414,8 +377,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766099_1",
@@ -425,8 +387,7 @@
     "subcategory": null,
     "price": 150000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766101",
@@ -436,8 +397,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011974819",
@@ -447,8 +407,7 @@
     "subcategory": null,
     "price": 149000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763105_1_1",
@@ -458,8 +417,7 @@
     "subcategory": null,
     "price": 98000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763105_1_2",
@@ -469,8 +427,7 @@
     "subcategory": null,
     "price": 129000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011763105_1_3",
@@ -480,8 +437,7 @@
     "subcategory": null,
     "price": 142000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_9",
@@ -491,8 +447,7 @@
     "subcategory": null,
     "price": 1100,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_10",
@@ -502,8 +457,7 @@
     "subcategory": null,
     "price": 1430,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_8",
@@ -513,8 +467,7 @@
     "subcategory": null,
     "price": 790,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_6",
@@ -524,8 +477,7 @@
     "subcategory": null,
     "price": 390,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_7",
@@ -535,8 +487,7 @@
     "subcategory": null,
     "price": 320,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_3",
@@ -546,8 +497,7 @@
     "subcategory": null,
     "price": 160,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_4",
@@ -557,8 +507,7 @@
     "subcategory": null,
     "price": 180,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_5",
@@ -568,8 +517,7 @@
     "subcategory": null,
     "price": 230,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_11",
@@ -579,8 +527,7 @@
     "subcategory": null,
     "price": 160000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769888",
@@ -590,8 +537,7 @@
     "subcategory": null,
     "price": 2900,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769889",
@@ -601,8 +547,7 @@
     "subcategory": null,
     "price": 2400,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769884",
@@ -612,8 +557,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769885",
@@ -623,8 +567,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769886",
@@ -634,8 +577,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769887",
@@ -645,8 +587,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011771270",
@@ -656,8 +597,7 @@
     "subcategory": null,
     "price": 4167,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011771268",
@@ -667,8 +607,7 @@
     "subcategory": null,
     "price": 4167,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_7",
@@ -678,8 +617,7 @@
     "subcategory": null,
     "price": 20100,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_9",
@@ -689,8 +627,7 @@
     "subcategory": null,
     "price": 28000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_8",
@@ -700,8 +637,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_3",
@@ -711,8 +647,7 @@
     "subcategory": null,
     "price": 6000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_4",
@@ -722,8 +657,7 @@
     "subcategory": null,
     "price": 8600,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_5",
@@ -733,8 +667,7 @@
     "subcategory": null,
     "price": 11700,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011765974_6",
@@ -744,8 +677,7 @@
     "subcategory": null,
     "price": 14100,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769862",
@@ -755,8 +687,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769863",
@@ -766,8 +697,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769864",
@@ -777,8 +707,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769865",
@@ -788,8 +717,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769867",
@@ -799,8 +727,7 @@
     "subcategory": null,
     "price": 990,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769873",
@@ -810,8 +737,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769874",
@@ -821,8 +747,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769875",
@@ -832,8 +757,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769876",
@@ -843,8 +767,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769847",
@@ -854,8 +777,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769848",
@@ -865,8 +787,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769849",
@@ -876,8 +797,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769850",
@@ -887,8 +807,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769855",
@@ -898,8 +817,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769856",
@@ -909,8 +827,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769858",
@@ -920,8 +837,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769857_1",
@@ -931,8 +847,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769857_3_1",
@@ -942,8 +857,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769859",
@@ -953,8 +867,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769859_1",
@@ -964,8 +877,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769860",
@@ -975,8 +887,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769860_1",
@@ -986,8 +897,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769860_2",
@@ -997,8 +907,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769861",
@@ -1008,8 +917,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769861_1",
@@ -1019,8 +927,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769861_2",
@@ -1030,8 +937,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769861_2_1",
@@ -1041,8 +947,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769861_3",
@@ -1052,8 +957,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868",
@@ -1063,8 +967,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_1",
@@ -1074,8 +977,7 @@
     "subcategory": null,
     "price": 146000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769868_2",
@@ -1085,8 +987,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769846",
@@ -1096,8 +997,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769851_1",
@@ -1107,8 +1007,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769851",
@@ -1118,8 +1017,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769852",
@@ -1129,8 +1027,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769877",
@@ -1140,8 +1037,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769877_1",
@@ -1151,8 +1047,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769853",
@@ -1162,8 +1057,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769854",
@@ -1173,8 +1067,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769854_1",
@@ -1184,8 +1077,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769854_2",
@@ -1195,8 +1087,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769870",
@@ -1206,8 +1097,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769871",
@@ -1217,8 +1107,7 @@
     "subcategory": null,
     "price": 135000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769872",
@@ -1228,8 +1117,7 @@
     "subcategory": null,
     "price": 129000,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766153",
@@ -1239,8 +1127,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766153_1",
@@ -1250,8 +1137,7 @@
     "subcategory": null,
     "price": 3390,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766153_1_1_1",
@@ -1261,8 +1147,7 @@
     "subcategory": null,
     "price": 2850,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766153_1_1",
@@ -1272,8 +1157,7 @@
     "subcategory": null,
     "price": 1700,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766138_1",
@@ -1283,8 +1167,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766138_1_1_1",
@@ -1294,8 +1177,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766138_1_1",
@@ -1305,8 +1187,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766138",
@@ -1316,8 +1197,7 @@
     "subcategory": null,
     "price": 8800,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766138_3",
@@ -1327,8 +1207,7 @@
     "subcategory": null,
     "price": 8800,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766140",
@@ -1338,8 +1217,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766140_1",
@@ -1349,8 +1227,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766140_1_1_1",
@@ -1360,8 +1237,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766140_1_1",
@@ -1371,8 +1247,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766142",
@@ -1382,8 +1257,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766142_1",
@@ -1393,8 +1267,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766142_1_1_1",
@@ -1404,8 +1277,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766142_1_1",
@@ -1415,8 +1287,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766149",
@@ -1426,8 +1297,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766149_1",
@@ -1437,8 +1307,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766149_1_1_1",
@@ -1448,8 +1317,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766149_1_1",
@@ -1459,8 +1327,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766208",
@@ -1470,8 +1337,7 @@
     "subcategory": null,
     "price": 700,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766208_1",
@@ -1481,8 +1347,7 @@
     "subcategory": null,
     "price": 700,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766210",
@@ -1492,8 +1357,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766209",
@@ -1503,8 +1367,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769878",
@@ -1514,8 +1377,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769880",
@@ -1525,8 +1387,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769881",
@@ -1536,8 +1397,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769881_1",
@@ -1547,8 +1407,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769881_2",
@@ -1558,8 +1417,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769881_3",
@@ -1569,8 +1427,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769881_4",
@@ -1580,8 +1437,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769881_5",
@@ -1591,8 +1447,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011769881_6",
@@ -1602,8 +1457,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766314",
@@ -1613,8 +1467,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766313",
@@ -1624,8 +1477,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766312",
@@ -1635,8 +1487,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766332",
@@ -1646,8 +1497,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766331",
@@ -1657,8 +1507,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766304",
@@ -1668,8 +1517,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766305",
@@ -1679,8 +1527,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766306",
@@ -1690,8 +1537,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766307",
@@ -1701,8 +1547,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766309",
@@ -1712,8 +1557,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766310",
@@ -1723,8 +1567,7 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   },
   {
     "id": "00011766311",
@@ -1734,7 +1577,6 @@
     "subcategory": null,
     "price": null,
     "unit": "т",
-    "in_stock": false,
-    "competitor_data": null
+    "in_stock": false
   }
 ]

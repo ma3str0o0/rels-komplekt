@@ -146,6 +146,13 @@ h1, h2, h3, h4, h5, h6 {
   padding-inline: var(--space-md);
 }
 
+/* 375px — минимальный мобильный */
+@media (min-width: 375px) {
+  .container {
+    padding-inline: var(--space-lg);
+  }
+}
+
 @media (min-width: 768px) {
   .container {
     padding-inline: var(--space-xl);
@@ -155,6 +162,14 @@ h1, h2, h3, h4, h5, h6 {
 @media (min-width: 1024px) {
   .container {
     padding-inline: var(--space-2xl);
+  }
+}
+
+/* 1440px — wide desktop */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1400px;
+    padding-inline: var(--space-3xl);
   }
 }
 
@@ -639,7 +654,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ─── Герой (Hero) ──────────────────────────────────────────── */
 .hero {
-  background: linear-gradient(135deg, #0D2E5A 0%, #1A56A0 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-cta) 100%);
   color: #fff;
   padding-block: var(--space-3xl);
   position: relative;
