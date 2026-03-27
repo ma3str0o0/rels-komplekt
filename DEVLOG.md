@@ -183,6 +183,33 @@ Security audit выявил 8 проблем. Все исправлены.
 
 ---
 
+## [2026-03-27] — Итерация 11: Тёмная тема
+
+### assets/css/style.css
+- В `:root` добавлены `--color-tint-blue: #EFF6FF` и `--color-surface-muted: #F1F5F9`
+- Добавлен блок `[data-theme="dark"]` с полной палитрой (фон, поверхность, текст, границы, тени)
+- `html { transition: background-color 0.3s ease, color 0.3s ease }` — плавное переключение
+- CSS `.theme-toggle` — кнопка как у `.cart-btn`
+- Замены хардкодов: `#EFF6FF` → `var(--color-tint-blue)` (nav, mobile menu, section__label), `#F1F5F9` → `var(--color-surface-muted)` (`.section--muted`), `#F8F9FA` → `var(--color-surface-muted)` (`.section--form-cta`)
+
+### assets/css/components.css
+- `#EFF6FF` → `var(--color-tint-blue)` в `.category-card__icon`, `.feature-card__icon`, `.cart-btn:hover`
+- `#94A3B8` → `var(--color-text-muted)` в placeholder
+- Добавлен блок `[data-theme="dark"]` в конце файла: оверрайды для `.stock-badge--in/out` и `.badge--blue/green/orange` (rgba-фоны, светлые цвета текста)
+
+### assets/js/main.js
+- Кнопка `.theme-toggle#themeToggle` добавлена в `_tplHeader()` перед "Свяжитесь с нами"
+- Иконка: луна (светлая тема) / солнце (тёмная тема) — SVG меняется через `_updateThemeIcon()`
+- `initTheme()` — читает `localStorage.getItem('theme')`, применяет `data-theme` на `<html>`, вешает обработчик клика
+- Вызывается сразу после `loadComponents()` в DOMContentLoaded
+
+### index/catalog/product/calculator/contacts/order .html
+- Anti-FOUC inline-скрипт в `<head>` (первый элемент): применяет тему до загрузки CSS
+
+**Коммит:** `b9743fc`
+
+---
+
 ## [2026-03-27] — Итерация 10: Кнопка отправки спецификации в Telegram
 
 ### calculator.html
