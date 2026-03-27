@@ -8,6 +8,30 @@
 
 const ORDER_KEY = 'cart';   /* должен совпадать с catalog.js */
 
+/* ─── Вес 1 шт (рельс 12.5 м), кг — зеркало из product.js ──── */
+const RAIL_WEIGHT_KG = {
+  'Рельс Р8': 100,    'Рельсы Р8': 100,
+  'Рельс Р12': 150,   'Рельсы Р12': 150,
+  'Рельс Р15': 188,   'Рельсы Р15': 188,
+  'Рельс Р18': 225,   'Рельсы Р18': 225,
+  'Рельс Р24': 300,   'Рельсы Р24': 300,
+  'Рельсы узкоколейные': 300,
+  'Рельс Р33': 413,   'Рельсы Р33': 413,
+  'Рельс Р38': 475,   'Рельсы Р38': 475,
+  'Рельс Р43': 558,   'Рельсы Р43': 558,
+  'Рельс Р50': 646,   'Рельсы Р50': 646,
+  'Рельс Р65': 809,   'Рельсы Р65': 809,
+  'Рельсы КР 70': 875,  'Рельсы КР 80': 1000,
+  'Рельсы КР 100': 1250, 'Рельсы КР 120': 1500,
+  'Рельсы КР 140': 1750,
+  'Международный стандарт рельс DIN 536': 1250,
+};
+
+/* Возвращает вес 1 шт в кг по подкатегории или категории товара */
+function getWeightKg(item) {
+  return RAIL_WEIGHT_KG[item.subcategory] || RAIL_WEIGHT_KG[item.category] || null;
+}
+
 /* ─── Точка входа ────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   render();
@@ -64,7 +88,8 @@ function tableHTML(items) {
             <th>Наименование</th>
             <th style="width:90px; text-align:center">Кол-во</th>
             <th style="width:60px">Ед.</th>
-            <th style="width:130px; text-align:right">Цена/ед., ₽</th>
+            <th style="width:120px; text-align:right">ЦЕНА/ЕД., ₽</th>
+            <th style="width:120px; text-align:right">ЦЕНА/Т, ₽</th>
             <th style="width:140px; text-align:right">Сумма, ₽</th>
             <th style="width:40px"></th>
           </tr>
@@ -77,6 +102,7 @@ function tableHTML(items) {
             <td colspan="2" class="order-totals__label">Итого</td>
             <td class="order-totals__qty" style="text-align:center" id="totalQty">${fmtNum(totalQty)}</td>
             <td>т</td>
+            <td></td>
             <td></td>
             <td class="order-totals__sum" style="text-align:right" id="totalSum">${totalSumText}</td>
             <td></td>
@@ -99,9 +125,22 @@ function tableHTML(items) {
 
 /* ─── HTML одной строки таблицы ──────────────────────────────── */
 function rowHTML(item, num) {
-  const priceCell = item.price !== null
-    ? `<td style="text-align:right">${fmtPrice(item.price)}</td>`
-    : `<td style="text-align:right; color:var(--color-text-muted); font-style:italic">По запросу</td>`;
+  const weightKg = getWeightKg(item);
+
+  /* ЦЕНА/ЕД. — цена за 1 штуку (если известен вес), иначе цена/т */
+  let priceEd, priceTon;
+  if (item.price !== null) {
+    if (weightKg) {
+      const perPcs = Math.round((weightKg / 1000) * item.price);
+      priceEd  = `<td style="text-align:right">${fmtPrice(perPcs)}</td>`;
+    } else {
+      priceEd  = `<td style="text-align:right; color:var(--color-text-muted); font-style:italic">—</td>`;
+    }
+    priceTon = `<td style="text-align:right">${fmtPrice(item.price)}</td>`;
+  } else {
+    priceEd  = `<td style="text-align:right; color:var(--color-text-muted); font-style:italic">По запросу</td>`;
+    priceTon = `<td style="text-align:right; color:var(--color-text-muted); font-style:italic">По запросу</td>`;
+  }
 
   const sumCell = item.price !== null
     ? `<td class="order-row-sum" style="text-align:right; font-weight:600">${fmtPrice(item.price * item.qty)}</td>`
@@ -125,7 +164,8 @@ function rowHTML(item, num) {
         >
       </td>
       <td>${escHtml(item.unit || 'т')}</td>
-      ${priceCell}
+      ${priceEd}
+      ${priceTon}
       ${sumCell}
       <td>
         <button

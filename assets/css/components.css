@@ -1639,6 +1639,8 @@
   border-radius: 10px;
   padding: var(--space-lg);
   margin-bottom: var(--space-lg);
+  position: relative;
+  isolation: isolate; /* создаём новый stacking context — блокируем z-index извне */
 }
 
 .product-calculator__title {
@@ -2129,7 +2131,7 @@
 /* Кнопки результата */
 .wizard__result-actions {
   display: flex;
-  gap: var(--space-md);
+  gap: 8px;
   flex-wrap: wrap;
   margin-top: var(--space-xl);
   padding-top: var(--space-lg);

@@ -110,3 +110,30 @@ Security audit выявил 8 проблем. Все исправлены.
 - `.currency-toggle` / `.currency-opt` — pill-переключатель RUB/KZT
 
 ---
+
+## [2026-03-27] — Итерация 4: Три баг-фикса
+
+### Баг 1 — тёмный блок поверх поля "Стоимость" (product.html + components.css)
+
+**Причина:** в `product.html` inline `<style>` определял `.product-specs { padding-block:48px; background }`, что коллизировало с компонентным `.product-specs { border-collapse:collapse }` и добавляло 48px padding на таблицу `id="productSpecs"`.
+
+**Фиксы:**
+- Переименован inline-класс: `.product-specs` → `.enriched-specs` (в CSS и в HTML `<section>`)
+- В `.product-calculator` добавлены `position: relative; isolation: isolate` — создаётся новый stacking context, блокирующий z-index-конфликты из соседних блоков
+
+### Баг 2 — кнопки калькулятора съехали (components.css)
+
+- `.wizard__result-actions`: `gap: var(--space-md)` (16px) → `gap: 8px`
+- `flex-wrap: wrap` и мобильный `width: 100%` уже были, остались без изменений
+
+### Баг 3 — две колонки цены в order.html (order.js)
+
+**Добавлена таблица весов `RAIL_WEIGHT_KG`** (зеркало из product.js, 16 позиций).
+
+**Новая структура таблицы заявки:**
+- `ЦЕНА/ЕД., ₽` — цена за 1 штуку = `(weight_kg / 1000) × price_per_ton`. Если вес неизвестен → "—"
+- `ЦЕНА/Т, ₽` — цена за тонну = `item.price` из каталога
+- `Сумма, ₽` — без изменений: `item.price × qty`
+- `<tfoot>` — добавлена пустая ячейка под новый столбец (colspan остался 2)
+
+---
