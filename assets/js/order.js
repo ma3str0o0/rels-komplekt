@@ -10,7 +10,6 @@ const ORDER_KEY = 'cart';   /* должен совпадать с catalog.js */
 
 /* ─── Точка входа ────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('[order.js] cart в localStorage:', localStorage.getItem('cart'));
   render();
   updateCartBadge();
 });

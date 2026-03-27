@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Купить рельсовые материалы оптом. Цена за тонну, характеристики, доставка по России. Рельс-Комплект.">
   <title>Товар — Рельс-Комплект</title>
@@ -353,7 +354,27 @@
 
   <script>
   /* ─── Обогащённый контент (competitor_data) ─── */
-  
+
+/* ─── Экранирование HTML для защиты от XSS ─────────────────── */
+function _escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* Допускаем только http/https URL изображений */
+function _isSafeUrl(url) {
+  try {
+    const u = new URL(url);
+    return u.protocol === 'https:' || u.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
 /* ─── Обогащённый контент из competitor_data ──────────────── */
 function _renderCompetitorData(product) {
   const cd = product.competitor_data;
@@ -363,7 +384,7 @@ function _renderCompetitorData(product) {
     const sec = document.getElementById('product-description');
     const txt = document.getElementById('product-description-text');
     if (sec && txt) {
-      txt.textContent = cd.description;
+      txt.textContent = cd.description; // textContent — безопасно
       sec.style.display = '';
     }
   }
@@ -374,7 +395,7 @@ function _renderCompetitorData(product) {
     const tbody = document.getElementById('product-specs-tbody');
     if (sec && tbody) {
       tbody.innerHTML = Object.entries(cd.specs)
-        .map(([k, v]) => `<tr><th class="specs-table__key">${k}</th><td class="specs-table__val">${v}</td></tr>`)
+        .map(([k, v]) => `<tr><th class="specs-table__key">${_escHtml(k)}</th><td class="specs-table__val">${_escHtml(v)}</td></tr>`)
         .join('');
       sec.style.display = '';
     }
@@ -414,13 +435,22 @@ function _renderCompetitorData(product) {
     }
   }
 
-  /* Фото из images[] */
+  /* Фото из images[] — только http/https URL */
   if (cd && cd.images && cd.images.length > 0) {
     const gallery = document.getElementById('product-gallery');
     if (gallery) {
-      const imgs = cd.images.slice(0, 6).map(src =>
-        `<img src="${src}" alt="${product.name}" class="product-gallery__img" loading="lazy">`
-      ).join('');
+      const safeName = _escHtml(product.name);
+      const imgs = cd.images
+        .filter(src => _isSafeUrl(src))
+        .slice(0, 6)
+        .map(src => {
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = product.name;
+          img.className = 'product-gallery__img';
+          img.loading = 'lazy';
+          return img.outerHTML;
+        }).join('');
       gallery.innerHTML = imgs;
     }
   }

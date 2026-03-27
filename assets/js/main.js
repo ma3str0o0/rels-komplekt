@@ -370,12 +370,27 @@ function initInlineForm() {
   });
 }
 
+/* ─── Rate limiting: не чаще одного запроса в 30 секунд ─────── */
+const _submitThrottle = { lastAt: 0, limit: 30_000 };
+
+function _isThrottled() {
+  const now = Date.now();
+  if (now - _submitThrottle.lastAt < _submitThrottle.limit) return true;
+  _submitThrottle.lastAt = now;
+  return false;
+}
+
 /* ─── Отправка заявки ───────────────────────────────────────── */
 async function handleRequestSubmit(e) {
   e.preventDefault();
   const form    = e.target;
   const btn     = form.querySelector('[type="submit"]');
   const overlay = form.closest('.modal-overlay');
+
+  if (_isThrottled()) {
+    showToast('Подождите немного перед повторной отправкой.', 'error');
+    return;
+  }
 
   if (!validateForm(form)) return;
 
@@ -408,7 +423,7 @@ async function sendTelegram(data) {
   const CHAT_ID   = window.TELEGRAM_CHAT_ID   || '';
 
   if (!BOT_TOKEN || !CHAT_ID) {
-    console.warn('Telegram не настроен. Данные формы:', data);
+    console.warn('Telegram не настроен (dev-режим).');
     return Promise.resolve(); // в dev-режиме не падаем
   }
 
