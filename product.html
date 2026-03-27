@@ -209,7 +209,35 @@
         </div>
       </section>
 
-      <!-- 3. Похожие товары -->
+    </div><!-- /#productPage -->
+
+      <!-- 3. Описание из данных конкурента (competitor_data.description) -->
+      <section class="product-description" id="product-description" style="display:none">
+        <div class="container">
+          <h2 class="section-title">Описание</h2>
+          <div class="product-description__text" id="product-description-text"></div>
+        </div>
+      </section>
+
+      <!-- 4. Таблица характеристик из competitor_data.specs -->
+      <section class="enriched-specs" id="product-specs" style="display:none">
+        <div class="container">
+          <h2 class="section-title">Технические характеристики</h2>
+          <table class="specs-table" id="product-specs-table">
+            <tbody id="product-specs-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 5. Плейсхолдеры медиа-контента (has_drawing, has_photos) -->
+      <section class="product-media" id="product-media" style="display:none">
+        <div class="container">
+          <h2 class="section-title">Медиа-материалы</h2>
+          <div class="product-media__grid" id="product-media-grid"></div>
+        </div>
+      </section>
+
+      <!-- 6. Похожие товары -->
       <section class="section section--alt" id="similarSection">
         <div class="container">
           <h2 class="section__title">Похожие товары</h2>
@@ -218,33 +246,7 @@
         </div>
       </section>
 
-    </div><!-- /#productPage -->
-
-  
-        <!-- Блок описания из данных конкурента (competitor_data.description) -->
-        <section class="product-description" id="product-description" style="display:none">
-          <div class="container">
-            <h2 class="section-title">Описание</h2>
-            <div class="product-description__text" id="product-description-text"></div>
-          </div>
-        </section>
-        <!-- Таблица характеристик из competitor_data.specs -->
-        <section class="enriched-specs" id="product-specs" style="display:none">
-          <div class="container">
-            <h2 class="section-title">Технические характеристики</h2>
-            <table class="specs-table" id="product-specs-table">
-              <tbody id="product-specs-tbody"></tbody>
-            </table>
-          </div>
-        </section>
-        <!-- Плейсхолдеры медиа-контента (has_drawing, has_photos) -->
-        <section class="product-media" id="product-media" style="display:none">
-          <div class="container">
-            <h2 class="section-title">Медиа-материалы</h2>
-            <div class="product-media__grid" id="product-media-grid"></div>
-          </div>
-        </section>
-      </main>
+  </main>
 
   <!-- ═══════════════════════════════════════════════════════════
        СЕКЦИЯ "ОСТАЛИСЬ ВОПРОСЫ?"
