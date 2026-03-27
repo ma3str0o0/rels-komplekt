@@ -277,7 +277,7 @@
 .category-card__icon {
   width: 52px;
   height: 52px;
-  background: #EFF6FF;
+  background: var(--color-tint-blue);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -314,7 +314,7 @@
 .feature-card__icon {
   width: 48px;
   height: 48px;
-  background: #EFF6FF;
+  background: var(--color-tint-blue);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -378,7 +378,7 @@
 
 .input::placeholder,
 .textarea::placeholder {
-  color: #94A3B8;
+  color: var(--color-text-muted);
 }
 
 .input--error {
@@ -1434,7 +1434,7 @@
 .cart-btn:hover {
   border-color: var(--color-cta);
   color: var(--color-cta);
-  background: #EFF6FF;
+  background: var(--color-tint-blue);
 }
 
 .cart-badge {
@@ -2438,4 +2438,30 @@
     width: 36px;
     height: 36px;
   }
+}
+
+/* ─── Тёмная тема — оверрайды компонентов ───────────────────── */
+[data-theme="dark"] .stock-badge--in {
+  background: rgba(22, 163, 74, 0.18);
+  color: #4ADE80;
+}
+
+[data-theme="dark"] .stock-badge--out {
+  background: rgba(234, 179, 8, 0.18);
+  color: #FDE047;
+}
+
+[data-theme="dark"] .badge--blue {
+  background: rgba(59, 130, 246, 0.18);
+  color: #93C5FD;
+}
+
+[data-theme="dark"] .badge--green {
+  background: rgba(22, 163, 74, 0.18);
+  color: #4ADE80;
+}
+
+[data-theme="dark"] .badge--orange {
+  background: rgba(245, 158, 11, 0.18);
+  color: #FCD34D;
 }

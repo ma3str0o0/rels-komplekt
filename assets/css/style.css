@@ -62,9 +62,33 @@
   --transition-normal: 200ms ease;
   --transition-slow:   300ms ease;
 
+  /* Семантические оттенки (нужны для тёмной темы) */
+  --color-tint-blue:     #EFF6FF;   /* фоновый тинт CTA */
+  --color-surface-muted: #F1F5F9;   /* приглушённый фон секций */
+
   /* Макет */
   --container-max: 1280px;
   --header-height: 72px;
+}
+
+/* ─── Тёмная тема ────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --color-background:    #0F172A;
+  --color-surface:       #1E293B;
+  --color-border:        #334155;
+  --color-border-dark:   #475569;
+  --color-text:          #F1F5F9;
+  --color-text-muted:    #94A3B8;
+  --color-primary:       #1A56A0;
+  --color-secondary:     #93C5FD;
+  --color-cta:           #0EA5E9;
+  --color-cta-hover:     #38BDF8;
+  --color-tint-blue:     rgba(14, 165, 233, 0.12);
+  --color-surface-muted: #1E293B;
+  --shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md:  0 4px 6px rgba(0, 0, 0, 0.5);
+  --shadow-lg:  0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-xl:  0 20px 25px rgba(0, 0, 0, 0.6);
 }
 
 /* ─── CSS Reset ──────────────────────────────────────────────── */
@@ -78,6 +102,7 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
@@ -301,7 +326,7 @@ h1, h2, h3, h4, h5, h6 {
 .nav__link:hover,
 .nav__link.active {
   color: var(--color-cta);
-  background-color: #EFF6FF;
+  background-color: var(--color-tint-blue);
 }
 
 /* Правая часть шапки */
@@ -339,6 +364,28 @@ h1, h2, h3, h4, h5, h6 {
 .header__phone-label {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+}
+
+/* Переключатель темы */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  color: var(--color-secondary);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-cta);
+  color: var(--color-cta);
+  background: var(--color-tint-blue);
 }
 
 /* Кнопка мобильного меню */
@@ -426,7 +473,7 @@ h1, h2, h3, h4, h5, h6 {
 .mobile-menu__link:hover,
 .mobile-menu__link.active {
   color: var(--color-cta);
-  background-color: #EFF6FF;
+  background-color: var(--color-tint-blue);
 }
 
 .mobile-menu__footer {
@@ -574,7 +621,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section--muted {
-  background-color: #F1F5F9;
+  background-color: var(--color-surface-muted);
 }
 
 .section__header {
@@ -595,7 +642,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-cta);
-  background-color: #EFF6FF;
+  background-color: var(--color-tint-blue);
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-full);
   margin-bottom: var(--space-md);
@@ -994,7 +1041,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ─── Секция CTA-формы ──────────────────────────────────────── */
 .section--form-cta {
-  background-color: #F8F9FA;
+  background-color: var(--color-surface-muted);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
 }

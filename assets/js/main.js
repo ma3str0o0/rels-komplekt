@@ -7,6 +7,7 @@
 /* ─── Инициализация при загрузке DOM ─────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   loadComponents(); // вставляет шапку/футер если есть плейсхолдеры
+  initTheme();
   initHeader();
   initMobileMenu();
   initActiveNavLink();
@@ -69,6 +70,9 @@ function _tplHeader() {
             </svg>
             <span class="cart-badge hidden" id="cartBadge" aria-live="polite">0</span>
           </a>
+          <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему" title="Переключить тему">
+            <svg class="theme-toggle__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
           <button class="btn btn-primary btn-sm" data-modal="request" aria-label="Свяжитесь с нами">Свяжитесь с нами</button>
           <button class="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobileMenu">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -222,6 +226,46 @@ function _tplModal() {
       </form>
     </div>
   </div>`;
+}
+
+/* ─── Тёмная тема ───────────────────────────────────────────── */
+function initTheme() {
+  // Применяем тему из localStorage (также применяется inline-скриптом в <head>)
+  const saved = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  _updateThemeIcon(saved);
+
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+
+  btn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next    = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    _updateThemeIcon(next);
+  });
+}
+
+function _updateThemeIcon(theme) {
+  const icon = document.querySelector('#themeToggle .theme-toggle__icon');
+  if (!icon) return;
+  if (theme === 'dark') {
+    // Солнце — нажать чтобы вернуть светлую тему
+    icon.innerHTML = `
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+  } else {
+    // Луна — нажать чтобы включить тёмную тему
+    icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+  }
 }
 
 /* ─── Липкая шапка ──────────────────────────────────────────── */
