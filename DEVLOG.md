@@ -183,6 +183,27 @@ Security audit выявил 8 проблем. Все исправлены.
 
 ---
 
+## [2026-03-27] — Итерация 10: Кнопка отправки спецификации в Telegram
+
+### calculator.html
+- Кнопка "Отправить в Telegram" после "Скачать PDF"
+- Модальное окно: одно поле — Telegram username или номер телефона
+
+### assets/js/calculator.js
+- Константы `TELEGRAM_BOT_TOKEN = 'DEMO'` и `TELEGRAM_CHAT_ID = 'DEMO'`
+- `openTgModal()` / `closeTgModal()` — открытие, закрытие, сброс формы
+- Escape теперь закрывает оба модальных окна (Telegram и Email)
+- Валидация: `@username` (regex `@\w{3,}`) или телефон (`[\d\s+()−]{7,}`)
+- `handleSendTelegram()`:
+  - При `TELEGRAM_BOT_TOKEN === 'DEMO'` → задержка 800мс, toast "Запрос принят. Наш менеджер напишет вам в Telegram в течение часа."
+  - При реальных ключах → POST `https://api.telegram.org/bot{TOKEN}/sendMessage` с HTML-форматированным сообщением
+  - Тело сообщения: контакт пользователя, параметры пути (тип рельса / длина / нити), список позиций с ценами, итоговая сумма
+  - Спиннер на кнопке во время отправки
+
+**Коммит:** `18d6525`
+
+---
+
 ## [2026-03-27] — Итерация 8: Брендовый PDF через HTML print
 
 ### assets/js/calculator.js — `handleDownloadPdf()` полностью переписана
