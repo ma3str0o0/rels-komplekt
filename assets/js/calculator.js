@@ -14,6 +14,10 @@ const EMAILJS_SERVICE_ID  = 'DEMO';
 const EMAILJS_TEMPLATE_ID = 'DEMO';
 const EMAILJS_PUBLIC_KEY  = 'DEMO';
 
+/* Telegram Bot — вставить реальный токен и chat_id после настройки бота */
+const TELEGRAM_BOT_TOKEN = 'DEMO';
+const TELEGRAM_CHAT_ID   = 'DEMO';
+
 const RAIL_TYPES = {
   'Р50':   { kgPerM: 51.67, label: 'Р50'   },
   'Р65':   { kgPerM: 64.72, label: 'Р65'   },
@@ -313,8 +317,17 @@ function renderTable(r) {
 function bindResultActions() {
   document.getElementById('btnAddToCart').addEventListener('click', handleAddToCart);
   document.getElementById('btnDownloadPdf').addEventListener('click', handleDownloadPdf);
+  document.getElementById('btnSendTelegram').addEventListener('click', openTgModal);
   document.getElementById('btnSendEmail').addEventListener('click', openEmailModal);
   document.getElementById('btnReset').addEventListener('click', handleReset);
+
+  /* Управление модальным окном Telegram */
+  document.getElementById('tgModalClose').addEventListener('click', closeTgModal);
+  document.getElementById('tgModalCancel').addEventListener('click', closeTgModal);
+  document.getElementById('tgModal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeTgModal();
+  });
+  document.getElementById('tgModalForm').addEventListener('submit', handleSendTelegram);
 
   /* Управление модальным окном email */
   document.getElementById('emailModalClose').addEventListener('click', closeEmailModal);
@@ -324,7 +337,7 @@ function bindResultActions() {
   });
   document.getElementById('emailModalForm').addEventListener('submit', handleSendEmail);
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeEmailModal();
+    if (e.key === 'Escape') { closeTgModal(); closeEmailModal(); }
   });
 }
 
@@ -375,6 +388,116 @@ function handleAddToCart() {
   saveCart(cart);
   updateCartBadge();
   window.location.href = 'order.html';
+}
+
+/* ─── Telegram-модальное окно ────────────────────────────────── */
+function openTgModal() {
+  if (!calcResult) return;
+  document.getElementById('tgModal').classList.add('open');
+  requestAnimationFrame(() => document.getElementById('tgContact').focus());
+}
+
+function closeTgModal() {
+  document.getElementById('tgModal').classList.remove('open');
+  document.getElementById('tgModalForm').reset();
+  document.getElementById('tgContactError').hidden = true;
+  document.getElementById('tgContact').removeAttribute('aria-invalid');
+  setTgSubmitLoading(false);
+}
+
+function setTgSubmitLoading(loading) {
+  const btn = document.getElementById('tgModalSubmit');
+  btn.disabled = loading;
+  btn.innerHTML = loading
+    ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="animation:spin .8s linear infinite"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.18-4.61"/></svg> Отправка...`
+    : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Отправить`;
+}
+
+async function handleSendTelegram(e) {
+  e.preventDefault();
+
+  const contact = document.getElementById('tgContact').value.trim();
+  const errEl   = document.getElementById('tgContactError');
+
+  /* Валидация: username (@...) или телефон (цифры/+/пробелы/скобки/дефис) */
+  const isUsername = /^@\w{3,}$/.test(contact);
+  const isPhone    = /^[\d\s\+\(\)\-]{7,}$/.test(contact);
+  if (!contact || (!isUsername && !isPhone)) {
+    errEl.textContent = 'Введите @username или номер телефона';
+    errEl.hidden = false;
+    document.getElementById('tgContact').setAttribute('aria-invalid', 'true');
+    return;
+  }
+  errEl.hidden = true;
+  document.getElementById('tgContact').removeAttribute('aria-invalid');
+
+  setTgSubmitLoading(true);
+
+  /* ─── DEMO-режим ──────────────────────────────────────────── */
+  if (TELEGRAM_BOT_TOKEN === 'DEMO') {
+    await new Promise(res => setTimeout(res, 800));
+    setTgSubmitLoading(false);
+    closeTgModal();
+    window.RK?.showToast(
+      'Запрос принят. Наш менеджер напишет вам в Telegram в течение часа.',
+      'success'
+    );
+    return;
+  }
+
+  /* ─── Реальная отправка через Telegram Bot API ────────────── */
+  const r   = calcResult;
+  const railQty = r.weightT < 10 ? r.weightT.toFixed(2) : Math.round(r.weightT);
+
+  const lines = [
+    '<b>📋 Спецификация — Рельс-Комплект</b>',
+    '',
+    `📞 Контакт: ${contact}`,
+    `📅 Дата: ${new Date().toLocaleDateString('ru-RU')}`,
+    '',
+    '<b>Параметры пути:</b>',
+    `  Рельс: ${r.railLabel} (${r.kgPerM} кг/м)`,
+    `  Длина: ${r.trackLenM} м`,
+    `  Нитей: ${r.threads}`,
+    '',
+    '<b>Позиции:</b>',
+    `  Рельс ${r.railLabel} — ${railQty} т (${r.railCount} шт)` +
+      (r.railPrice !== null ? ` — ${fmtPrice(r.weightT * r.railPrice)} ₽` : ' — цена по запросу'),
+  ];
+
+  if (r.sleeperType !== 'none' && r.sleeperCount > 0) {
+    lines.push(`  ${r.sleeperLabel} — ${r.sleeperCount} шт — ${fmtPrice(r.sleeperCost)} ₽`);
+  }
+  if (r.fastenType !== 'none' && r.fastenQty > 0) {
+    lines.push(`  ${r.fastenLabel} — ${r.fastenQty} ${r.fastenUnit} — цена по запросу`);
+  }
+
+  let total = r.railPrice !== null ? r.weightT * r.railPrice : 0;
+  total += r.sleeperCost;
+  lines.push('');
+  lines.push(`<b>Итого: ${fmtPrice(total)} ₽</b>` + (r.railPrice === null ? ' (без рельсов)' : ''));
+
+  try {
+    const res = await fetch(
+      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id:    TELEGRAM_CHAT_ID,
+          text:       lines.join('\n'),
+          parse_mode: 'HTML',
+        }),
+      }
+    );
+    if (!res.ok) throw new Error(`Telegram API: ${res.status}`);
+    closeTgModal();
+    window.RK?.showToast('Спецификация отправлена в Telegram', 'success');
+  } catch (err) {
+    console.error('Telegram send error:', err);
+    setTgSubmitLoading(false);
+    window.RK?.showToast('Ошибка отправки. Попробуйте позже.', 'error');
+  }
 }
 
 /* ─── Email-модальное окно ───────────────────────────────────── */

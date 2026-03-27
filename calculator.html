@@ -203,6 +203,10 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Скачать PDF-спецификацию
               </button>
+              <button class="btn btn-secondary btn-lg" id="btnSendTelegram">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Отправить в Telegram
+              </button>
               <button class="btn btn-secondary btn-lg" id="btnSendEmail">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 Отправить на email
@@ -226,6 +230,43 @@
 
   <!-- Модальное окно вставляется через loadComponents() из main.js -->
   <div id="modal-placeholder"></div>
+
+  <!-- Модальное окно: отправка спецификации в Telegram -->
+  <div class="modal-overlay" id="tgModal" role="dialog" aria-modal="true"
+       aria-labelledby="tgModalTitle">
+    <div class="modal">
+      <div class="modal__header">
+        <h3 class="modal__title" id="tgModalTitle">Отправить спецификацию в Telegram</h3>
+        <button class="modal__close" id="tgModalClose" aria-label="Закрыть диалог">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <form id="tgModalForm" novalidate>
+          <div class="form-group">
+            <label class="form-label form-label--required" for="tgContact">
+              Ваш Telegram username или номер телефона
+            </label>
+            <input class="input" type="text" id="tgContact"
+                   required aria-required="true"
+                   placeholder="@username или +7 (999) 000-00-00"
+                   autocomplete="tel">
+            <span class="form-error" id="tgContactError" hidden></span>
+          </div>
+          <div class="modal__footer">
+            <button type="submit" class="btn btn-primary" id="tgModalSubmit">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Отправить
+            </button>
+            <button type="button" class="btn btn-secondary" id="tgModalCancel">Отмена</button>
+          </div>
+          <p class="modal__note">
+            Наш менеджер свяжется с вами в Telegram и пришлёт подтверждение расчёта
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- Модальное окно: отправка спецификации на email -->
   <div class="modal-overlay" id="emailModal" role="dialog" aria-modal="true"
