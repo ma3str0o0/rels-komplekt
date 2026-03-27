@@ -2135,7 +2135,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  justify-content: flex-start;
   margin-top: var(--space-xl);
   padding-top: var(--space-lg);
   border-top: 1px solid #E2E8F0;
@@ -2143,9 +2142,8 @@
 
 .wizard__result-actions .btn {
   flex: 1 1 auto;
-  min-width: 200px;
+  min-width: 180px;
   white-space: nowrap;
-  justify-content: center;
 }
 
 /* Сноска о ценах по запросу */
