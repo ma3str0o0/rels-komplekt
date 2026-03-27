@@ -73,22 +73,69 @@
 
 /* ─── Тёмная тема ────────────────────────────────────────────── */
 [data-theme="dark"] {
-  --color-background:    #0F172A;
-  --color-surface:       #1E293B;
-  --color-border:        #334155;
-  --color-border-dark:   #475569;
-  --color-text:          #F1F5F9;
-  --color-text-muted:    #94A3B8;
+  /* Фоны */
+  --color-background:    #0D1117;
+  --color-surface:       #161B22;
+  --color-surface-muted: #161B22;
+
+  /* Границы */
+  --color-border:        #30363D;
+  --color-border-dark:   #484F58;
+
+  /* Текст */
+  --color-text:          #E6EDF3;
+  --color-text-muted:    #8B949E;
+
+  /* Бренд */
   --color-primary:       #1A56A0;
-  --color-secondary:     #93C5FD;
-  --color-cta:           #0EA5E9;
-  --color-cta-hover:     #38BDF8;
-  --color-tint-blue:     rgba(14, 165, 233, 0.12);
-  --color-surface-muted: #1E293B;
-  --shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md:  0 4px 6px rgba(0, 0, 0, 0.5);
-  --shadow-lg:  0 10px 15px rgba(0, 0, 0, 0.5);
-  --shadow-xl:  0 20px 25px rgba(0, 0, 0, 0.6);
+  --color-secondary:     #79C0FF;
+  --color-cta:           #2F81F7;
+  --color-cta-hover:     #58A6FF;
+  --color-tint-blue:     rgba(47, 129, 247, 0.12);
+
+  /* Тени — глубже на тёмном */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md:  0 4px 8px rgba(0, 0, 0, 0.6);
+  --shadow-lg:  0 10px 20px rgba(0, 0, 0, 0.6);
+  --shadow-xl:  0 20px 30px rgba(0, 0, 0, 0.7);
+}
+
+/* ─── Тёмная тема — компонентные оверрайды ──────────────────── */
+
+/* Шапка */
+[data-theme="dark"] .header {
+  background-color: #161B22;
+  border-bottom-color: #30363D;
+}
+
+/* Мобильное меню */
+[data-theme="dark"] .mobile-menu {
+  background-color: #161B22;
+}
+
+/* Hero — убираем яркий синий градиент */
+[data-theme="dark"] .hero {
+  background: linear-gradient(135deg, #0D1B2A 0%, #0D1117 100%);
+}
+[data-theme="dark"] .hero__title   { color: #E6EDF3; }
+[data-theme="dark"] .hero__subtitle { color: #8B949E; }
+
+/* Футер — чуть темнее основного фона */
+[data-theme="dark"] .footer {
+  background-color: #010409;
+}
+
+/* Секции на альтернативном/приглушённом фоне */
+[data-theme="dark"] .section--alt,
+[data-theme="dark"] .section--muted {
+  background-color: #161B22;
+}
+
+/* Specs-таблица товара (product.html inline-стили) */
+[data-theme="dark"] .specs-table__val {
+  background: #161B22;
+  color: #E6EDF3;
+  border-bottom-color: #30363D;
 }
 
 /* ─── CSS Reset ──────────────────────────────────────────────── */
