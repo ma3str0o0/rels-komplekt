@@ -38,6 +38,16 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCartBadge();
 });
 
+/* ─── Загрузка каталога (для получения subcategory/category) ─── */
+async function loadCatalog() {
+  try {
+    const res = await fetch('data/catalog.json');
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
 /* ─── Чтение / запись localStorage ──────────────────────────── */
 function getItems() {
   try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
@@ -48,8 +58,8 @@ function saveItems(items) {
   localStorage.setItem(ORDER_KEY, JSON.stringify(items));
 }
 
-/* ─── Главный рендер ─────────────────────────────────────────── */
-function render() {
+/* ─── Главный рендер (async — подгружает каталог для весов) ───── */
+async function render() {
   const items = getItems();
   const wrap  = document.getElementById('orderContent');
   if (!wrap) return;
@@ -61,13 +71,18 @@ function render() {
     return;
   }
 
-  wrap.innerHTML = tableHTML(items);
+  /* Подгружаем каталог, чтобы получить subcategory/category для расчёта весов */
+  const catalog = await loadCatalog();
+  wrap.innerHTML = tableHTML(items, catalog);
   bindTableEvents(items);
 }
 
 /* ─── HTML таблицы ───────────────────────────────────────────── */
-function tableHTML(items) {
-  const rows = items.map((item, idx) => rowHTML(item, idx + 1)).join('');
+function tableHTML(items, catalog) {
+  const rows = items.map((item, idx) => {
+    const catalogItem = catalog.find(c => c.id === item.id) || null;
+    return rowHTML(item, idx + 1, catalogItem);
+  }).join('');
 
   const { totalQty, totalSum, hasRequest } = calcTotals(items);
 
@@ -88,8 +103,8 @@ function tableHTML(items) {
             <th>Наименование</th>
             <th style="width:90px; text-align:center">Кол-во</th>
             <th style="width:60px">Ед.</th>
-            <th style="width:120px; text-align:right">ЦЕНА/ЕД., ₽</th>
-            <th style="width:120px; text-align:right">ЦЕНА/Т, ₽</th>
+            <th style="width:110px; text-align:right; color:var(--color-text-muted); font-size:var(--font-size-sm)">ЦЕНА/Т, ₽</th>
+            <th style="width:120px; text-align:right">ЦЕНА/ШТ, ₽</th>
             <th style="width:140px; text-align:right">Сумма, ₽</th>
             <th style="width:40px"></th>
           </tr>
@@ -124,22 +139,40 @@ function tableHTML(items) {
 }
 
 /* ─── HTML одной строки таблицы ──────────────────────────────── */
-function rowHTML(item, num) {
-  const weightKg = getWeightKg(item);
+function rowHTML(item, num, catalogItem) {
+  const unit = item.unit || 'т';
 
-  /* ЦЕНА/ЕД. — цена за 1 штуку (если известен вес), иначе цена/т */
-  let priceEd, priceTon;
-  if (item.price !== null) {
+  /* Обогащаем данными из каталога (subcategory/category нужны для веса) */
+  const enriched = catalogItem
+    ? { ...item, subcategory: catalogItem.subcategory, category: catalogItem.category }
+    : item;
+  const weightKg = getWeightKg(enriched);
+
+  /* ЦЕНА/Т и ЦЕНА/ШТ */
+  let priceTon, pricePcs;
+  const muted = 'color:var(--color-text-muted); font-style:italic';
+
+  if (item.price === null) {
+    priceTon = `<td style="text-align:right; ${muted}">По запросу</td>`;
+    pricePcs = `<td style="text-align:right; ${muted}">По запросу</td>`;
+  } else if (unit === 'т') {
+    /* Цена хранится за тонну */
+    priceTon = `<td style="text-align:right; ${muted}">${fmtPrice(item.price)}</td>`;
     if (weightKg) {
       const perPcs = Math.round((weightKg / 1000) * item.price);
-      priceEd  = `<td style="text-align:right">${fmtPrice(perPcs)}</td>`;
+      pricePcs = `<td style="text-align:right; font-weight:600">${fmtPrice(perPcs)}</td>`;
     } else {
-      priceEd  = `<td style="text-align:right; color:var(--color-text-muted); font-style:italic">—</td>`;
+      pricePcs = `<td style="text-align:right; ${muted}">—</td>`;
     }
-    priceTon = `<td style="text-align:right">${fmtPrice(item.price)}</td>`;
   } else {
-    priceEd  = `<td style="text-align:right; color:var(--color-text-muted); font-style:italic">По запросу</td>`;
-    priceTon = `<td style="text-align:right; color:var(--color-text-muted); font-style:italic">По запросу</td>`;
+    /* unit === 'шт' — цена за штуку */
+    pricePcs = `<td style="text-align:right; font-weight:600">${fmtPrice(item.price)}</td>`;
+    if (weightKg) {
+      const perTon = Math.round((item.price / weightKg) * 1000);
+      priceTon = `<td style="text-align:right; ${muted}">${fmtPrice(perTon)}</td>`;
+    } else {
+      priceTon = `<td style="text-align:right; ${muted}">—</td>`;
+    }
   }
 
   const sumCell = item.price !== null
@@ -163,9 +196,9 @@ function rowHTML(item, num) {
           style="width:70px; text-align:center; padding:6px 8px;"
         >
       </td>
-      <td>${escHtml(item.unit || 'т')}</td>
-      ${priceEd}
+      <td>${escHtml(unit)}</td>
       ${priceTon}
+      ${pricePcs}
       ${sumCell}
       <td>
         <button
