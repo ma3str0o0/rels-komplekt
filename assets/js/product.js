@@ -122,10 +122,47 @@ function renderSpecs(item) {
   ).join('');
 }
 
-/* ─── Мини-калькулятор / блок "цена по запросу" ─────────────── */
-function renderPricing(item) {
-  const el = document.getElementById('productPricing');
+/* ─── Вес 1 шт (рельс 12.5 м), кг — по подкатегории ─────────── */
+const RAIL_WEIGHT_KG = {
+  'Рельс Р8':    100,   // 8.0 кг/м × 12.5
+  'Рельсы Р8':   100,
+  'Рельс Р12':   150,   // 12.0 × 12.5
+  'Рельсы Р12':  150,
+  'Рельс Р15':   188,   // 15.1 × 12.5
+  'Рельсы Р15':  188,
+  'Рельс Р18':   225,   // 18.0 × 12.5
+  'Рельсы Р18':  225,
+  'Рельс Р24':   300,   // 24.0 × 12.5
+  'Рельсы Р24':  300,
+  'Рельсы узкоколейные': 300,
+  'Рельс Р33':   413,   // 33.0 × 12.5
+  'Рельсы Р33':  413,
+  'Рельс Р38':   475,   // 38.0 × 12.5
+  'Рельсы Р38':  475,
+  'Рельс Р43':   558,   // 44.65 × 12.5
+  'Рельсы Р43':  558,
+  'Рельс Р50':   646,   // 51.67 × 12.5
+  'Рельсы Р50':  646,
+  'Рельс Р65':   809,   // 64.72 × 12.5
+  'Рельсы Р65':  809,
+  'Рельсы КР 70':  875,    // 70 × 12.5
+  'Рельсы КР 80':  1000,   // 80 × 12.5
+  'Рельсы КР 100': 1250,   // 100 × 12.5
+  'Рельсы КР 120': 1500,   // 120 × 12.5
+  'Рельсы КР 140': 1750,   // 140 × 12.5
+  'Международный стандарт рельс DIN 536': 1250,
+};
 
+function getWeightKg(item) {
+  return RAIL_WEIGHT_KG[item.subcategory] || RAIL_WEIGHT_KG[item.category] || null;
+}
+
+/* ─── Калькулятор / блок "цена по запросу" ──────────────────── */
+function renderPricing(item) {
+  const el      = document.getElementById('productPricing');
+  const KZT     = 5.5; // курс: 1 RUB = 5.5 KZT
+
+  /* Нет цены — только кнопка запроса */
   if (item.price === null) {
     el.innerHTML = `
       <div class="product-price-request">
@@ -140,23 +177,97 @@ function renderPricing(item) {
     return;
   }
 
+  const weightKg   = getWeightKg(item);
+  const initCostRub = weightKg
+    ? Math.round((weightKg / 1000) * item.price) // 1 шт → тонны → цена
+    : item.price;                                 // 1 тонна если нет веса
+
+  /* Строки ввода: шт + кг (для рельсов) или просто т (для остального) */
+  const fieldsHTML = weightKg ? `
+    <div class="calc-field">
+      <label class="calc-label" for="calcPcs">Кол-во, шт</label>
+      <input class="input calc-input" type="number" id="calcPcs" min="1" step="1" value="1">
+    </div>
+    <span class="calc-eq" aria-hidden="true">=</span>
+    <div class="calc-field">
+      <label class="calc-label" for="calcKg">Кол-во, кг</label>
+      <input class="input calc-input" type="number" id="calcKg" min="0" step="1"
+             value="${Math.round(weightKg)}">
+    </div>` : `
+    <div class="calc-field">
+      <label class="calc-label" for="calcTons">Количество, т</label>
+      <input class="input calc-input" type="number" id="calcTons" min="0.001" step="0.1" value="1">
+    </div>`;
+
   el.innerHTML = `
     <div class="product-calculator">
-      <h3 class="product-calculator__title">Расчёт стоимости</h3>
-      <div class="product-calculator__row">
-        <label class="form-label" for="calcQty">Количество (тонн)</label>
-        <input class="input product-calculator__input" type="number" id="calcQty"
-               min="1" step="1" value="1" placeholder="Введите количество">
+      <h3 class="product-calculator__title">Введите данные для расчёта:</h3>
+      <div class="calc-fields">${fieldsHTML}</div>
+      <div class="calc-result-row">
+        <span class="calc-label">Стоимость</span>
+        <div class="calc-result">
+          <strong id="calcCostVal">${fmtPrice(initCostRub)}</strong>
+          <span id="calcCostCurr">₽</span>
+        </div>
       </div>
-      <div class="product-calculator__result">
-        Ориентировочная стоимость:
-        <strong id="calcTotal">${fmtPrice(item.price)}&nbsp;₽</strong>
+      <div class="currency-toggle" role="group" aria-label="Валюта">
+        <label class="currency-opt">
+          <input type="radio" name="calcCurr" value="RUB" checked>
+          <span>RUB</span>
+        </label>
+        <label class="currency-opt">
+          <input type="radio" name="calcCurr" value="KZT">
+          <span>KZT</span>
+        </label>
       </div>
     </div>`;
 
-  document.getElementById('calcQty').addEventListener('input', e => {
-    const qty = Math.max(1, parseFloat(e.target.value) || 1);
-    document.getElementById('calcTotal').innerHTML = `${fmtPrice(item.price * qty)}&nbsp;₽`;
+  /* Состояние */
+  let costRub  = initCostRub;
+  let currency = 'RUB';
+
+  const costVal  = document.getElementById('calcCostVal');
+  const costCurr = document.getElementById('calcCostCurr');
+
+  function updateDisplay() {
+    const val = currency === 'KZT' ? Math.round(costRub * KZT) : costRub;
+    costVal.textContent  = fmtPrice(val);
+    costCurr.textContent = currency === 'KZT' ? '₸' : '₽';
+  }
+
+  if (weightKg) {
+    /* Режим шт ↔ кг */
+    const pcsEl = document.getElementById('calcPcs');
+    const kgEl  = document.getElementById('calcKg');
+
+    pcsEl.addEventListener('input', () => {
+      const pcs = Math.max(1, parseInt(pcsEl.value) || 1);
+      pcsEl.value   = pcs;
+      const kg      = Math.round(pcs * weightKg);
+      kgEl.value    = kg;
+      costRub       = Math.round((kg / 1000) * item.price);
+      updateDisplay();
+    });
+
+    kgEl.addEventListener('input', () => {
+      const kg   = Math.max(0, parseFloat(kgEl.value) || 0);
+      const pcs  = kg > 0 ? Math.ceil(kg / weightKg) : 0;
+      pcsEl.value = pcs;
+      costRub     = Math.round((kg / 1000) * item.price);
+      updateDisplay();
+    });
+  } else {
+    /* Режим тонн */
+    document.getElementById('calcTons').addEventListener('input', e => {
+      const tons = Math.max(0, parseFloat(e.target.value) || 0);
+      costRub    = Math.round(tons * item.price);
+      updateDisplay();
+    });
+  }
+
+  /* Переключатель валюты */
+  el.querySelectorAll('input[name="calcCurr"]').forEach(r => {
+    r.addEventListener('change', () => { currency = r.value; updateDisplay(); });
   });
 }
 
