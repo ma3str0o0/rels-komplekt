@@ -2131,17 +2131,20 @@
 
 /* Кнопки результата */
 .wizard__result-actions {
+  width: 100%;
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
   margin-top: var(--space-xl);
   padding-top: var(--space-lg);
   border-top: 1px solid #E2E8F0;
 }
 
 .wizard__result-actions .btn {
-  flex: 1;
-  min-width: 160px;
+  flex: 1 1 auto;
+  min-width: 200px;
+  white-space: nowrap;
   justify-content: center;
 }
 
@@ -2228,7 +2231,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .wizard__nav--split,
   .wizard__result-actions {
     flex-direction: column;
@@ -2236,6 +2239,7 @@
 
   .wizard__result-actions .btn {
     width: 100%;
+    flex: none;
     min-width: unset;
   }
 
