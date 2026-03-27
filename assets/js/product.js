@@ -57,6 +57,10 @@ function renderProduct(item, catalog) {
   renderActions(item);
   renderSimilar(item, catalog);
 
+  if (typeof _renderCompetitorData === 'function') {
+    _renderCompetitorData(item);
+  }
+
   // Показываем страницу, скрываем загрузку
   document.getElementById('productLoading').classList.add('hidden');
   document.getElementById('productPage').classList.remove('hidden');
