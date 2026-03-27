@@ -137,3 +137,67 @@ Security audit выявил 8 проблем. Все исправлены.
 - `<tfoot>` — добавлена пустая ячейка под новый столбец (colspan остался 2)
 
 ---
+
+## [2026-03-27] — Итерация 5: Фикс тёмного фона .calc-result (git push)
+
+**Причина:** `--color-primary: #0F172A` (near-black) использовался как `background` в двух местах калькулятора:
+1. `.currency-opt input:checked + span { background: var(--color-primary) }` — активная кнопка RUB/KZT была почти чёрной
+2. `.calc-result strong/span { color: var(--color-primary) }` — текст был тёмно-синим вместо акцентного
+
+**По дизайн-системе** (`MASTER.md`): `--color-primary` (#0F172A) = текст/границы, `--color-cta` (#0369A1) = акцент/CTA.
+
+**Фиксы в `components.css`:**
+- `.calc-result` — добавлен `background: transparent`, убраны dark-primary цвета
+- `.calc-result strong` — `color: var(--color-cta, #0369A1)` (синий акцент)
+- `.calc-result span` — `color: var(--color-text, #020617)` (читаемый тёмный)
+- `.currency-opt :checked + span` — `background/border-color: var(--color-cta)` вместо `var(--color-primary)`
+
+**Коммит:** `8f3c27c` — запушено в `origin/main`
+
+---
+
+## [2026-03-27] — Итерация 6: Кнопки калькулятора + колонки цены в заявке
+
+### Промпт 1 — `components.css`: `.wizard__result-actions`
+- Добавлен `width: 100%` — исправлен width:0 (кнопки схлопывались)
+- `gap: 8px` → `gap: 12px`
+- `justify-content: flex-start`
+- `.btn`: `flex: 1 1 auto`, `min-width: 200px`, `white-space: nowrap`
+- Мобильный брейкпойнт `480px` → `600px`; кнопкам добавлен `flex: none`
+- **Коммит:** `3574399`
+
+### Промпт 2 — `order.js`: две колонки цены
+
+**Архитектурное изменение:** `render()` стал `async`, при старте подгружает `data/catalog.json`. Данные из LocalStorage не содержат `subcategory`/`category` — их берём из каталога по `item.id`.
+
+**Новый порядок колонок:** `# | Наименование | Кол-во | Ед. | ЦЕНА/Т | ЦЕНА/ШТ | Сумма | [del]`
+
+**Логика `ЦЕНА/Т` / `ЦЕНА/ШТ`:**
+- `unit === 'т'` → ЦЕНА/Т = `item.price` (цена уже в тоннах); ЦЕНА/ШТ = `price × weight_kg / 1000` (если вес известен)
+- `unit === 'шт'` → ЦЕНА/ШТ = `item.price`; ЦЕНА/Т = `(price / weight_kg) × 1000` (если вес известен)
+- Вес неизвестен → "—"
+
+**Стиль:** заголовок ЦЕНА/Т стилизован как вторичный (`color: --color-text-muted`, `font-size: --font-size-sm`); ЦЕНА/ШТ — основной с `font-weight:600`
+
+**Коммит:** `b61c19b`
+
+---
+
+## [2026-03-27] — Итерация 7: Вливка данных конкурента в catalog.json
+
+### merge_catalog.py — новый скрипт
+
+- Читает `data/catalog.json` (158 позиций) и `data/catalog_enriched.json`
+- Сопоставляет позиции по `id`
+- Заполняет поле `competitor_data` в `catalog.json`:
+  - `description` — текст со страницы конкурента
+  - `specs` — таблица характеристик (объект ключ→значение)
+  - `has_drawing` — наличие PDF (из `competitor.has_pdf`)
+  - `has_photos` — наличие фотографий
+  - `images` — пустой массив (URL фото не парсились)
+
+**Итог:** 130 / 158 позиций получили `competitor_data`, 28 остались без данных.
+
+**Коммит:** `e73d74e`
+
+---
