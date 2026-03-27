@@ -363,109 +363,325 @@ function handleAddToCart() {
 function handleDownloadPdf() {
   if (!calcResult) return;
 
-  const { jsPDF } = window.jspdf;
-  if (!jsPDF) {
-    window.RK?.showToast('Библиотека PDF не загружена', 'error');
-    return;
-  }
-
-  const doc  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const now  = new Date();
-  const date = now.toLocaleDateString('ru-RU');
-  let   y    = 20;
-
-  /* --- Заголовок --- */
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(16);
-  doc.text('Specifikaciya Rels-Komplekt', 20, y);
-  y += 8;
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.text(`Data: ${date}`, 20, y);
-  y += 5;
-  doc.text(`Put: ${calcResult.trackLenM} m, ${calcResult.threads} nit(i), rel's ${calcResult.railLabel}`, 20, y);
-  y += 10;
-
-  /* --- Шапка таблицы --- */
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  const colX = [20, 100, 125, 150, 175];
-  const headers = ['Naimenovanie', 'Kol-vo', 'Ed.', 'Cena', 'Summa'];
-  headers.forEach((h, i) => doc.text(h, colX[i], y));
-  y += 2;
-  doc.setLineWidth(0.3);
-  doc.line(20, y, 190, y);
-  y += 5;
+  const r   = calcResult;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('ru-RU');
+  const specNo  = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+  ].join('') + '-' + [
+    String(now.getHours()).padStart(2, '0'),
+    String(now.getMinutes()).padStart(2, '0'),
+  ].join('');
 
   /* --- Строки таблицы --- */
-  doc.setFont('helvetica', 'normal');
+  const railQty   = r.weightT < 10 ? r.weightT.toFixed(2) : Math.round(r.weightT);
+  const railTotal = r.railPrice !== null
+    ? `${fmtPrice(r.weightT * r.railPrice)}&thinsp;₽`
+    : '<em>По запросу</em>';
+  const railPriceStr = r.railPrice !== null
+    ? `${fmtPrice(r.railPrice)}&thinsp;₽/т`
+    : '—';
 
-  const railQty = calcResult.weightT < 10
-    ? calcResult.weightT.toFixed(2)
-    : String(Math.round(calcResult.weightT));
+  let tableRows = `
+      <tr>
+        <td>Рельс ${r.railLabel} (${r.kgPerM}&thinsp;кг/м)</td>
+        <td class="ps-num">${railQty}</td>
+        <td>т</td>
+        <td class="ps-num">${railPriceStr}</td>
+        <td class="ps-num">${railTotal}</td>
+      </tr>`;
 
-  const tableRows = [
-    [
-      `Rels ${calcResult.railLabel} (${calcResult.kgPerM} kg/m)`,
-      railQty,
-      't',
-      calcResult.railPrice !== null ? `${fmtPricePlain(calcResult.railPrice)} r/t` : '-',
-      calcResult.railPrice !== null
-        ? `${fmtPricePlain(calcResult.weightT * calcResult.railPrice)} r`
-        : 'Po zaprosu',
-    ],
-  ];
-
-  if (calcResult.sleeperType !== 'none' && calcResult.sleeperCount > 0) {
-    tableRows.push([
-      calcResult.sleeperLabel,
-      String(calcResult.sleeperCount),
-      'sht',
-      `${fmtPricePlain(calcResult.sleeperPrice)} r`,
-      `${fmtPricePlain(calcResult.sleeperCost)} r`,
-    ]);
+  if (r.sleeperType !== 'none' && r.sleeperCount > 0) {
+    tableRows += `
+      <tr>
+        <td>${r.sleeperLabel}</td>
+        <td class="ps-num">${r.sleeperCount.toLocaleString('ru-RU')}</td>
+        <td>шт</td>
+        <td class="ps-num">${fmtPrice(r.sleeperPrice)}&thinsp;₽/шт</td>
+        <td class="ps-num">${fmtPrice(r.sleeperCost)}&thinsp;₽</td>
+      </tr>`;
   }
 
-  if (calcResult.fastenType !== 'none' && calcResult.fastenQty > 0) {
-    tableRows.push([
-      calcResult.fastenLabel,
-      String(calcResult.fastenQty),
-      calcResult.fastenUnit,
-      '-',
-      'Po zaprosu',
-    ]);
+  if (r.fastenType !== 'none' && r.fastenQty > 0) {
+    tableRows += `
+      <tr>
+        <td>${r.fastenLabel}</td>
+        <td class="ps-num">${r.fastenQty.toLocaleString('ru-RU')}</td>
+        <td>${r.fastenUnit}</td>
+        <td class="ps-num">—</td>
+        <td class="ps-num"><em>По запросу</em></td>
+      </tr>`;
   }
-
-  tableRows.forEach(row => {
-    // Перенос длинного текста в первом столбце
-    const lines = doc.splitTextToSize(row[0], 75);
-    doc.text(lines, colX[0], y);
-    doc.text(row[1], colX[1], y);
-    doc.text(row[2], colX[2], y);
-    doc.text(row[3], colX[3], y);
-    doc.text(row[4], colX[4], y);
-    y += lines.length > 1 ? lines.length * 5 + 2 : 7;
-  });
-
-  doc.line(20, y, 190, y);
-  y += 5;
 
   /* --- Итог --- */
   let totalVal = 0;
-  if (calcResult.railPrice !== null) totalVal += calcResult.weightT * calcResult.railPrice;
-  totalVal += calcResult.sleeperCost;
+  if (r.railPrice !== null) totalVal += r.weightT * r.railPrice;
+  totalVal += r.sleeperCost;
+  const hasPriceOnRequest = r.railPrice === null ||
+    (r.fastenType !== 'none' && r.fastenQty > 0);
+  const totalLabel = hasPriceOnRequest
+    ? 'Итого (без позиций по запросу)'
+    : 'Итого';
 
-  doc.setFont('helvetica', 'bold');
-  doc.text('Itogo:', colX[3], y);
-  doc.text(`${fmtPricePlain(totalVal)} r`, colX[4], y);
-  y += 10;
+  /* --- Карточки --- */
+  const weightFormatted = r.weightT < 10
+    ? r.weightT.toFixed(2)
+    : Math.round(r.weightT).toLocaleString('ru-RU');
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.text('* Ceny orientirovochnye. Tochhnaya stoimost\' utochnyaetsya u menedzhera.', 20, y);
+  let summaryCards = `
+      <div class="ps-card">
+        <div class="ps-card-val">${weightFormatted}&thinsp;т</div>
+        <div class="ps-card-lbl">Тоннаж рельсов</div>
+      </div>
+      <div class="ps-card">
+        <div class="ps-card-val">${r.railCount.toLocaleString('ru-RU')}&thinsp;шт</div>
+        <div class="ps-card-lbl">Рельсов (${RAIL_LENGTH_M}&thinsp;м)</div>
+      </div>`;
+  if (r.sleeperCount > 0) {
+    summaryCards += `
+      <div class="ps-card">
+        <div class="ps-card-val">${r.sleeperCount.toLocaleString('ru-RU')}&thinsp;шт</div>
+        <div class="ps-card-lbl">Шпал (шаг ${r.spacingMm}&thinsp;мм)</div>
+      </div>`;
+  }
 
-  doc.save(`specifikaciya-rels-komplekt-${date.replace(/\./g, '-')}.pdf`);
+  /* --- Логотип SVG (рельс + две шпалы) --- */
+  const logoSvg = `<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect width="44" height="44" rx="6" fill="rgba(255,255,255,0.15)"/>
+    <rect x="10" y="8" width="5" height="28" rx="2" fill="white"/>
+    <rect x="29" y="8" width="5" height="28" rx="2" fill="white"/>
+    <rect x="10" y="14" width="24" height="4" rx="1" fill="white"/>
+    <rect x="10" y="26" width="24" height="4" rx="1" fill="white"/>
+  </svg>`;
+
+  /* --- Полный HTML спецификации --- */
+  const specHtml = `
+<div id="rkPrintSpec">
+  <style>
+    /* Скрываем страницу, показываем только спецификацию при печати */
+    @media print {
+      body * { visibility: hidden; }
+      #rkPrintSpec, #rkPrintSpec * { visibility: visible; }
+      #rkPrintSpec {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block !important;
+      }
+      @page { size: A4 portrait; margin: 10mm 12mm; }
+    }
+
+    #rkPrintSpec {
+      display: none;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      color: #111;
+      background: #fff;
+    }
+
+    /* Шапка */
+    #rkPrintSpec .ps-header {
+      background: #1A56A0;
+      color: #fff;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    #rkPrintSpec .ps-header-logo { flex-shrink: 0; }
+    #rkPrintSpec .ps-header-name {
+      font-size: 18pt;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+    }
+    #rkPrintSpec .ps-header-sub {
+      font-size: 9pt;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+    #rkPrintSpec .ps-header-contacts {
+      margin-left: auto;
+      text-align: right;
+      font-size: 9pt;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    /* Блок заголовка спецификации */
+    #rkPrintSpec .ps-title-block {
+      padding: 14px 20px 10px;
+      border-bottom: 1px solid #d0d8e8;
+    }
+    #rkPrintSpec .ps-spec-no {
+      font-size: 14pt;
+      font-weight: 700;
+      color: #1A56A0;
+      margin-bottom: 6px;
+    }
+    #rkPrintSpec .ps-meta {
+      font-size: 9pt;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    /* Карточки итогов */
+    #rkPrintSpec .ps-cards {
+      display: flex;
+      gap: 10px;
+      padding: 12px 20px;
+      border-bottom: 1px solid #d0d8e8;
+    }
+    #rkPrintSpec .ps-card {
+      flex: 1;
+      background: #EBF2FB;
+      border-radius: 6px;
+      padding: 10px 14px;
+      text-align: center;
+    }
+    #rkPrintSpec .ps-card-val {
+      font-size: 15pt;
+      font-weight: 700;
+      color: #1A56A0;
+      line-height: 1.1;
+    }
+    #rkPrintSpec .ps-card-lbl {
+      font-size: 8pt;
+      color: #555;
+      margin-top: 3px;
+    }
+
+    /* Таблица */
+    #rkPrintSpec .ps-table-wrap { padding: 12px 20px 0; }
+    #rkPrintSpec table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10pt;
+    }
+    #rkPrintSpec thead th {
+      background: #E8F0F8;
+      color: #1A56A0;
+      font-weight: 700;
+      padding: 7px 8px;
+      border: 1px solid #c5d5e8;
+      text-align: left;
+      font-size: 9pt;
+    }
+    #rkPrintSpec tbody td {
+      padding: 6px 8px;
+      border: 1px solid #dde6f0;
+      vertical-align: middle;
+    }
+    #rkPrintSpec tbody tr:nth-child(even) td { background: #F5F8FC; }
+    #rkPrintSpec .ps-num { text-align: right; white-space: nowrap; }
+    #rkPrintSpec tfoot td {
+      padding: 8px;
+      border: 1px solid #c5d5e8;
+      font-weight: 700;
+      border-top: 2px solid #1A56A0;
+    }
+    #rkPrintSpec tfoot .ps-num { text-align: right; }
+
+    /* Сноска */
+    #rkPrintSpec .ps-note {
+      padding: 8px 20px 0;
+      font-size: 8pt;
+      color: #666;
+      font-style: italic;
+    }
+
+    /* Футер */
+    #rkPrintSpec .ps-footer {
+      margin-top: 14px;
+      padding: 12px 20px;
+      border-top: 2px solid #1A56A0;
+      font-size: 9pt;
+      color: #333;
+      line-height: 1.7;
+    }
+    #rkPrintSpec .ps-footer-title {
+      font-weight: 700;
+      color: #1A56A0;
+      margin-bottom: 4px;
+    }
+  </style>
+
+  <!-- Шапка -->
+  <div class="ps-header">
+    <div class="ps-header-logo">${logoSvg}</div>
+    <div>
+      <div class="ps-header-name">РЕЛЬС-КОМПЛЕКТ</div>
+      <div class="ps-header-sub">Оптовые поставки рельсовых материалов</div>
+    </div>
+    <div class="ps-header-contacts">
+      +7 (343) 237-23-33 · +7 (967) 639-63-33<br>
+      ooorku@mail.ru · rels-komplekt.ru
+    </div>
+  </div>
+
+  <!-- Заголовок спецификации -->
+  <div class="ps-title-block">
+    <div class="ps-spec-no">СПЕЦИФИКАЦИЯ № ${specNo}</div>
+    <div class="ps-meta">
+      Дата:&nbsp;${dateStr}&nbsp;&nbsp;·&nbsp;&nbsp;
+      Длина пути:&nbsp;${r.trackLenM}&nbsp;м&nbsp;&nbsp;·&nbsp;&nbsp;
+      Нитей:&nbsp;${r.threads}&nbsp;&nbsp;·&nbsp;&nbsp;
+      Рельс:&nbsp;${r.railLabel} (${r.kgPerM}&nbsp;кг/м)
+    </div>
+  </div>
+
+  <!-- Карточки итогов -->
+  <div class="ps-cards">${summaryCards}</div>
+
+  <!-- Таблица -->
+  <div class="ps-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40%">Наименование</th>
+          <th class="ps-num" style="width:12%">Количество</th>
+          <th style="width:6%">Ед.</th>
+          <th class="ps-num" style="width:20%">Цена</th>
+          <th class="ps-num" style="width:22%">Сумма</th>
+        </tr>
+      </thead>
+      <tbody>${tableRows}</tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4">${totalLabel}</td>
+          <td class="ps-num">${fmtPrice(totalVal)}&thinsp;₽</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Сноска -->
+  <div class="ps-note">
+    * Цены ориентировочные. Точная стоимость уточняется у менеджера.
+    Расчёт выполнен автоматически на основе введённых параметров.
+  </div>
+
+  <!-- Футер -->
+  <div class="ps-footer">
+    <div class="ps-footer-title">Для оформления заказа свяжитесь с нами:</div>
+    Тел.: +7 (343) 237-23-33 · +7 (967) 639-63-33&nbsp;&nbsp;·&nbsp;&nbsp;
+    E-mail: ooorku@mail.ru&nbsp;&nbsp;·&nbsp;&nbsp;
+    Сайт: rels-komplekt.ru
+  </div>
+</div>`;
+
+  /* Вставляем и печатаем */
+  document.body.insertAdjacentHTML('beforeend', specHtml);
+  window.print();
+
+  /* Удаляем после закрытия диалога печати */
+  window.addEventListener('afterprint', function cleanup() {
+    document.getElementById('rkPrintSpec')?.remove();
+    window.removeEventListener('afterprint', cleanup);
+  });
 }
 
 function handleReset() {
@@ -515,7 +731,3 @@ function fmtPrice(n) {
   return new Intl.NumberFormat('ru-RU').format(Math.round(n));
 }
 
-// Для PDF — без спецсимволов
-function fmtPricePlain(n) {
-  return Math.round(n).toLocaleString('ru-RU');
-}
