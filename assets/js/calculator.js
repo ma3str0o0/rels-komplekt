@@ -9,6 +9,11 @@
 const CART_KEY      = 'cart';
 const RAIL_LENGTH_M = 12.5; // стандартная длина рельса в метрах
 
+/* EmailJS — вставить реальные ключи после настройки аккаунта */
+const EMAILJS_SERVICE_ID  = 'DEMO';
+const EMAILJS_TEMPLATE_ID = 'DEMO';
+const EMAILJS_PUBLIC_KEY  = 'DEMO';
+
 const RAIL_TYPES = {
   'Р50':   { kgPerM: 51.67, label: 'Р50'   },
   'Р65':   { kgPerM: 64.72, label: 'Р65'   },
@@ -308,7 +313,19 @@ function renderTable(r) {
 function bindResultActions() {
   document.getElementById('btnAddToCart').addEventListener('click', handleAddToCart);
   document.getElementById('btnDownloadPdf').addEventListener('click', handleDownloadPdf);
+  document.getElementById('btnSendEmail').addEventListener('click', openEmailModal);
   document.getElementById('btnReset').addEventListener('click', handleReset);
+
+  /* Управление модальным окном email */
+  document.getElementById('emailModalClose').addEventListener('click', closeEmailModal);
+  document.getElementById('emailModalCancel').addEventListener('click', closeEmailModal);
+  document.getElementById('emailModal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeEmailModal();
+  });
+  document.getElementById('emailModalForm').addEventListener('submit', handleSendEmail);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeEmailModal();
+  });
 }
 
 function handleAddToCart() {
@@ -358,6 +375,108 @@ function handleAddToCart() {
   saveCart(cart);
   updateCartBadge();
   window.location.href = 'order.html';
+}
+
+/* ─── Email-модальное окно ───────────────────────────────────── */
+function openEmailModal() {
+  if (!calcResult) return;
+  const overlay = document.getElementById('emailModal');
+  overlay.classList.add('open');
+  // Фокус на первое поле
+  requestAnimationFrame(() => document.getElementById('emailTo').focus());
+}
+
+function closeEmailModal() {
+  const overlay = document.getElementById('emailModal');
+  overlay.classList.remove('open');
+  // Сбрасываем форму и ошибки
+  document.getElementById('emailModalForm').reset();
+  document.getElementById('emailToError').hidden = true;
+  document.getElementById('emailTo').removeAttribute('aria-invalid');
+  setEmailSubmitLoading(false);
+}
+
+function setEmailSubmitLoading(loading) {
+  const btn = document.getElementById('emailModalSubmit');
+  btn.disabled = loading;
+  btn.innerHTML = loading
+    ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="animation:spin .8s linear infinite"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.18-4.61"/></svg> Отправка...`
+    : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Отправить`;
+}
+
+async function handleSendEmail(e) {
+  e.preventDefault();
+
+  const emailTo = document.getElementById('emailTo').value.trim();
+  const errEl   = document.getElementById('emailToError');
+
+  /* Валидация email */
+  if (!emailTo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTo)) {
+    errEl.textContent = 'Введите корректный email';
+    errEl.hidden = false;
+    document.getElementById('emailTo').setAttribute('aria-invalid', 'true');
+    return;
+  }
+  errEl.hidden = true;
+  document.getElementById('emailTo').removeAttribute('aria-invalid');
+
+  const name    = document.getElementById('emailName').value.trim();
+  const comment = document.getElementById('emailComment').value.trim();
+  const r       = calcResult;
+
+  /* Формируем данные для шаблона */
+  const railQty = r.weightT < 10 ? r.weightT.toFixed(2) : Math.round(r.weightT);
+  const templateParams = {
+    to_email:     emailTo,
+    sender_name:  name || 'Клиент',
+    comment:      comment || '—',
+    spec_date:    new Date().toLocaleDateString('ru-RU'),
+    rail_type:    r.railLabel,
+    track_length: `${r.trackLenM} м`,
+    threads:      String(r.threads),
+    rail_qty:     `${railQty} т`,
+    rail_count:   `${r.railCount} шт`,
+    sleeper_info: r.sleeperType !== 'none' && r.sleeperCount > 0
+      ? `${r.sleeperLabel} — ${r.sleeperCount} шт`
+      : 'Без шпал',
+    fasten_info:  r.fastenType !== 'none' && r.fastenQty > 0
+      ? `${r.fastenLabel} — ${r.fastenQty} ${r.fastenUnit}`
+      : 'Без скреплений',
+    total_price:  r.railPrice !== null
+      ? `${fmtPrice((r.weightT * r.railPrice) + r.sleeperCost)} ₽`
+      : 'По запросу',
+  };
+
+  setEmailSubmitLoading(true);
+
+  /* ─── DEMO-режим: реальные ключи не настроены ─────────────── */
+  if (EMAILJS_SERVICE_ID === 'DEMO') {
+    // Имитируем задержку сети
+    await new Promise(res => setTimeout(res, 800));
+    setEmailSubmitLoading(false);
+    closeEmailModal();
+    window.RK?.showToast(
+      'Функция отправки будет доступна после настройки',
+      'success'
+    );
+    return;
+  }
+
+  /* ─── Реальная отправка через EmailJS ─────────────────────── */
+  try {
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID,
+      templateParams,
+      EMAILJS_PUBLIC_KEY
+    );
+    closeEmailModal();
+    window.RK?.showToast(`Спецификация отправлена на ${emailTo}`, 'success');
+  } catch (err) {
+    console.error('EmailJS error:', err);
+    setEmailSubmitLoading(false);
+    window.RK?.showToast('Ошибка отправки. Попробуйте позже.', 'error');
+  }
 }
 
 function handleDownloadPdf() {

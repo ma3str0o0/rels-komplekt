@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Рассчитайте стоимость и количество материалов для укладки рельсового пути. Рельсы, шпалы, крепёж — всё в одном расчёте.">
   <title>Калькулятор пути — Рельс-Комплект</title>
@@ -203,6 +203,10 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Скачать PDF-спецификацию
               </button>
+              <button class="btn btn-secondary btn-lg" id="btnSendEmail">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Отправить на email
+              </button>
               <button class="btn btn-secondary btn-lg" id="btnReset">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
                 Рассчитать заново
@@ -223,10 +227,58 @@
   <!-- Модальное окно вставляется через loadComponents() из main.js -->
   <div id="modal-placeholder"></div>
 
+  <!-- Модальное окно: отправка спецификации на email -->
+  <div class="modal-overlay" id="emailModal" role="dialog" aria-modal="true"
+       aria-labelledby="emailModalTitle">
+    <div class="modal">
+      <div class="modal__header">
+        <h3 class="modal__title" id="emailModalTitle">Отправить спецификацию на email</h3>
+        <button class="modal__close" id="emailModalClose" aria-label="Закрыть диалог">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <form id="emailModalForm" novalidate>
+          <div class="form-group">
+            <label class="form-label form-label--required" for="emailTo">Email получателя</label>
+            <input class="input" type="email" id="emailTo"
+                   required aria-required="true"
+                   placeholder="example@company.ru"
+                   autocomplete="email">
+            <span class="form-error" id="emailToError" hidden></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="emailName">Ваше имя</label>
+            <input class="input" type="text" id="emailName"
+                   placeholder="Иванов Иван Иванович"
+                   autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="emailComment">Комментарий</label>
+            <textarea class="input" id="emailComment" rows="3"
+                      placeholder="Дополнительные пожелания к расчёту..."></textarea>
+          </div>
+          <div class="modal__footer">
+            <button type="submit" class="btn btn-primary" id="emailModalSubmit">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Отправить
+            </button>
+            <button type="button" class="btn btn-secondary" id="emailModalCancel">Отмена</button>
+          </div>
+          <p class="modal__note">
+            Спецификация будет отправлена в виде таблицы с параметрами расчёта
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Скрипты -->
   <script src="assets/js/main.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
           integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk"
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
           crossorigin="anonymous"></script>
   <script src="assets/js/calculator.js"></script>
 </body>
