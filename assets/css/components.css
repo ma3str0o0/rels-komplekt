@@ -2440,6 +2440,55 @@
   }
 }
 
+/* ─── Заголовок секции (product.html и др.) ─────────────────── */
+.section-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-sm);
+  border-bottom: 2px solid var(--color-primary, #1A56A0);
+}
+
+/* ─── Таблица технических характеристик ─────────────────────── */
+.specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-lg);
+}
+
+.specs-table tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.specs-table tr:last-child {
+  border-bottom: none;
+}
+
+.specs-table tr:nth-child(even) .specs-table__val {
+  background: var(--color-surface);
+}
+
+.specs-table__key {
+  padding: 10px 16px;
+  background: var(--color-primary, #1A56A0);
+  color: #fff;
+  font-weight: 500;
+  width: 40%;
+  vertical-align: top;
+}
+
+.specs-table__val {
+  padding: 10px 16px;
+  color: var(--color-text);
+  vertical-align: top;
+  background: #fff;
+}
+
 /* ─── Тёмная тема — оверрайды компонентов ───────────────────── */
 
 /* Карточки товаров */
