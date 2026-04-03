@@ -161,7 +161,7 @@ function applyFilters() {
   updateActiveFiltersIndicator();
 }
 
-/* ─── Рендер карточек ────────────────────────────────────────── */
+/* ─── Рендер строк таблицы ───────────────────────────────────── */
 function renderCards() {
   if (dom.loading) {
     dom.loading.classList.add('hidden');
@@ -180,19 +180,35 @@ function renderCards() {
   const start     = (state.page - 1) * PAGE_SIZE;
   const pageItems = state.filtered.slice(start, start + PAGE_SIZE);
 
-  dom.grid.innerHTML = pageItems.map(item => cardHTML(item)).join('');
+  // Таблица со строками товаров
+  dom.grid.innerHTML = `
+    <table class="catalog-table">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Подкатегория</th>
+          <th>Состояние</th>
+          <th>Цена</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="catalogBody">
+        ${pageItems.map(item => rowHTML(item)).join('')}
+      </tbody>
+    </table>`;
 
   // Вешаем обработчики "В заявку" после вставки HTML
   dom.grid.querySelectorAll('[data-action="add-to-cart"]').forEach(btn => {
     btn.addEventListener('click', e => {
       e.preventDefault();
+      e.stopPropagation();
       addToCart({
-          id:    btn.dataset.id,
-          name:  btn.dataset.name,
-          price: btn.dataset.price !== '' ? Number(btn.dataset.price) : null,
-          unit:  btn.dataset.unit || 'т',
-          qty:   1,
-        });
+        id:    btn.dataset.id,
+        name:  btn.dataset.name,
+        price: btn.dataset.price !== '' ? Number(btn.dataset.price) : null,
+        unit:  btn.dataset.unit || 'т',
+        qty:   1,
+      });
     });
   });
 
@@ -283,43 +299,44 @@ function scrollToGrid() {
   window.scrollTo({ top, behavior: 'smooth' });
 }
 
-/* ─── HTML карточки товара ───────────────────────────────────── */
-function cardHTML(item) {
+/* ─── HTML строки таблицы товара ─────────────────────────────── */
+function rowHTML(item) {
   const priceHtml = item.price !== null
-    ? `<span class="pcard__price">${formatPrice(item.price)}&nbsp;₽/${escapeHtml(item.unit)}</span>`
-    : `<span class="pcard__price pcard__price--request">Цена по запросу</span>`;
+    ? `${item.price.toLocaleString('ru-RU')}&nbsp;₽/т`
+    : `<span class="text-muted">По запросу</span>`;
 
-  const badgeHtml = item.subcategory
-    ? `<span class="badge badge--blue pcard__badge">${escapeHtml(item.subcategory)}</span>`
-    : `<span class="badge badge--gray pcard__badge">${escapeHtml(item.category)}</span>`;
+  // Определяем badge состояния по словам в названии
+  const nameLower = item.name.toLowerCase();
+  let stateBadge = '';
+  if (/новый|новые|гост/.test(nameLower)) {
+    stateBadge = `<span class="badge badge--green">Новый</span>`;
+  } else if (/хранения/.test(nameLower)) {
+    stateBadge = `<span class="badge badge--orange">С хранения</span>`;
+  } else if (/б\/у|старогодн/.test(nameLower)) {
+    stateBadge = `<span class="badge">Б/У</span>`;
+  }
 
   const inCart = isInCart(item.id);
+  const href   = `product.html?id=${encodeURIComponent(item.id)}`;
 
   return `
-    <article class="pcard" role="listitem" data-id="${escapeHtml(item.id)}">
-      <div class="pcard__top">${badgeHtml}</div>
-      <h3 class="pcard__name">${escapeHtml(item.name)}</h3>
-      <div class="pcard__price-row">${priceHtml}</div>
-      <div class="pcard__actions">
-        <a href="product.html?id=${encodeURIComponent(item.id)}" class="btn btn-secondary btn-sm pcard__btn-detail">
-          Подробнее
-        </a>
+    <tr data-href="${href}" data-id="${escapeHtml(item.id)}" style="cursor:pointer" onclick="window.location.href=this.dataset.href">
+      <td>${escapeHtml(item.name)}</td>
+      <td><span class="text-muted">${escapeHtml(item.subcategory || '')}</span></td>
+      <td>${stateBadge}</td>
+      <td>${priceHtml}</td>
+      <td>
         <button
-          class="btn btn-sm pcard__btn-cart ${inCart ? 'btn-accent pcard__btn-cart--added' : 'btn-primary'}"
+          class="btn btn--sm ${inCart ? 'btn--accent' : 'btn--outline'}"
           data-action="add-to-cart"
           data-id="${escapeHtml(item.id)}"
           data-name="${escapeHtml(item.name)}"
           data-price="${item.price !== null ? item.price : ''}"
           data-unit="${escapeHtml(item.unit || 'т')}"
           aria-pressed="${inCart}"
-        >
-          ${inCart
-            ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> В заявке`
-            : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> В заявку`
-          }
-        </button>
-      </div>
-    </article>`;
+        >${inCart ? 'В заявке' : 'В заявку'}</button>
+      </td>
+    </tr>`;
 }
 
 /* ─── Обновление счётчиков ────────────────────────────────────── */
@@ -437,8 +454,9 @@ function isInCart(id) {
 
 function addToCart(item) {
   const cart = getCart();
-  const card = dom.grid.querySelector(`[data-id="${item.id}"]`);
-  const btn  = card?.querySelector('[data-action="add-to-cart"]');
+  // Ищем строку таблицы по data-id
+  const row = dom.grid.querySelector(`tr[data-id="${item.id}"]`);
+  const btn = row?.querySelector('[data-action="add-to-cart"]');
 
   if (isInCart(item.id)) {
     // Товар уже в корзине — убираем (toggle)
@@ -446,10 +464,10 @@ function addToCart(item) {
     localStorage.setItem(CART_KEY, JSON.stringify(updated));
 
     if (btn) {
-      btn.classList.remove('btn-accent', 'pcard__btn-cart--added');
-      btn.classList.add('btn-primary');
+      btn.classList.remove('btn--accent');
+      btn.classList.add('btn--outline');
       btn.setAttribute('aria-pressed', 'false');
-      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> В заявку`;
+      btn.textContent = 'В заявку';
     }
 
     updateCartBadge();
@@ -462,10 +480,10 @@ function addToCart(item) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 
   if (btn) {
-    btn.classList.remove('btn-primary');
-    btn.classList.add('btn-accent', 'pcard__btn-cart--added');
+    btn.classList.remove('btn--outline');
+    btn.classList.add('btn--accent');
     btn.setAttribute('aria-pressed', 'true');
-    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> В заявке`;
+    btn.textContent = 'В заявке';
   }
 
   updateCartBadge();
