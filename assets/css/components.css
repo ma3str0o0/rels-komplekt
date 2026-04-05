@@ -411,6 +411,8 @@
 /* Поиск */
 .search-box {
   position: relative;
+  width: 100%;
+  overflow: hidden;
 }
 
 .search-box__icon {
@@ -423,7 +425,15 @@
 }
 
 .search-box .input {
-  padding-left: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  padding: 10px 14px 10px 36px;
+}
+
+.search-box .input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1; /* Firefox по умолчанию 0.54 */
 }
 
 /* ─── Модальное окно ────────────────────────────────────────── */
@@ -2522,8 +2532,8 @@
 .cat-tree__item { margin-bottom:2px; }
 .cat-tree__cat {
   display:flex; align-items:center; justify-content:space-between;
-  width:100%; padding:8px 10px; background:none; border:none;
-  border-radius:var(--radius-sm); font-size:var(--font-size-sm);
+  width:100%; padding:9px 10px; background:none; border:none;
+  border-radius:var(--radius-sm); font-size:14px;
   color:var(--color-text); cursor:pointer; text-align:left;
   transition:background 0.15s;
 }
@@ -2533,8 +2543,8 @@
 .cat-tree__arrow.open { transform:rotate(90deg); }
 .cat-tree__subs { list-style:none; padding:0 0 4px 16px; margin:2px 0; }
 .cat-tree__sub {
-  display:block; width:100%; padding:5px 10px; background:none; border:none;
-  border-radius:var(--radius-sm); font-size:12px; color:var(--color-text-muted);
+  display:block; width:100%; padding:6px 10px; background:none; border:none;
+  border-radius:var(--radius-sm); font-size:13px; color:var(--color-text-muted);
   cursor:pointer; text-align:left; transition:background 0.15s, color 0.15s;
 }
 .cat-tree__sub:hover { background:var(--color-tint-blue); color:var(--color-text); }
@@ -2550,7 +2560,7 @@
 .catalog-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--font-size-sm);
+  font-size: 15px;
 }
 .catalog-table thead th {
   background: var(--color-tint-blue);
@@ -2571,11 +2581,12 @@
   background: var(--color-tint-blue);
 }
 .catalog-table td {
-  padding: 12px 14px;
+  padding: 16px 14px;
   vertical-align: middle;
 }
 .catalog-table td:first-child {
   font-weight: 600;
+  font-size: 15px;
   color: var(--color-text);
   max-width: 420px;
 }
