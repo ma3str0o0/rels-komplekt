@@ -285,6 +285,118 @@ Security audit выявил 8 проблем. Все исправлены.
 
 ---
 
+## [2026-04-05] — Итерация 17: Двухуровневый аккордеон фильтра категорий
+
+**Коммит:** `891c467`
+
+### catalog.html — статическое дерево категорий
+- Заменён динамический `<div id="categoriesList">` (генерировался JS) на статический `<ul class="cat-tree">` с 11 узлами верхнего уровня
+- 5 групп с аккордеоном: Рельсы широкой колеи, Рельсы крановые, Рельсы узкоколейные, Шпалы, Крепёж ж/д
+- 6 листовых узлов без подкатегорий: Крановый крепёж, DIN 536, Накладки, Прокладки, Подкладки
+
+**Структура данных (верифицировано через node):**
+- `Рельсы Р50`, `Рельсы КР 80/100/120/140`, `Рельсы Р8–Р43`, все болты и крепёж — отдельные `category` в JSON
+- Только `Рельсы Р65` (subcategory у "Рельсы широкой колеи") и `Рельсы КР 70` (subcategory у "Рельсы крановые") — настоящие subcategory
+- Группы используют `data-cats="A|B|C"` → `type: 'multi-category'`; листья — `data-sub-type="category"` или `data-sub-type="subcategory"` соответственно
+
+### catalog.js — новая логика фильтрации
+- **Удалено:** `state.categories: new Set()`, `renderCategories()`, `readUrlParams()`, обработчик `categoriesToggle`
+- **Добавлено:**
+  - `activeFilter = { type: 'all' }` — единый объект состояния фильтра
+  - `resetCategoryUI()` — сбрасывает `active`-классы и закрывает `<ul hidden>`
+  - `filterItem(item)` — switch по `activeFilter.type`: all / category / multi-category / subcategory
+  - `initCategoryFilter()` — биндинг кликов на `.cat-tree__cat` и `.cat-tree__sub`, обработка URL-параметра `?cat=`
+- `applyFilters()`: `state.categories.size > 0 &&` → `!filterItem(item)`
+- `updateActiveFiltersIndicator()`: `state.categories.size` → `activeFilter.type !== 'all' ? 1 : 0`
+- `resetFilters()`: сбрасывает `activeFilter`, вызывает `resetCategoryUI()`
+
+### assets/css/components.css
+- Добавлен блок `.cat-tree*`: дерево с hover, active-цветом `var(--color-cta)`, стрелкой с `rotate(90deg)` при открытии
+
+---
+
+## [2026-04-05] — Итерация 16: Фикс ширины таблицы и классов кнопок
+
+**Коммит:** `2a8e8b7`
+
+### assets/css/components.css
+- `.catalog-grid:has(.catalog-table) { display: block; }` — когда внутри таблица, grid-режим (3 колонки) сбрасывается и таблица растягивается на всю ширину `.catalog-content`
+
+### assets/js/catalog.js
+- Кнопки в `rowHTML` использовали несуществующие классы `btn--sm`/`btn--outline`/`btn--accent` (BEM с двойным дефисом)
+- Исправлено: `btn btn-sm btn-primary` (по умолчанию) и `btn btn-sm btn-accent` (товар в заявке) — реальные классы из CSS
+- `addToCart()` обновлён: `btn--outline`/`btn--accent` → `btn-primary`/`btn-accent`
+
+---
+
+## [2026-04-03] — Итерация 15: Строчное табличное отображение каталога
+
+**Коммит:** `c4609cc`
+
+### assets/js/catalog.js
+- **`cardHTML()` → `rowHTML()`**: генерирует `<tr>` вместо `<article class="pcard">`
+  - `<tr>` с `data-href`, `onclick="window.location.href=this.dataset.href"`, `cursor:pointer` — весь ряд кликабелен
+  - Колонка «Наименование» — жирный текст
+  - Колонка «Подкатегория» — `class="text-muted"`
+  - Колонка «Состояние» — badge через regex по `item.name`: `/новый|новые|гост/` → `badge--green`, `/хранения/` → `badge--orange`, `/б\/у|старогодн/` → `badge` (серый)
+  - Колонка «Цена» — `toLocaleString('ru-RU') + " ₽/т"` или `<span class="text-muted">По запросу</span>`
+  - Колонка кнопки: `btn btn-sm btn-primary`, клик — `e.stopPropagation()` (не триггерит переход на страницу товара)
+- **`renderCards()`**: `dom.grid.innerHTML` теперь генерирует `<table class="catalog-table"><thead>...<tbody>...`
+- **`addToCart()`**: ищет `tr[data-id]` вместо `.pcard[data-id]`; переключает `btn-primary` ↔ `btn-accent` + `textContent`
+
+### assets/css/components.css
+- Добавлен блок `.catalog-table`: `border-collapse: collapse`, заголовки с `var(--color-tint-blue)`, hover строк, `td:first-child` жирный, `max-width: 420px`
+- Мобильный брейкпойнт `≤768px`: скрыты колонки «Подкатегория» (2-я) и «Состояние» (3-я)
+
+---
+
+## [2026-03-27] — Итерация 14: Очистка мусорных описаний в catalog.json
+
+**Коммит:** `c636b2b`
+
+### tools/clean_descriptions.py — новый скрипт
+- Читает `data/catalog.json`, проверяет `competitor_data.description` на наличие маркеров навигационного мусора (`Покупателю`, `Личный кабинет`, `Заказы`, `В наличии`, `Поиск`, `Каталог`, `КомплектыскреплениЙ`, `Рельсыжелезнодорожные`) или длину >2000 символов
+- Зачищенные описания → `null`
+
+### data/catalog.json
+- Очищено: 130 / 130 описаний (все содержали мусор или превышали лимит)
+
+---
+
+## [2026-03-27] — Итерация 13: Стили таблицы технических характеристик
+
+**Коммит:** `da8840d`
+
+### assets/css/components.css
+- Добавлен класс `.section-title`: `font-size: xl`, `font-weight: 700`, `border-bottom: 2px solid var(--color-primary)`, `margin-bottom: lg`
+- Добавлен блок `.specs-table*`: `border-collapse: collapse`, `border: 1px solid var(--color-border)`, `border-radius: md`
+  - `.specs-table__key`: фон `var(--color-primary)`, белый текст, `width: 40%`
+  - `.specs-table__val`: `background: #fff`, `color: var(--color-text)`
+  - Чётные строки — `background: var(--color-surface)` (зебра)
+- Добавлены тёмная-тема оверрайды: `.pcard`, `.cta-contact__card`, `.stock-badge--in/out`, `.badge--blue/green/orange`, `.theme-toggle`
+
+### product.html
+- Удалены дублирующие inline-стили `.specs-table*` (были в `<style>` в `<head>`)
+
+---
+
+## [2026-03-27] — Итерация 12: Переупорядочивание секций product.html
+
+**Коммит:** `99e95fe`
+
+### product.html — новый порядок секций внутри `<main>`
+1. `#productLoading` (спиннер)
+2. `#productPage` (хлебные крошки + основной блок товара)
+3. `#product-description` (описание от конкурента)
+4. `#product-specs` (таблица характеристик)
+5. `#product-media` (PDF/фото)
+6. `#similarSection` — **перенесён в конец** (был внутри `#productPage`)
+7. `.cta-contact` «Остались вопросы?» — за `<main>`
+
+**Причина:** похожие товары показывались слишком рано (до описания и характеристик), что нарушало пользовательский сценарий.
+
+---
+
 ## [2026-03-27] — Итерация 7: Вливка данных конкурента в catalog.json
 
 ### merge_catalog.py — новый скрипт
