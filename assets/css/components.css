@@ -2489,6 +2489,33 @@
   background: #fff;
 }
 
+/* ─── Кнопки сортировки в заголовке таблицы ─────────────────── */
+
+.sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.sort-btn:hover,
+.sort-btn.active { color: var(--color-cta); }
+
+.sort-icon svg { display: block; }
+.sort-up, .sort-down { fill: var(--color-border); transition: fill 0.15s; }
+.sort-btn.active.sort-asc  .sort-up   { fill: var(--color-cta); }
+.sort-btn.active.sort-desc .sort-down { fill: var(--color-cta); }
+
 /* ─── Дерево категорий (аккордеон) ──────────────────────────── */
 
 .cat-tree { list-style:none; padding:0; margin:0; }

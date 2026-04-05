@@ -12,6 +12,13 @@ const PAGE_SIZE = 24;
 // type: 'all' | 'category' | 'multi-category' | 'subcategory'
 let activeFilter = { type: 'all' };
 
+/* ─── Состояние сортировки ────────────────────────────────────── */
+let sortField = 'condition'; // 'condition' | 'price'
+let sortDir   = 'asc';      // 'asc' | 'desc'
+
+// Числовой вес состояния для сортировки (новый → первый)
+const CONDITION_WEIGHT = { 'new': 0, 'storage': 1, 'used': 2, 'unknown': 3 };
+
 /* ─── Состояние фильтров ─────────────────────────────────────── */
 const state = {
   all:          [],          // все позиции из JSON
@@ -168,6 +175,50 @@ function initCategoryFilter() {
   }
 }
 
+/* ─── Определение состояния товара по названию ───────────────── */
+function getCondition(name) {
+  if (/новы[йе]|ГОСТ/i.test(name))    return 'new';
+  if (/хранени[яе]/i.test(name))       return 'storage';
+  if (/б\/у|старогодн/i.test(name))    return 'used';
+  return 'unknown';
+}
+
+/* ─── Сортировка массива товаров ─────────────────────────────── */
+function sortItems(items) {
+  return [...items].sort((a, b) => {
+    if (sortField === 'condition') {
+      const wa = CONDITION_WEIGHT[getCondition(a.name)];
+      const wb = CONDITION_WEIGHT[getCondition(b.name)];
+      return sortDir === 'asc' ? wa - wb : wb - wa;
+    }
+    if (sortField === 'price') {
+      const pa = a.price ?? -1;
+      const pb = b.price ?? -1;
+      // asc = дорогой первым (high→low), desc = дешёвый первым
+      return sortDir === 'asc' ? pb - pa : pa - pb;
+    }
+    return 0;
+  });
+}
+
+/* ─── HTML заголовка с кнопкой сортировки ────────────────────── */
+function _sortThHtml(field, label, cssClass) {
+  const isActive = sortField === field;
+  const cls = ['sort-btn', isActive ? 'active' : '', isActive ? `sort-${sortDir}` : '']
+    .filter(Boolean).join(' ');
+  return `<th class="${cssClass}">
+    <button class="${cls}" data-sort="${field}">
+      ${label}
+      <span class="sort-icon">
+        <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
+          <path class="sort-up"   d="M5 1 L9 5 H1Z"/>
+          <path class="sort-down" d="M5 11 L9 7 H1Z"/>
+        </svg>
+      </span>
+    </button>
+  </th>`;
+}
+
 /* ─── Применение фильтров ────────────────────────────────────── */
 function applyFilters() {
   const q = state.search.trim().toLowerCase();
@@ -206,9 +257,10 @@ function renderCards() {
 
   dom.emptyState.classList.add('hidden');
 
-  // Нарезка по странице
-  const start     = (state.page - 1) * PAGE_SIZE;
-  const pageItems = state.filtered.slice(start, start + PAGE_SIZE);
+  // Сортировка → пагинация
+  const sorted     = sortItems(state.filtered);
+  const start      = (state.page - 1) * PAGE_SIZE;
+  const pageItems  = sorted.slice(start, start + PAGE_SIZE);
 
   // Таблица со строками товаров
   dom.grid.innerHTML = `
@@ -217,8 +269,8 @@ function renderCards() {
         <tr>
           <th>Наименование</th>
           <th>Подкатегория</th>
-          <th>Состояние</th>
-          <th>Цена</th>
+          ${_sortThHtml('condition', 'Состояние', 'col-condition')}
+          ${_sortThHtml('price',     'Цена',      'col-price')}
           <th></th>
         </tr>
       </thead>
@@ -392,6 +444,21 @@ function updateActiveFiltersIndicator() {
 
 /* ─── Привязка событий ───────────────────────────────────────── */
 function bindEvents() {
+
+  // Сортировка по колонкам — делегирование, т.к. таблица перегенерируется
+  dom.grid.addEventListener('click', e => {
+    const btn = e.target.closest('.sort-btn');
+    if (!btn) return;
+    const field = btn.dataset.sort;
+    if (sortField === field) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortField = field;
+      sortDir   = 'asc';
+    }
+    state.page = 1;
+    renderCards();
+  });
 
   // Поиск в реальном времени
   dom.searchInput?.addEventListener('input', e => {
