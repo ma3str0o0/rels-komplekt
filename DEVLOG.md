@@ -285,6 +285,24 @@ Security audit выявил 8 проблем. Все исправлены.
 
 ---
 
+## [2026-04-05] — Итерация 18: Сортировка по колонкам Состояние и Цена
+
+**Коммит:** `c0846f8`
+
+### assets/js/catalog.js
+- Добавлены переменные уровня модуля: `sortField = 'condition'`, `sortDir = 'asc'`, `CONDITION_WEIGHT = { new:0, storage:1, used:2, unknown:3 }`
+- `getCondition(name)` — определяет состояние товара по regex на `item.name` (новы[йе]/ГОСТ → new, хранени[яе] → storage, б/у/старогодн → used, иначе → unknown)
+- `sortItems(items)` — копирует и сортирует по `sortField`/`sortDir`; для цены `asc` = дорогой первым, `null`-цены уходят в конец (`-1`)
+- `_sortThHtml(field, label, cssClass)` — генерирует `<th>` с кнопкой, проставляет актуальные классы `active`/`sort-asc`/`sort-desc` при каждом перерендере
+- `renderCards()`: добавлен вызов `sortItems(state.filtered)` после фильтрации и до `slice` пагинации; заголовки «Состояние» и «Цена» заменены на вывод `_sortThHtml()`
+- `bindEvents()`: делегированный обработчик на `dom.grid` для кликов по `.sort-btn` — работает после каждого перерендера таблицы без повторной привязки
+
+### assets/css/components.css
+- Добавлен блок `.sort-btn`: `inline-flex`, `font: inherit`, `text-transform: uppercase`, `color: var(--color-text-muted)`, hover/active → `var(--color-cta)`
+- `.sort-up`, `.sort-down`: `fill: var(--color-border)` по умолчанию; активная стрелка подсвечивается `var(--color-cta)` через `.sort-btn.active.sort-asc/.sort-desc`
+
+---
+
 ## [2026-04-05] — Итерация 17: Двухуровневый аккордеон фильтра категорий
 
 **Коммит:** `891c467`
