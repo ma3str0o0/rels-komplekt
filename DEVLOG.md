@@ -285,6 +285,31 @@ Security audit выявил 8 проблем. Все исправлены.
 
 ---
 
+## [2026-04-05] — Итерация 19: UI-полировка каталога (шрифт, паддинги, плейсхолдер)
+
+**Коммит:** `3911309`
+
+### assets/css/components.css — 4 точечных фикса
+
+**Фикс 1 — Шрифт таблицы крупнее:**
+- `.catalog-table`: `font-size: var(--font-size-sm)` → `15px`
+- `.catalog-table td`: `padding: 12px 14px` → `16px 14px` (увеличена высота строк)
+- Заголовки `thead th` оставлены на `11px`
+
+**Фикс 2 — Название товара жирнее:**
+- `.catalog-table td:first-child`: добавлен явный `font-size: 15px`
+
+**Фикс 3 — Поле поиска в сайдбаре:**
+- `.search-box`: добавлен `width: 100%; overflow: hidden`
+- `.search-box .input`: `width: 100%; box-sizing: border-box; font-size: 14px; padding: 10px 14px 10px 36px`
+- `.search-box .input::placeholder`: `color: var(--color-text-muted); opacity: 1` (Firefox-фикс — дефолтный opacity 0.54)
+
+**Фикс 4 — Категории в сайдбаре крупнее:**
+- `.cat-tree__cat`: `font-size: var(--font-size-sm)` → `14px`; `padding: 8px` → `9px 10px`
+- `.cat-tree__sub`: `font-size: 12px` → `13px`; `padding: 5px` → `6px 10px`
+
+---
+
 ## [2026-04-05] — Итерация 18: Сортировка по колонкам Состояние и Цена
 
 **Коммит:** `c0846f8`
