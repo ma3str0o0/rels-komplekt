@@ -327,7 +327,7 @@ function rowHTML(item) {
       <td>${priceHtml}</td>
       <td>
         <button
-          class="btn btn--sm ${inCart ? 'btn--accent' : 'btn--outline'}"
+          class="btn btn-sm ${inCart ? 'btn-accent' : 'btn-primary'}"
           data-action="add-to-cart"
           data-id="${escapeHtml(item.id)}"
           data-name="${escapeHtml(item.name)}"
@@ -464,8 +464,8 @@ function addToCart(item) {
     localStorage.setItem(CART_KEY, JSON.stringify(updated));
 
     if (btn) {
-      btn.classList.remove('btn--accent');
-      btn.classList.add('btn--outline');
+      btn.classList.remove('btn-accent');
+      btn.classList.add('btn-primary');
       btn.setAttribute('aria-pressed', 'false');
       btn.textContent = 'В заявку';
     }
@@ -480,8 +480,8 @@ function addToCart(item) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 
   if (btn) {
-    btn.classList.remove('btn--outline');
-    btn.classList.add('btn--accent');
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-accent');
     btn.setAttribute('aria-pressed', 'true');
     btn.textContent = 'В заявке';
   }

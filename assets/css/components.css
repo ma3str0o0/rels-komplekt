@@ -2491,6 +2491,11 @@
 
 /* ─── Таблица каталога ───────────────────────────────────────── */
 
+/* Когда таблица внутри — сбрасываем grid, чтобы таблица растянулась на всю ширину */
+.catalog-grid:has(.catalog-table) {
+  display: block;
+}
+
 .catalog-table {
   width: 100%;
   border-collapse: collapse;
