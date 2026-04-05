@@ -2489,6 +2489,30 @@
   background: #fff;
 }
 
+/* ─── Дерево категорий (аккордеон) ──────────────────────────── */
+
+.cat-tree { list-style:none; padding:0; margin:0; }
+.cat-tree__item { margin-bottom:2px; }
+.cat-tree__cat {
+  display:flex; align-items:center; justify-content:space-between;
+  width:100%; padding:8px 10px; background:none; border:none;
+  border-radius:var(--radius-sm); font-size:var(--font-size-sm);
+  color:var(--color-text); cursor:pointer; text-align:left;
+  transition:background 0.15s;
+}
+.cat-tree__cat:hover { background:var(--color-tint-blue); }
+.cat-tree__cat.active { background:var(--color-tint-blue); color:var(--color-cta); font-weight:600; }
+.cat-tree__arrow { flex-shrink:0; transition:transform 0.2s; opacity:0.4; }
+.cat-tree__arrow.open { transform:rotate(90deg); }
+.cat-tree__subs { list-style:none; padding:0 0 4px 16px; margin:2px 0; }
+.cat-tree__sub {
+  display:block; width:100%; padding:5px 10px; background:none; border:none;
+  border-radius:var(--radius-sm); font-size:12px; color:var(--color-text-muted);
+  cursor:pointer; text-align:left; transition:background 0.15s, color 0.15s;
+}
+.cat-tree__sub:hover { background:var(--color-tint-blue); color:var(--color-text); }
+.cat-tree__sub.active { color:var(--color-cta); font-weight:600; }
+
 /* ─── Таблица каталога ───────────────────────────────────────── */
 
 /* Когда таблица внутри — сбрасываем grid, чтобы таблица растянулась на всю ширину */

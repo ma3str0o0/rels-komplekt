@@ -188,17 +188,106 @@
               </div>
             </div>
 
-            <!-- Категории -->
+            <!-- Категории — двухуровневый аккордеон -->
             <div class="sidebar__section">
-              <div class="sidebar__section-title">
-                Категории
-                <button class="sidebar__section-toggle" id="categoriesToggle" aria-expanded="true" aria-controls="categoriesList">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-                </button>
-              </div>
-              <div class="sidebar__categories" id="categoriesList" role="group" aria-label="Фильтр по категориям">
-                <!-- Генерируется JS -->
-              </div>
+              <div class="sidebar__section-title">Категории</div>
+              <ul class="cat-tree" id="categoryTree" role="tree" aria-label="Фильтр по категориям">
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat active" data-cat="">Все категории</button>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cats="Рельсы широкой колеи|Рельсы Р50">
+                    <span>Рельсы широкой колеи</span>
+                    <svg class="cat-tree__arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </button>
+                  <ul class="cat-tree__subs" hidden>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы Р65" data-sub-type="subcategory">Рельсы Р65</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы Р50" data-sub-type="category">Рельсы Р50</button></li>
+                  </ul>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cats="Рельсы крановые|Рельсы КР 80|Рельсы КР 100|Рельсы КР 120|Рельсы КР 140">
+                    <span>Рельсы крановые</span>
+                    <svg class="cat-tree__arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </button>
+                  <ul class="cat-tree__subs" hidden>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы КР 70" data-sub-type="subcategory">Рельсы КР 70</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы КР 80" data-sub-type="category">Рельсы КР 80</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы КР 100" data-sub-type="category">Рельсы КР 100</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы КР 120" data-sub-type="category">Рельсы КР 120</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы КР 140" data-sub-type="category">Рельсы КР 140</button></li>
+                  </ul>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cats="Рельсы узкоколейные|Рельсы Р8|Рельс Р12|Рельсы Р15|Рельсы Р18|Рельсы Р24|Рельсы Р33|Рельсы Р38|Рельсы Р43">
+                    <span>Рельсы узкоколейные</span>
+                    <svg class="cat-tree__arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </button>
+                  <ul class="cat-tree__subs" hidden>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы узкоколейные" data-sub-type="category">Все узкоколейные</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы Р8" data-sub-type="category">Рельсы Р8</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельс Р12" data-sub-type="category">Рельс Р12</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы Р15" data-sub-type="category">Рельсы Р15</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы Р18" data-sub-type="category">Рельсы Р18</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы Р24" data-sub-type="category">Рельсы Р24</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы Р33" data-sub-type="category">Рельсы Р33</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы Р38" data-sub-type="category">Рельсы Р38</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Рельсы Р43" data-sub-type="category">Рельсы Р43</button></li>
+                  </ul>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cats="Шпалы деревянные|Брус для стрелочного перевода|Шпалы железобетонные">
+                    <span>Шпалы</span>
+                    <svg class="cat-tree__arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </button>
+                  <ul class="cat-tree__subs" hidden>
+                    <li><button class="cat-tree__sub" data-sub="Шпалы деревянные" data-sub-type="category">Шпалы деревянные</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Брус для стрелочного перевода" data-sub-type="category">Брус стрелочного перевода</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Шпалы железобетонные" data-sub-type="category">Шпалы железобетонные</button></li>
+                  </ul>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cat="Крановый крепеж">Крановый крепёж</button>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cats="Крепеж железнодорожный|Болты стыковые|Костыль путевой|Болты закладные|Шурупы путевые|Болты клеммные|Противоугон">
+                    <span>Крепёж ж/д</span>
+                    <svg class="cat-tree__arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </button>
+                  <ul class="cat-tree__subs" hidden>
+                    <li><button class="cat-tree__sub" data-sub="Болты стыковые" data-sub-type="category">Болты стыковые</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Костыль путевой" data-sub-type="category">Костыль путевой</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Болты закладные" data-sub-type="category">Болты закладные</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Шурупы путевые" data-sub-type="category">Шурупы путевые</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Болты клеммные" data-sub-type="category">Болты клеммные</button></li>
+                    <li><button class="cat-tree__sub" data-sub="Противоугон" data-sub-type="category">Противоугон</button></li>
+                  </ul>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cat="Международный стандарт рельс DIN 536">Международный стандарт DIN 536</button>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cat="Накладки рельсовые">Накладки рельсовые</button>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cat="Прокладки резиновые">Прокладки резиновые</button>
+                </li>
+
+                <li class="cat-tree__item">
+                  <button class="cat-tree__cat" data-cat="Подкладки">Подкладки</button>
+                </li>
+
+              </ul>
             </div>
 
             <!-- Наличие цены -->

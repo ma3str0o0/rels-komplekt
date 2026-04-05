@@ -8,12 +8,15 @@
 /* ─── Константы ──────────────────────────────────────────────── */
 const PAGE_SIZE = 24;
 
+/* ─── Активный фильтр категорий ──────────────────────────────── */
+// type: 'all' | 'category' | 'multi-category' | 'subcategory'
+let activeFilter = { type: 'all' };
+
 /* ─── Состояние фильтров ─────────────────────────────────────── */
 const state = {
   all:          [],          // все позиции из JSON
   filtered:     [],          // результат после фильтров
   search:       '',
-  categories:   new Set(),   // выбранные категории
   priceFilter:  'all',       // 'all' | 'priced'
   page:         1,           // текущая страница пагинации
 };
@@ -25,8 +28,7 @@ const dom = {};
 document.addEventListener('DOMContentLoaded', async () => {
   cacheDom();
   await loadCatalog();
-  readUrlParams();
-  renderCategories();
+  initCategoryFilter();
   applyFilters();
   bindEvents();
   updateCartBadge();
@@ -41,8 +43,6 @@ function cacheDom() {
   dom.mobileCount     = document.getElementById('mobileResultCount');
   dom.drawerCount     = document.getElementById('drawerResultCount');
   dom.searchInput     = document.getElementById('searchInput');
-  dom.categoriesList  = document.getElementById('categoriesList');
-  dom.categoriesToggle= document.getElementById('categoriesToggle');
   dom.resetBtn        = document.getElementById('resetFilters');
   dom.resetBtn2       = document.getElementById('resetFilters2');
   dom.activeFiltersCount = document.getElementById('activeFiltersCount');
@@ -78,64 +78,94 @@ function showError() {
   if (dom.loading) dom.loading.innerHTML = '<p style="color:var(--color-error); padding: var(--space-xl);">Ошибка загрузки данных. Пожалуйста, обновите страницу.</p>';
 }
 
-/* ─── Чтение URL-параметров ──────────────────────────────────── */
-function readUrlParams() {
-  const params = new URLSearchParams(window.location.search);
-  const cat    = params.get('cat');
-  if (!cat) return;
-
-  const decoded = decodeURIComponent(cat);
-
-  // Проверяем точное совпадение с категорией в каталоге
-  const exactMatch = state.all.find(item => item.category === decoded);
-  if (exactMatch) {
-    state.categories.add(decoded);
-    return;
-  }
-
-  // Нечёткое совпадение: если нет точного — ищем категории, содержащие подстроку
-  const lc = decoded.toLowerCase();
-  const matches = [...new Set(
-    state.all
-      .filter(item => item.category.toLowerCase().includes(lc))
-      .map(item => item.category)
-  )];
-  matches.forEach(c => state.categories.add(c));
+/* ─── Сброс визуального состояния дерева категорий ──────────── */
+function resetCategoryUI() {
+  document.querySelectorAll('.cat-tree__cat, .cat-tree__sub')
+    .forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.cat-tree__subs')
+    .forEach(ul => { ul.hidden = true; });
+  document.querySelectorAll('.cat-tree__arrow')
+    .forEach(a => a.classList.remove('open'));
 }
 
-/* ─── Генерация списка категорий ─────────────────────────────── */
-function renderCategories() {
-  // Подсчёт позиций по категориям
-  const counts = {};
-  state.all.forEach(item => {
-    counts[item.category] = (counts[item.category] || 0) + 1;
-  });
+/* ─── Проверка соответствия товара активному фильтру ─────────── */
+function filterItem(item) {
+  switch (activeFilter.type) {
+    case 'all':            return true;
+    case 'category':       return item.category === activeFilter.value;
+    case 'multi-category': return activeFilter.value.includes(item.category);
+    case 'subcategory':    return item.subcategory === activeFilter.value;
+    default:               return true;
+  }
+}
 
-  // Сортировка по количеству (убыв.)
-  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+/* ─── Инициализация дерева категорий ─────────────────────────── */
+function initCategoryFilter() {
+  // Обработчики кнопок верхнего уровня
+  document.querySelectorAll('.cat-tree__cat').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isActive = btn.classList.contains('active');
+      resetCategoryUI();
 
-  dom.categoriesList.innerHTML = sorted.map(([cat, count]) => {
-    const checked  = state.categories.has(cat) ? 'checked' : '';
-    const id       = 'cat_' + CSS.escape(cat);
-    return `
-      <label class="filter-option" for="${id}">
-        <input type="checkbox" id="${id}" value="${escapeHtml(cat)}" ${checked} aria-label="${escapeHtml(cat)}">
-        <span>${escapeHtml(cat)}</span>
-        <span class="filter-option__count">${count}</span>
-      </label>`;
-  }).join('');
-
-  // Вешаем обработчики на чекбоксы
-  dom.categoriesList.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      if (cb.checked) {
-        state.categories.add(cb.value);
+      if (isActive || btn.dataset.cat === '') {
+        // Сброс на «Все категории»
+        activeFilter = { type: 'all' };
+        document.querySelector('.cat-tree__cat[data-cat=""]').classList.add('active');
+      } else if (btn.dataset.cats) {
+        // Мультикатегория (Шпалы, узкоколейные и т.д.)
+        const cats = btn.dataset.cats.split('|');
+        activeFilter = { type: 'multi-category', value: cats };
+        btn.classList.add('active');
+        const subs = btn.closest('li').querySelector('.cat-tree__subs');
+        if (subs) { subs.hidden = false; btn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
       } else {
-        state.categories.delete(cb.value);
+        // Обычная одиночная категория
+        activeFilter = { type: 'category', value: btn.dataset.cat };
+        btn.classList.add('active');
+        const subs = btn.closest('li').querySelector('.cat-tree__subs');
+        if (subs) { subs.hidden = false; btn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
       }
+
+      state.page = 1;
       applyFilters();
     });
   });
+
+  // Обработчики подкатегорий
+  document.querySelectorAll('.cat-tree__sub').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cat-tree__sub').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (btn.dataset.subType === 'category') {
+        // Шпалы, Крепёж и т.д.: фильтр по item.category
+        activeFilter = { type: 'category', value: btn.dataset.sub };
+      } else {
+        // Рельсы Р65, КР 70: фильтр по item.subcategory
+        activeFilter = { type: 'subcategory', value: btn.dataset.sub };
+      }
+
+      state.page = 1;
+      applyFilters();
+    });
+  });
+
+  // Обработка URL-параметра ?cat= при загрузке
+  const catParam = new URLSearchParams(location.search).get('cat');
+  if (catParam) {
+    const decoded = decodeURIComponent(catParam);
+    const btn = document.querySelector(`.cat-tree__cat[data-cat="${CSS.escape(decoded)}"]`);
+    if (btn) {
+      resetCategoryUI();
+      btn.classList.add('active');
+      activeFilter = { type: 'category', value: decoded };
+      const subs = btn.closest('li').querySelector('.cat-tree__subs');
+      if (subs) { subs.hidden = false; btn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
+    }
+  } else {
+    // По умолчанию — «Все категории» активна
+    document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
+  }
 }
 
 /* ─── Применение фильтров ────────────────────────────────────── */
@@ -146,8 +176,8 @@ function applyFilters() {
     // Поиск по названию
     if (q && !item.name.toLowerCase().includes(q)) return false;
 
-    // Фильтр по категориям (если ни одна не выбрана — показываем все)
-    if (state.categories.size > 0 && !state.categories.has(item.category)) return false;
+    // Фильтр по категории/подкатегории
+    if (!filterItem(item)) return false;
 
     // Фильтр по наличию цены
     if (state.priceFilter === 'priced' && item.price === null) return false;
@@ -351,7 +381,7 @@ function updateCounts() {
 
 /* ─── Индикатор активных фильтров ─────────────────────────────── */
 function updateActiveFiltersIndicator() {
-  const count = state.categories.size
+  const count = (activeFilter.type !== 'all' ? 1 : 0)
     + (state.search ? 1 : 0)
     + (state.priceFilter !== 'all' ? 1 : 0);
 
@@ -382,17 +412,6 @@ function bindEvents() {
     btn?.addEventListener('click', resetFilters);
   });
 
-  // Сворачивание списка категорий
-  dom.categoriesToggle?.addEventListener('click', () => {
-    const expanded = dom.categoriesToggle.getAttribute('aria-expanded') === 'true';
-    dom.categoriesToggle.setAttribute('aria-expanded', !expanded);
-    dom.categoriesList.classList.toggle('collapsed', expanded);
-
-    // Поворот иконки
-    const icon = dom.categoriesToggle.querySelector('svg');
-    icon.style.transform = expanded ? 'rotate(180deg)' : '';
-  });
-
   // Мобильный drawer: открытие
   dom.openFiltersBtn?.addEventListener('click', openDrawer);
 
@@ -411,16 +430,16 @@ function bindEvents() {
 
 /* ─── Сброс фильтров ─────────────────────────────────────────── */
 function resetFilters() {
-  state.search       = '';
-  state.categories   = new Set();
-  state.priceFilter  = 'all';
+  state.search      = '';
+  state.priceFilter = 'all';
+  activeFilter      = { type: 'all' };
 
   // Сброс UI
   if (dom.searchInput) dom.searchInput.value = '';
-  dom.categoriesList?.querySelectorAll('input[type="checkbox"]')
-    .forEach(cb => { cb.checked = false; });
   document.querySelectorAll('input[name="priceFilter"]')
     .forEach(r => { r.checked = r.value === 'all'; });
+  resetCategoryUI();
+  document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
 
   applyFilters();
 }
