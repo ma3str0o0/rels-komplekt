@@ -605,26 +605,51 @@ function _buildPhoneWidget(input) {
   const wrapper = document.createElement('div');
   wrapper.className = 'phone-widget';
 
-  // Кнопка флага
+  // Кнопка флага — только флаг, код отображается в самом поле ввода
   const flagBtn = document.createElement('button');
   flagBtn.type = 'button';
   flagBtn.className = 'phone-flag-btn';
   flagBtn.dataset.code = '7';
-  flagBtn.innerHTML = '<span class="phone-flag">🇷🇺</span><span class="phone-code">+7</span>';
+  flagBtn.innerHTML = '<span class="phone-flag">🇷🇺</span>';
 
   // Дропдаун
   const dropdown = document.createElement('ul');
   dropdown.className = 'phone-dropdown';
 
+  // Возвращает текущий префикс: "+7 ", "+375 " и т.д.
+  function getPrefix() {
+    return '+' + flagBtn.dataset.code + ' ';
+  }
+
+  // Форматирование локальных цифр (без кода страны)
+  function formatLocal(digits, code) {
+    if (code === '7') {
+      if (digits.startsWith('8') || digits.startsWith('7')) digits = digits.slice(1);
+      digits = digits.slice(0, 10);
+      let fmt = '';
+      if (digits.length > 0) fmt = '(' + digits.slice(0, 3);
+      if (digits.length > 3) fmt += ') ' + digits.slice(3, 6);
+      if (digits.length > 6) fmt += '-' + digits.slice(6, 8);
+      if (digits.length > 8) fmt += '-' + digits.slice(8, 10);
+      return fmt;
+    }
+    digits = digits.slice(0, 12);
+    return digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim();
+  }
+
+  // Устанавливаем префикс по умолчанию в поле ввода
+  input.value = '+7 ';
+  input.placeholder = '';
+
   PHONE_COUNTRIES.forEach(c => {
     const li = document.createElement('li');
     li.innerHTML = `<span>${c.flag}</span><span style="flex:1">${c.name}</span><span style="color:var(--color-text-muted)">+${c.code}</span>`;
     li.addEventListener('click', () => {
-      flagBtn.innerHTML = `<span class="phone-flag">${c.flag}</span><span class="phone-code">+${c.code}</span>`;
+      flagBtn.innerHTML = `<span class="phone-flag">${c.flag}</span>`;
       flagBtn.dataset.code = c.code;
-      input.placeholder = c.mask.replace(/#/g, '_');
-      input.value = '';
+      input.value = '+' + c.code + ' ';
       input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
       dropdown.style.display = 'none';
     });
     dropdown.appendChild(li);
@@ -643,41 +668,50 @@ function _buildPhoneWidget(input) {
   });
   document.addEventListener('click', () => { dropdown.style.display = 'none'; });
 
-  // Только цифры — блокируем нецифровые символы
+  // Защита префикса от удаления
   input.addEventListener('keydown', e => {
-    const allowed = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Home','End'];
-    if (allowed.includes(e.key)) return;
-    if (!/^\d$/.test(e.key)) e.preventDefault();
-  });
-
-  // Авто-форматирование при вводе
-  input.addEventListener('input', () => {
-    const code = flagBtn.dataset.code;
-    let digits = input.value.replace(/\D/g, '');
-
-    if (code === '7') {
-      // Убираем ведущую 7 или 8 если введена
-      if (digits.startsWith('8') || digits.startsWith('7')) digits = digits.slice(1);
-      digits = digits.slice(0, 10);
-      let fmt = '';
-      if (digits.length > 0) fmt = '(' + digits.slice(0, 3);
-      if (digits.length > 3) fmt += ') ' + digits.slice(3, 6);
-      if (digits.length > 6) fmt += '-' + digits.slice(6, 8);
-      if (digits.length > 8) fmt += '-' + digits.slice(8, 10);
-      input.value = fmt;
-    } else {
-      // Остальные страны: цифры с пробелами каждые 3
-      digits = digits.slice(0, 12);
-      input.value = digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim();
+    const prefix = getPrefix();
+    const nav = ['Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
+    if (nav.includes(e.key)) return;
+    if (!/^\d$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete') {
+      e.preventDefault();
+      return;
+    }
+    if (e.key === 'Backspace' && input.selectionStart <= prefix.length && input.selectionEnd <= prefix.length) {
+      e.preventDefault();
+    }
+    if (e.key === 'Delete' && input.selectionStart < prefix.length && input.selectionEnd <= prefix.length) {
+      e.preventDefault();
     }
   });
 
-  // Вставка из буфера — только цифры
+  // Авто-форматирование: восстанавливаем префикс и форматируем локальную часть
+  input.addEventListener('input', () => {
+    const prefix = getPrefix();
+    const code = flagBtn.dataset.code;
+    const val = input.value;
+
+    // Если пользователь стёр весь префикс — восстанавливаем
+    if (!val.startsWith('+')) {
+      input.value = prefix;
+      return;
+    }
+
+    // Извлекаем то, что пользователь ввёл после префикса
+    const afterPrefix = val.length > prefix.length ? val.slice(prefix.length) : '';
+    const digits = afterPrefix.replace(/\D/g, '');
+    input.value = prefix + formatLocal(digits, code);
+  });
+
+  // Вставка из буфера — очищаем, убираем код страны если есть, форматируем
   input.addEventListener('paste', e => {
     e.preventDefault();
+    const prefix = getPrefix();
+    const code = flagBtn.dataset.code;
     const pasted = (e.clipboardData || window.clipboardData).getData('text');
-    input.value = pasted.replace(/\D/g, '');
-    input.dispatchEvent(new Event('input'));
+    let digits = pasted.replace(/\D/g, '');
+    if (digits.startsWith(code)) digits = digits.slice(code.length);
+    input.value = prefix + formatLocal(digits, code);
   });
 }
 

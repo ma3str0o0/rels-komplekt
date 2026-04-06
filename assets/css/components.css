@@ -2686,11 +2686,7 @@
   background: var(--color-tint-blue);
 }
 
-.phone-flag-btn .phone-code {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  font-weight: 500;
-}
+/* .phone-code удалён — код страны отображается внутри поля ввода */
 
 .phone-widget input[type="tel"] {
   border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
