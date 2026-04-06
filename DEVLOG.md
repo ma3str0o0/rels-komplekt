@@ -285,6 +285,25 @@ Security audit выявил 8 проблем. Все исправлены.
 
 ---
 
+## [2026-04-06] — Итерация 23: Обход файрвола VPS через nginx
+
+**Коммит:** `581fc90`
+
+**Диагноз:** `ufw inactive`, `iptables` policy ACCEPT — OS не блокирует. Файрвол на уровне панели VPS-провайдера закрывал порт 3001 для внешних подключений. Порт 80 (nginx) открыт.
+
+**Решение:** добавить `location /api/notify` в nginx → `proxy_pass http://127.0.0.1:3001`. Браузер обращается на порт 80, nginx внутри сервера передаёт запрос на proxy.
+
+### /etc/nginx/sites-enabled/default
+- Добавлен блок `location /api/notify { proxy_pass http://127.0.0.1:3001; proxy_read_timeout 15s; }`
+- `nginx -t && systemctl reload nginx` — конфиг валиден, перезагружен без даунтайма
+
+### assets/js/main.js
+- `PROXY_URL`: `http://202.148.53.107:3001/api/notify` → `http://202.148.53.107/api/notify` (порт 80)
+
+**Проверка:** `curl http://202.148.53.107/api/notify` → `{"ok": true}`, message_id: 6, Telegram получил
+
+---
+
 ## [2026-04-06] — Итерация 22: Фикс CORS в Telegram proxy
 
 **Коммит:** `92f5522`
