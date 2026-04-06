@@ -472,7 +472,7 @@ async function handleRequestSubmit(e) {
 
 /* ─── Отправка в Telegram через proxy ────────────────────────── */
 async function sendTelegram(data) {
-  const PROXY_URL = 'http://202.148.53.107/api/notify'; // через nginx :80, не напрямую на :3001
+  const PROXY_URL = '/api/notify'; // относительный путь — работает с любого хоста и порта
   const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
