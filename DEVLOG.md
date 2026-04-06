@@ -285,6 +285,21 @@ Security audit выявил 8 проблем. Все исправлены.
 
 ---
 
+## [2026-04-06] — Итерация 22: Фикс CORS в Telegram proxy
+
+**Коммит:** `92f5522`
+
+### proxy/server.py
+- Убран фиксированный `ALLOWED_ORIGIN` — вместо него `_send_cors()` читает `Origin` из заголовка запроса и отражает его обратно (`Access-Control-Allow-Origin: <origin>`)
+- Добавлен `Access-Control-Max-Age: 86400` — браузер кэширует preflight на сутки
+- `do_OPTIONS` возвращает `204 No Content` с полными CORS-заголовками
+
+**Проверка:**
+- `OPTIONS` preflight → `204`, все `Access-Control-Allow-*` заголовки присутствуют
+- `POST` с `Origin: http://202.148.53.107:8080` → `{"ok": true}`, message_id: 5, Telegram получил
+
+---
+
 ## [2026-04-06] — Итерация 21: Telegram proxy — скрытие токена + товары в уведомлениях
 
 **Коммит:** `27ade61`
