@@ -403,8 +403,23 @@
                   <input class="input" type="text" id="il-name" name="name" placeholder="Иванов Иван" required autocomplete="name">
                 </div>
                 <div class="form-group">
-                  <label class="form-label form-label--required" for="il-phone">Телефон</label>
-                  <input class="input" type="tel" id="il-phone" name="phone" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
+                  <label class="form-label form-label--required" for="il-contact">Телефон или email</label>
+                  <div class="smart-contact-wrap" id="il-contact-wrap">
+                    <span class="smart-contact-icon" id="il-contact-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 019.82 18.9 19.5 19.5 0 013.07 12 19.79 19.79 0 01.12 2.18a2 2 0 012-2h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.91z"/></svg>
+                    </span>
+                    <input
+                      class="input smart-contact-input"
+                      type="text"
+                      id="il-contact"
+                      name="contact"
+                      placeholder="Телефон или email"
+                      required
+                      autocomplete="off"
+                      aria-label="Телефон или email для связи"
+                    >
+                    <span class="smart-contact-hint" id="il-contact-hint"></span>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="il-comment">Комментарий</label>
@@ -414,7 +429,7 @@
 
               <button class="btn btn-primary" type="submit" style="width:100%;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                Отправить заявку
+                Получить КП
               </button>
               <p class="inline-form__policy">
                 Нажимая кнопку, вы соглашаетесь с обработкой персональных данных

@@ -4,6 +4,43 @@
 
 ---
 
+## [2026-04-06] — Итерация 27: Умное поле «телефон или email» + кнопка «Получить КП»
+
+**Файлы:** `index.html`, `assets/js/main.js`, `assets/css/components.css`, `serve.py`
+
+### Изменения
+
+**`index.html`:**
+- `#inlineRequestForm`: поле `input[type="tel"]#il-phone` заменено на `.smart-contact-wrap` с `input.smart-contact-input#il-contact` (`name="contact"`)
+- Иконка телефона слева, хинт-подпись справа (тип определяется автоматически)
+- Кнопка submit: `Отправить заявку` → `Получить КП`
+
+**`assets/js/main.js`:**
+- `_tplModal()`: поле `req-phone` заменено на `.smart-contact-wrap#req-contact-wrap`; кнопка `Отправить` → `Получить КП`
+- `initInlineForm()`: полностью переписана — работает с `name="contact"`, валидирует через `isValidContact()`, передаёт `phone`/`email` в зависимости от типа ввода, сбрасывает хинт при reset
+- `handleRequestSubmit()`: после получения данных формы определяет тип контакта и проставляет `data.phone`/`data.email`
+- `validateForm()`: добавлена ветка `field.name === 'contact'` с вызовом `isValidContact()`
+- `initPhoneMask()`: добавлен вызов `initSmartContactFields()` в конце
+- Добавлены функции `initSmartContactFields()` и `isValidContact()`
+
+**`initSmartContactFields()`:**
+- `detectType(val)`: если содержит `@` → email; если цифр > 2 → phone; иначе empty
+- `formatPhone()`: авто-форматирование в `+7 (XXX) XXX-XX-XX` при вводе
+- `update()`: переключает иконку (телефон / конверт), подпись «Телефон» / «Email», `wrap.dataset.type`
+- Keydown: блокирует нецифровые символы только когда тип уже определён как `phone`
+- Paste: очищает и перегоняет через `input` event
+
+**`assets/css/components.css`:**
+- Добавлены стили `.smart-contact-wrap`, `.smart-contact-icon`, `.smart-contact-hint`, `--phone` и `--email` модификаторы
+
+**`serve.py`:**
+- `format_message()`: `📞 Телефон:` → `📞 Контакт:` с fallback `contact || phone`
+
+### UX
+Одно поле принимает телефон или email. При вводе телефона — авто-форматирование и блокировка букв. При вводе email — иконка меняется на конверт, появляется подпись «Email».
+
+---
+
 ## [2026-03-24] — Коммит: MVP готов
 
 Первоначальный запуск. Все 6 страниц, SEO, sitemap, robots.txt.

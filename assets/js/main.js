@@ -212,15 +212,30 @@ function _tplModal() {
           <input class="input" type="text" id="req-name" name="name" placeholder="Иванов Иван" required autocomplete="name">
         </div>
         <div class="form-group">
-          <label class="form-label form-label--required" for="req-phone">Телефон</label>
-          <input class="input" type="tel" id="req-phone" name="phone" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
+          <label class="form-label form-label--required" for="req-contact">Телефон или email</label>
+          <div class="smart-contact-wrap" id="req-contact-wrap">
+            <span class="smart-contact-icon" id="req-contact-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 019.82 18.9 19.5 19.5 0 013.07 12 19.79 19.79 0 01.12 2.18a2 2 0 012-2h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.91z"/></svg>
+            </span>
+            <input
+              class="input smart-contact-input"
+              type="text"
+              id="req-contact"
+              name="contact"
+              placeholder="Телефон или email"
+              required
+              autocomplete="off"
+              aria-label="Телефон или email"
+            >
+            <span class="smart-contact-hint" id="req-contact-hint"></span>
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label" for="req-message">Сообщение</label>
           <textarea class="textarea" id="req-message" name="message" rows="3" placeholder="Чем можем помочь?"></textarea>
         </div>
         <div class="modal__footer">
-          <button class="btn btn-primary" type="submit" style="width:100%;">Отправить</button>
+          <button class="btn btn-primary" type="submit" style="width:100%;">Получить КП</button>
           <p class="modal__note">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных</p>
         </div>
       </form>
@@ -414,38 +429,38 @@ function initInlineForm() {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    const btn = form.querySelector('[type="submit"]');
+    const btn     = form.querySelector('[type="submit"]');
     const name    = form.querySelector('[name="name"]')?.value.trim();
-    const phone   = form.querySelector('[name="phone"]')?.value.trim();
+    const contact = form.querySelector('[name="contact"]')?.value.trim();
     const message = form.querySelector('[name="message"]')?.value.trim();
 
-    if (!name)  { form.querySelector('[name="name"]').focus();  return; }
-    if (!phone || !isValidPhone(phone)) {
-      form.querySelector('[name="phone"]').focus();
+    if (!name)    { form.querySelector('[name="name"]').focus(); return; }
+    if (!contact || !isValidContact(contact)) {
+      form.querySelector('[name="contact"]').focus();
       return;
     }
-
-    if (_isThrottled()) {
-      showToast('Подождите немного перед повторной отправкой.', 'error');
-      return;
-    }
+    if (_isThrottled()) { showToast('Подождите немного перед повторной отправкой.', 'error'); return; }
 
     btn.disabled = true;
     const origText = btn.textContent;
     btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;margin:0 auto;"></span>';
 
+    const isEmail = contact.includes('@');
     try {
-      await sendTelegram({ name, phone, message: message || '' });
+      await sendTelegram({
+        name,
+        phone: isEmail ? '' : contact,
+        email: isEmail ? contact : '',
+        contact,
+        message: message || ''
+      });
       showToast('Спасибо! Мы свяжемся с вами.', 'success');
       form.reset();
-      // Сбрасываем флаг страны обратно на +7
-      const flagBtn = form.querySelector('.phone-flag-btn');
-      if (flagBtn) {
-        flagBtn.innerHTML = '<span class="phone-flag">🇷🇺</span><span class="phone-code">+7</span>';
-        flagBtn.dataset.code = '7';
-      }
-      const phoneInput = form.querySelector('[name="phone"]');
-      if (phoneInput) phoneInput.placeholder = '(___) ___-__-__';
+      document.querySelectorAll('#inlineRequestForm .smart-contact-wrap').forEach(w => {
+        w.dataset.type = '';
+        const hint = w.querySelector('.smart-contact-hint');
+        if (hint) hint.textContent = '';
+      });
     } catch(err) {
       console.error('Ошибка отправки:', err);
       showToast('Ошибка отправки. Позвоните нам напрямую.', 'error');
@@ -493,6 +508,12 @@ async function handleRequestSubmit(e) {
       data.items = JSON.parse(localStorage.getItem('cart') || '[]');
     } catch(e) {
       data.items = [];
+    }
+    // Определяем тип умного поля
+    if (data.contact) {
+      const isEmail = data.contact.includes('@');
+      data.phone = isEmail ? '' : data.contact;
+      data.email = isEmail ? data.contact : '';
     }
     await sendTelegram(data);
     showToast('Спасибо! Мы свяжемся с вами.', 'success');
@@ -550,6 +571,9 @@ function validateForm(form) {
     if (!value) {
       markFieldError(field, 'Обязательное поле');
       valid = false;
+    } else if (field.name === 'contact' && !isValidContact(value)) {
+      markFieldError(field, 'Введите телефон или email');
+      valid = false;
     } else if (field.type === 'tel' && !isValidPhone(value)) {
       markFieldError(field, 'Введите корректный номер телефона');
       valid = false;
@@ -595,6 +619,102 @@ function initPhoneMask() {
   document.querySelectorAll('input[type="tel"]').forEach(input => {
     _buildPhoneWidget(input);
   });
+  initSmartContactFields();
+}
+
+/* ─── Умное поле: телефон или email ─────────────────────────── */
+function initSmartContactFields() {
+  document.querySelectorAll('.smart-contact-input').forEach(input => {
+    const wrap = input.closest('.smart-contact-wrap');
+    const icon = wrap?.querySelector('.smart-contact-icon');
+    const hint = wrap?.querySelector('.smart-contact-hint');
+
+    const PHONE_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 019.82 18.9 19.5 19.5 0 013.07 12 19.79 19.79 0 01.12 2.18a2 2 0 012-2h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.91z"/></svg>`;
+    const EMAIL_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`;
+
+    function detectType(val) {
+      if (!val) return 'empty';
+      if (val.includes('@')) return 'email';
+      const digits = val.replace(/\D/g, '');
+      if (digits.length > 2) return 'phone';
+      return 'empty';
+    }
+
+    function formatPhone(val) {
+      let digits = val.replace(/\D/g, '');
+      if (digits.startsWith('8') || digits.startsWith('7')) digits = digits.slice(1);
+      digits = digits.slice(0, 10);
+      let fmt = '';
+      if (digits.length > 0) fmt = '+7 (' + digits.slice(0, 3);
+      if (digits.length > 3) fmt += ') ' + digits.slice(3, 6);
+      if (digits.length > 6) fmt += '-' + digits.slice(6, 8);
+      if (digits.length > 8) fmt += '-' + digits.slice(8, 10);
+      return fmt;
+    }
+
+    function update(val) {
+      const type = detectType(val);
+      if (type === 'phone') {
+        if (icon) icon.innerHTML = PHONE_SVG;
+        if (hint) { hint.textContent = 'Телефон'; hint.className = 'smart-contact-hint smart-contact-hint--phone'; }
+        if (wrap)  wrap.dataset.type = 'phone';
+      } else if (type === 'email') {
+        if (icon) icon.innerHTML = EMAIL_SVG;
+        if (hint) { hint.textContent = 'Email'; hint.className = 'smart-contact-hint smart-contact-hint--email'; }
+        if (wrap)  wrap.dataset.type = 'email';
+      } else {
+        if (icon) icon.innerHTML = PHONE_SVG;
+        if (hint) { hint.textContent = ''; hint.className = 'smart-contact-hint'; }
+        if (wrap)  wrap.dataset.type = '';
+      }
+    }
+
+    input.addEventListener('keydown', e => {
+      const type = detectType(input.value);
+      // Если похоже на телефон — блокируем не-цифры (кроме + в начале)
+      if (type === 'phone') {
+        const allowed = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Home','End','Enter'];
+        if (allowed.includes(e.key)) return;
+        if (e.key === '+' && input.selectionStart === 0) return;
+        if (!/^\d$/.test(e.key)) e.preventDefault();
+      }
+    });
+
+    input.addEventListener('input', () => {
+      const raw = input.value;
+      const type = detectType(raw);
+      // Автоформатирование только для телефона
+      if (type === 'phone') {
+        const pos = input.selectionStart;
+        const formatted = formatPhone(raw);
+        input.value = formatted;
+        const diff = formatted.length - raw.length;
+        input.setSelectionRange(pos + diff, pos + diff);
+      }
+      update(input.value);
+    });
+
+    input.addEventListener('paste', e => {
+      e.preventDefault();
+      const pasted = (e.clipboardData || window.clipboardData).getData('text');
+      input.value = pasted;
+      input.dispatchEvent(new Event('input'));
+    });
+
+    input.addEventListener('blur', () => {
+      if (wrap?.dataset.type === 'phone') {
+        input.value = formatPhone(input.value);
+      }
+    });
+  });
+}
+
+/* ─── Валидация умного поля ──────────────────────────────────── */
+function isValidContact(val) {
+  if (!val) return false;
+  if (val.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  const digits = val.replace(/\D/g, '');
+  return digits.length >= 10;
 }
 
 function _buildPhoneWidget(input) {

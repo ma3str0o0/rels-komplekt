@@ -41,7 +41,7 @@ def format_message(data: dict) -> str:
         '<b>📋 Новая заявка — Рельс-Комплект</b>',
         '',
         f'👤 Имя: {data.get("name") or "—"}',
-        f'📞 Телефон: {data.get("phone") or "—"}',
+        f'📞 Контакт: {data.get("contact") or data.get("phone") or "—"}',
     ]
     if data.get('message'):
         lines.append(f'💬 Комментарий: {data["message"]}')

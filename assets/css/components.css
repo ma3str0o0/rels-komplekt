@@ -2739,3 +2739,61 @@
   background: var(--color-surface);
   border-color: var(--color-border);
 }
+
+/* ─── Smart contact field ───────────────────────────────────── */
+.smart-contact-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.smart-contact-icon {
+  position: absolute;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+  z-index: 1;
+}
+
+.smart-contact-wrap[data-type="email"] .smart-contact-icon {
+  color: var(--color-cta);
+}
+
+.smart-contact-wrap[data-type="phone"] .smart-contact-icon {
+  color: var(--color-cta);
+}
+
+.smart-contact-input {
+  padding-left: 38px !important;
+  padding-right: 70px !important;
+  width: 100%;
+}
+
+.smart-contact-hint {
+  position: absolute;
+  right: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+}
+
+.smart-contact-hint--phone {
+  color: var(--color-cta);
+  opacity: 1;
+}
+
+.smart-contact-hint--email {
+  color: var(--color-cta);
+  opacity: 1;
+}
+
+[data-theme="dark"] .smart-contact-icon {
+  color: var(--color-text-muted);
+}
