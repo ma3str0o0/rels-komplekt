@@ -285,6 +285,37 @@ Security audit выявил 8 проблем. Все исправлены.
 
 ---
 
+## [2026-04-06] — Итерация 21: Telegram proxy — скрытие токена + товары в уведомлениях
+
+**Коммит:** `27ade61`
+
+### proxy/server.py — новый файл
+- HTTP-сервер на `http.server.HTTPServer`, порт `3001` (настраивается через `PROXY_PORT`)
+- Единственный эндпоинт: `POST /api/notify`
+- Читает токен и chat_id из `proxy/.env` через `load_env()` — токен никогда не уходит во фронтенд
+- `format_message(data)` — форматирует сообщение с HTML-разметкой: имя, телефон, комментарий, состав заявки по позициям, итого в рублях
+- CORS-заголовки: `ALLOWED_ORIGIN=http://202.148.53.107:8080`, поддержка `OPTIONS` preflight
+- Валидация: 400 если нет имени/телефона, 500 если бот не настроен, 502 при сетевой ошибке
+- Тест пройден: `{"ok": true}`, сообщение доставлено в @relskomplekt_bot → chat 459417766
+
+### proxy/.env — новый файл (в .gitignore, в git не попадает)
+- `BOT_TOKEN`, `CHAT_ID`, `PROXY_PORT=3001`, `ALLOWED_ORIGIN`
+
+### proxy/requirements.txt — новый файл
+- `requests>=2.28`
+
+### .gitignore — новый файл
+- `proxy/.env` и `*.env` — защита токенов от попадания в репозиторий
+
+### assets/js/main.js
+- `sendTelegram(data)` полностью переписана: теперь шлёт `POST` на `http://202.148.53.107:3001/api/notify` вместо прямого вызова Telegram API
+- В `handleRequestSubmit`: перед `await sendTelegram(data)` добавлено чтение корзины из `localStorage.getItem('cart')` → `data.items`; товары из заявки теперь включаются в уведомление
+
+### assets/js/catalog.js
+- `rowHTML()`: regex `хранения` → `хранени[яе]` — badge «С хранения» теперь корректно матчит оба падежа
+
+---
+
 ## [2026-04-05] — Итерация 20: Удаление дублирующей формы с главной страницы
 
 **Коммит:** `022b277`
