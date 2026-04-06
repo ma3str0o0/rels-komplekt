@@ -451,6 +451,12 @@ async function handleRequestSubmit(e) {
   const data = Object.fromEntries(new FormData(form));
 
   try {
+    // Добавляем товары из корзины в данные заявки
+    try {
+      data.items = JSON.parse(localStorage.getItem('cart') || '[]');
+    } catch(e) {
+      data.items = [];
+    }
     await sendTelegram(data);
     showToast('Спасибо! Мы свяжемся с вами.', 'success');
     form.reset();
@@ -464,27 +470,18 @@ async function handleRequestSubmit(e) {
   }
 }
 
-/* ─── Отправка в Telegram ───────────────────────────────────── */
+/* ─── Отправка в Telegram через proxy ────────────────────────── */
 async function sendTelegram(data) {
-  // Токен и chat_id подставляются при деплое через переменные окружения
-  // Заглушка для разработки
-  const BOT_TOKEN = window.TELEGRAM_BOT_TOKEN || '';
-  const CHAT_ID   = window.TELEGRAM_CHAT_ID   || '';
-
-  if (!BOT_TOKEN || !CHAT_ID) {
-    console.warn('Telegram не настроен (dev-режим).');
-    return Promise.resolve(); // в dev-режиме не падаем
-  }
-
-  const text = formatTelegramMessage(data);
-
-  const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+  const PROXY_URL = 'http://202.148.53.107:3001/api/notify';
+  const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' }),
+    body: JSON.stringify(data),
   });
-
-  if (!res.ok) throw new Error(`Telegram API: ${res.status}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
 }
 
 function formatTelegramMessage(data) {

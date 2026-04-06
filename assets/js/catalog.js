@@ -392,7 +392,7 @@ function rowHTML(item) {
   let stateBadge = '';
   if (/новый|новые|гост/.test(nameLower)) {
     stateBadge = `<span class="badge badge--green">Новый</span>`;
-  } else if (/хранения/.test(nameLower)) {
+  } else if (/хранени[яе]/.test(nameLower)) {
     stateBadge = `<span class="badge badge--orange">С хранения</span>`;
   } else if (/б\/у|старогодн/.test(nameLower)) {
     stateBadge = `<span class="badge">Б/У</span>`;
