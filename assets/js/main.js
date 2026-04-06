@@ -379,17 +379,30 @@ function closeModal(overlay) {
 /* ─── Форма "Перезвоните мне" (секция cta-contact) ──────────── */
 function initCtaContactForm() {
   document.querySelectorAll('.cta-contact__form').forEach(form => {
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const nameField  = form.querySelector('[name="name"]');
       const phoneField = form.querySelector('[name="phone"]');
-      if (!nameField?.value.trim()) { nameField?.focus(); return; }
+      if (!nameField?.value.trim())  { nameField?.focus();  return; }
       if (!phoneField?.value.trim() || !isValidPhone(phoneField.value)) {
         phoneField?.focus();
         return;
       }
-      form.reset();
-      showToast('Спасибо! Мы свяжемся с вами.', 'success');
+      if (_isThrottled()) {
+        showToast('Подождите немного перед повторной отправкой.', 'error');
+        return;
+      }
+      try {
+        await sendTelegram({
+          name: nameField.value.trim(),
+          phone: phoneField.value.trim(),
+          message: 'Запрос "Перезвоните мне"'
+        });
+        form.reset();
+        showToast('Спасибо! Перезвоним вам.', 'success');
+      } catch(err) {
+        showToast('Ошибка отправки. Позвоните нам напрямую.', 'error');
+      }
     });
   });
 }
@@ -399,23 +412,47 @@ function initInlineForm() {
   const form = document.querySelector('#inlineRequestForm');
   if (!form) return;
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    const name  = form.querySelector('[name="name"]').value.trim();
-    const phone = form.querySelector('[name="phone"]').value.trim();
+    const btn = form.querySelector('[type="submit"]');
+    const name    = form.querySelector('[name="name"]')?.value.trim();
+    const phone   = form.querySelector('[name="phone"]')?.value.trim();
+    const message = form.querySelector('[name="message"]')?.value.trim();
 
-    if (!name) {
-      form.querySelector('[name="name"]').focus();
-      return;
-    }
+    if (!name)  { form.querySelector('[name="name"]').focus();  return; }
     if (!phone || !isValidPhone(phone)) {
       form.querySelector('[name="phone"]').focus();
       return;
     }
 
-    // Сбрасываем форму и показываем подтверждение
-    form.reset();
-    showToast('Спасибо! Мы свяжемся с вами.', 'success');
+    if (_isThrottled()) {
+      showToast('Подождите немного перед повторной отправкой.', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    const origText = btn.textContent;
+    btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;margin:0 auto;"></span>';
+
+    try {
+      await sendTelegram({ name, phone, message: message || '' });
+      showToast('Спасибо! Мы свяжемся с вами.', 'success');
+      form.reset();
+      // Сбрасываем флаг страны обратно на +7
+      const flagBtn = form.querySelector('.phone-flag-btn');
+      if (flagBtn) {
+        flagBtn.innerHTML = '<span class="phone-flag">🇷🇺</span><span class="phone-code">+7</span>';
+        flagBtn.dataset.code = '7';
+      }
+      const phoneInput = form.querySelector('[name="phone"]');
+      if (phoneInput) phoneInput.placeholder = '(___) ___-__-__';
+    } catch(err) {
+      console.error('Ошибка отправки:', err);
+      showToast('Ошибка отправки. Позвоните нам напрямую.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = origText;
+    }
   });
 }
 
@@ -541,24 +578,106 @@ function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
-/* ─── Маска телефона ────────────────────────────────────────── */
+/* ─── Страны для дропдауна ──────────────────────────────────── */
+const PHONE_COUNTRIES = [
+  { flag: '🇷🇺', name: 'Россия',      code: '7',   mask: '(###) ###-##-##' },
+  { flag: '🇰🇿', name: 'Казахстан',   code: '7',   mask: '(###) ###-##-##' },
+  { flag: '🇧🇾', name: 'Беларусь',    code: '375', mask: '(##) ###-##-##'  },
+  { flag: '🇺🇿', name: 'Узбекистан',  code: '998', mask: '(##) ###-##-##'  },
+  { flag: '🇰🇬', name: 'Кыргызстан',  code: '996', mask: '(###) ##-##-##'  },
+  { flag: '🇦🇿', name: 'Азербайджан', code: '994', mask: '(##) ###-##-##'  },
+  { flag: '🇩🇪', name: 'Германия',    code: '49',  mask: '### ###-####'    },
+  { flag: '🇨🇳', name: 'Китай',       code: '86',  mask: '### ####-####'   },
+];
+
+/* ─── Телефонный виджет с флагом страны ─────────────────────── */
 function initPhoneMask() {
   document.querySelectorAll('input[type="tel"]').forEach(input => {
-    input.addEventListener('input', e => {
-      let val = e.target.value.replace(/\D/g, '');
+    _buildPhoneWidget(input);
+  });
+}
 
-      // Российский формат: +7 (XXX) XXX-XX-XX
-      if (val.startsWith('8')) val = '7' + val.slice(1);
-      if (val.startsWith('7') && val.length > 1) {
-        val = val.slice(0, 11);
-        let fmt = '+7';
-        if (val.length > 1)  fmt += ' (' + val.slice(1, 4);
-        if (val.length > 4)  fmt += ') ' + val.slice(4, 7);
-        if (val.length > 7)  fmt += '-' + val.slice(7, 9);
-        if (val.length > 9)  fmt += '-' + val.slice(9, 11);
-        e.target.value = fmt;
-      }
+function _buildPhoneWidget(input) {
+  const parent = input.parentElement;
+  if (!parent || parent.classList.contains('phone-widget')) return;
+
+  // Создаём обёртку
+  const wrapper = document.createElement('div');
+  wrapper.className = 'phone-widget';
+
+  // Кнопка флага
+  const flagBtn = document.createElement('button');
+  flagBtn.type = 'button';
+  flagBtn.className = 'phone-flag-btn';
+  flagBtn.dataset.code = '7';
+  flagBtn.innerHTML = '<span class="phone-flag">🇷🇺</span><span class="phone-code">+7</span>';
+
+  // Дропдаун
+  const dropdown = document.createElement('ul');
+  dropdown.className = 'phone-dropdown';
+
+  PHONE_COUNTRIES.forEach(c => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${c.flag}</span><span style="flex:1">${c.name}</span><span style="color:var(--color-text-muted)">+${c.code}</span>`;
+    li.addEventListener('click', () => {
+      flagBtn.innerHTML = `<span class="phone-flag">${c.flag}</span><span class="phone-code">+${c.code}</span>`;
+      flagBtn.dataset.code = c.code;
+      input.placeholder = c.mask.replace(/#/g, '_');
+      input.value = '';
+      input.focus();
+      dropdown.style.display = 'none';
     });
+    dropdown.appendChild(li);
+  });
+
+  // Переставляем в DOM
+  parent.insertBefore(wrapper, input);
+  wrapper.appendChild(flagBtn);
+  wrapper.appendChild(dropdown);
+  wrapper.appendChild(input);
+
+  // Открытие/закрытие дропдауна
+  flagBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  });
+  document.addEventListener('click', () => { dropdown.style.display = 'none'; });
+
+  // Только цифры — блокируем нецифровые символы
+  input.addEventListener('keydown', e => {
+    const allowed = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Home','End'];
+    if (allowed.includes(e.key)) return;
+    if (!/^\d$/.test(e.key)) e.preventDefault();
+  });
+
+  // Авто-форматирование при вводе
+  input.addEventListener('input', () => {
+    const code = flagBtn.dataset.code;
+    let digits = input.value.replace(/\D/g, '');
+
+    if (code === '7') {
+      // Убираем ведущую 7 или 8 если введена
+      if (digits.startsWith('8') || digits.startsWith('7')) digits = digits.slice(1);
+      digits = digits.slice(0, 10);
+      let fmt = '';
+      if (digits.length > 0) fmt = '(' + digits.slice(0, 3);
+      if (digits.length > 3) fmt += ') ' + digits.slice(3, 6);
+      if (digits.length > 6) fmt += '-' + digits.slice(6, 8);
+      if (digits.length > 8) fmt += '-' + digits.slice(8, 10);
+      input.value = fmt;
+    } else {
+      // Остальные страны: цифры с пробелами каждые 3
+      digits = digits.slice(0, 12);
+      input.value = digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim();
+    }
+  });
+
+  // Вставка из буфера — только цифры
+  input.addEventListener('paste', e => {
+    e.preventDefault();
+    const pasted = (e.clipboardData || window.clipboardData).getData('text');
+    input.value = pasted.replace(/\D/g, '');
+    input.dispatchEvent(new Event('input'));
   });
 }
 
