@@ -852,11 +852,19 @@ function initSmoothScroll() {
 
 /* ─── Уведомления (Toast) ───────────────────────────────────── */
 function showToast(message, type = 'success') {
+  const MAX_TOASTS = 3;
+
   let container = document.querySelector('.toast-container');
   if (!container) {
     container = document.createElement('div');
     container.className = 'toast-container';
     document.body.appendChild(container);
+  }
+
+  // Если тостов уже MAX_TOASTS — убираем самый старый немедленно
+  const existing = container.querySelectorAll('.toast');
+  if (existing.length >= MAX_TOASTS) {
+    existing[0].remove();
   }
 
   const toast = document.createElement('div');
@@ -869,7 +877,7 @@ function showToast(message, type = 'success') {
   toast.innerHTML = `${icon}<span>${message}</span>`;
   container.appendChild(toast);
 
-  // Автоматическое удаление
+  // Автоматическое скрытие через 4 секунды
   setTimeout(() => {
     toast.style.opacity = '0';
     toast.style.transform = 'translateY(8px)';
