@@ -2,7 +2,6 @@
 """
 Рельс-Комплект — Telegram Proxy
 Принимает POST /api/notify от фронтенда, отправляет в Telegram.
-Токен хранится только здесь, в .env — не во фронтенде.
 """
 
 import os
@@ -24,10 +23,9 @@ def load_env(path='.env'):
 
 load_env(os.path.join(os.path.dirname(__file__), '.env'))
 
-BOT_TOKEN      = os.environ.get('BOT_TOKEN', '')
-CHAT_ID        = os.environ.get('CHAT_ID', '')
-PORT           = int(os.environ.get('PROXY_PORT', '3001'))
-ALLOWED_ORIGIN = os.environ.get('ALLOWED_ORIGIN', 'http://202.148.53.107:8080')
+BOT_TOKEN = os.environ.get('BOT_TOKEN', '')
+CHAT_ID   = os.environ.get('CHAT_ID', '')
+PORT      = int(os.environ.get('PROXY_PORT', '3001'))
 
 
 def format_message(data: dict) -> str:
@@ -64,14 +62,17 @@ class ProxyHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         print(f'[proxy] {self.address_string()} - {format % args}')
 
-    def _cors_headers(self):
-        self.send_header('Access-Control-Allow-Origin', ALLOWED_ORIGIN)
+    def _send_cors(self):
+        # Разрешаем любой origin — proxy не хранит секреты клиента
+        origin = self.headers.get('Origin', '*')
+        self.send_header('Access-Control-Allow-Origin', origin)
         self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.send_header('Access-Control-Max-Age', '86400')
 
     def do_OPTIONS(self):
         self.send_response(204)
-        self._cors_headers()
+        self._send_cors()
         self.end_headers()
 
     def do_POST(self):
@@ -112,7 +113,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', len(body))
-        self._cors_headers()
+        self._send_cors()
         self.end_headers()
         self.wfile.write(body)
 
