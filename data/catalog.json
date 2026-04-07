@@ -25,7 +25,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 811,
+    "weight_unit": "кг"
   },
   {
     "id": "00011763495_1_1",
@@ -53,7 +55,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 811,
+    "weight_unit": "кг"
   },
   {
     "id": "00011763495_1",
@@ -81,7 +85,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 811,
+    "weight_unit": "кг"
   },
   {
     "id": "00011766108",
@@ -109,7 +115,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 811,
+    "weight_unit": "кг"
   },
   {
     "id": "00011763495_1_1_1",
@@ -135,7 +143,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011763495_1_1_1_1",
@@ -161,7 +171,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766111",
@@ -187,7 +199,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766107",
@@ -213,7 +227,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765976",
@@ -241,7 +257,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 620,
+    "weight_unit": "кг"
   },
   {
     "id": "00011765976_2",
@@ -265,7 +283,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 620,
+    "weight_unit": "кг"
   },
   {
     "id": "00011765976_3",
@@ -293,7 +313,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 620,
+    "weight_unit": "кг"
   },
   {
     "id": "00011765974_2",
@@ -317,7 +339,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 620,
+    "weight_unit": "кг"
   },
   {
     "id": "00011766062",
@@ -345,7 +369,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766062_2",
@@ -373,7 +399,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_1",
@@ -401,7 +429,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_2_1",
@@ -429,7 +459,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_1_1",
@@ -457,7 +489,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_1_2",
@@ -485,7 +519,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_1_1_1",
@@ -513,7 +549,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766075",
@@ -541,7 +579,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766075_1",
@@ -569,7 +609,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766075_2",
@@ -597,7 +639,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766071",
@@ -625,7 +669,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766071_1",
@@ -653,7 +699,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766094",
@@ -681,7 +729,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766081",
@@ -709,7 +759,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011779137",
@@ -733,7 +785,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011763105_2",
@@ -757,7 +811,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011779120_3",
@@ -781,7 +837,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011779120_4",
@@ -805,7 +863,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011779120_3_1",
@@ -833,7 +893,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011779104",
@@ -857,7 +919,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011779120_1",
@@ -881,7 +945,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011779120_2",
@@ -905,7 +971,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011763105",
@@ -929,7 +997,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011763105_1",
@@ -953,7 +1023,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011763105_2_1",
@@ -981,7 +1053,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766100",
@@ -1004,7 +1078,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766099_1",
@@ -1027,7 +1103,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766101",
@@ -1050,7 +1128,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011974819",
@@ -1078,7 +1158,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011763105_1_1",
@@ -1095,7 +1177,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011763105_1_2",
@@ -1112,7 +1196,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011763105_1_3",
@@ -1129,7 +1215,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_9",
@@ -1140,7 +1228,9 @@
     "price": 1100,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_10",
@@ -1151,7 +1241,9 @@
     "price": 1430,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_8",
@@ -1162,7 +1254,9 @@
     "price": 790,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_6",
@@ -1173,7 +1267,9 @@
     "price": 390,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_7",
@@ -1184,7 +1280,9 @@
     "price": 320,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_3",
@@ -1195,7 +1293,9 @@
     "price": 160,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_4",
@@ -1206,7 +1306,9 @@
     "price": 180,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_5",
@@ -1217,7 +1319,9 @@
     "price": 230,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_11",
@@ -1228,7 +1332,9 @@
     "price": 160000,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769888",
@@ -1245,7 +1351,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769889",
@@ -1289,7 +1397,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769884",
@@ -1300,7 +1410,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769885",
@@ -1311,7 +1423,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769886",
@@ -1322,7 +1436,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769887",
@@ -1333,7 +1449,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011771270",
@@ -1377,7 +1495,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011771268",
@@ -1421,7 +1541,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_7",
@@ -1449,7 +1571,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_9",
@@ -1477,7 +1601,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_8",
@@ -1505,7 +1631,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_3",
@@ -1533,7 +1661,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 280,
+    "weight_unit": "кг"
   },
   {
     "id": "00011765974_4",
@@ -1561,7 +1691,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_5",
@@ -1589,7 +1721,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011765974_6",
@@ -1617,7 +1751,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769862",
@@ -1644,7 +1780,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769863",
@@ -1666,7 +1804,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769864",
@@ -1693,7 +1833,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769865",
@@ -1704,7 +1846,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769867",
@@ -1715,7 +1859,9 @@
     "price": 990,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769873",
@@ -1743,7 +1889,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769874",
@@ -1770,7 +1918,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769875",
@@ -1792,7 +1942,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769876",
@@ -1819,7 +1971,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769847",
@@ -1830,7 +1984,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769848",
@@ -1841,7 +1997,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769849",
@@ -1852,7 +2010,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769850",
@@ -1863,7 +2023,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769855",
@@ -1885,7 +2047,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769856",
@@ -1907,7 +2071,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769858",
@@ -1935,7 +2101,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769857_1",
@@ -1963,7 +2131,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769857_3_1",
@@ -1974,7 +2144,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769859",
@@ -2001,7 +2173,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769859_1",
@@ -2028,7 +2202,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769860",
@@ -2050,7 +2226,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769860_1",
@@ -2061,7 +2239,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769860_2",
@@ -2072,7 +2252,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769861",
@@ -2099,7 +2281,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769861_1",
@@ -2110,7 +2294,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769861_2",
@@ -2121,7 +2307,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769861_2_1",
@@ -2132,7 +2320,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769861_3",
@@ -2143,7 +2333,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868",
@@ -2163,7 +2355,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_1",
@@ -2183,7 +2377,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769868_2",
@@ -2203,7 +2399,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769846",
@@ -2230,7 +2428,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769851_1",
@@ -2241,7 +2441,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769851",
@@ -2268,7 +2470,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769852",
@@ -2295,7 +2499,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769877",
@@ -2317,7 +2523,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769877_1",
@@ -2337,7 +2545,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769853",
@@ -2364,7 +2574,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769854",
@@ -2391,7 +2603,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769854_1",
@@ -2418,7 +2632,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769854_2",
@@ -2429,7 +2645,9 @@
     "price": null,
     "unit": "т",
     "in_stock": false,
-    "competitor_data": null
+    "competitor_data": null,
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769870",
@@ -2449,7 +2667,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769871",
@@ -2469,7 +2689,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769872",
@@ -2489,7 +2711,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766153",
@@ -2513,7 +2737,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766153_1",
@@ -2537,7 +2763,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766153_1_1_1",
@@ -2561,7 +2789,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766153_1_1",
@@ -2585,7 +2815,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766138_1",
@@ -2609,7 +2841,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766138_1_1_1",
@@ -2633,7 +2867,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766138_1_1",
@@ -2657,7 +2893,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766138",
@@ -2681,7 +2919,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766138_3",
@@ -2705,7 +2945,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766140",
@@ -2729,7 +2971,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766140_1",
@@ -2753,7 +2997,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766140_1_1_1",
@@ -2777,7 +3023,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766140_1_1",
@@ -2801,7 +3049,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766142",
@@ -2825,7 +3075,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766142_1",
@@ -2849,7 +3101,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766142_1_1_1",
@@ -2873,7 +3127,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766142_1_1",
@@ -2897,7 +3153,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766149",
@@ -2921,7 +3179,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766149_1",
@@ -2945,7 +3205,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766149_1_1_1",
@@ -2969,7 +3231,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766149_1_1",
@@ -2993,7 +3257,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766208",
@@ -3021,7 +3287,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": 620,
+    "weight_unit": "кг"
   },
   {
     "id": "00011766208_1",
@@ -3049,7 +3317,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766210",
@@ -3073,7 +3343,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766209",
@@ -3101,7 +3373,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769878",
@@ -3129,7 +3403,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769880",
@@ -3157,7 +3433,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769881",
@@ -3201,7 +3479,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769881_1",
@@ -3245,7 +3525,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769881_2",
@@ -3289,7 +3571,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769881_3",
@@ -3306,7 +3590,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769881_4",
@@ -3323,7 +3609,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769881_5",
@@ -3367,7 +3655,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011769881_6",
@@ -3411,7 +3701,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766314",
@@ -3435,7 +3727,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766313",
@@ -3459,7 +3753,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766312",
@@ -3482,7 +3778,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766332",
@@ -3503,7 +3801,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766331",
@@ -3524,7 +3824,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766304",
@@ -3545,7 +3847,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766305",
@@ -3566,7 +3870,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766306",
@@ -3587,7 +3893,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766307",
@@ -3608,7 +3916,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766309",
@@ -3629,7 +3939,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766310",
@@ -3650,7 +3962,9 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766311",
@@ -3671,6 +3985,8 @@
       "has_drawing": true,
       "has_photos": true,
       "images": []
-    }
+    },
+    "weight_per_unit": null,
+    "weight_unit": null
   }
 ]
