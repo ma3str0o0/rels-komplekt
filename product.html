@@ -202,18 +202,17 @@
         </div>
       </section>
 
-    </div><!-- /#productPage -->
-
-      <!-- 3. Описание из данных конкурента (competitor_data.description) -->
-      <!-- 4. Таблица характеристик из competitor_data.specs -->
-      <section class="enriched-specs" id="product-specs" style="display:none">
+      <!-- Технические характеристики — внутри карточки товара, под фото -->
+      <div id="product-specs" style="display:none; padding-bottom: var(--space-xl);">
         <div class="container">
-          <h2 class="section-title">Технические характеристики</h2>
-          <table class="specs-table" id="product-specs-table">
+          <h2 style="font-size:1rem; font-weight:600; color:var(--color-primary); margin:0 0 var(--space-sm); padding-top:var(--space-lg);">Технические характеристики</h2>
+          <table class="specs-table specs-table--compact" id="product-specs-table">
             <tbody id="product-specs-tbody"></tbody>
           </table>
         </div>
-      </section>
+      </div>
+
+    </div><!-- /#productPage -->
 
       <section class="product-description" id="product-description" style="display:none">
         <div class="container">

@@ -2499,6 +2499,16 @@
   background: #fff;
 }
 
+/* Компактный вариант — внутри карточки товара */
+.specs-table--compact {
+  font-size: 0.85em;
+  margin-top: 0;
+}
+.specs-table--compact .specs-table__key,
+.specs-table--compact .specs-table__val {
+  padding: 8px 12px;
+}
+
 /* ─── Кнопки сортировки в заголовке таблицы ─────────────────── */
 
 .sort-btn {
