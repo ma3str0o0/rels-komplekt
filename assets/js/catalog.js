@@ -463,6 +463,13 @@ function bindEvents() {
   // Поиск в реальном времени
   dom.searchInput?.addEventListener('input', e => {
     state.search = e.target.value;
+    // Если пользователь ввёл текст при активной категории — сбрасываем категорию,
+    // чтобы поиск шёл по всему каталогу, а не только по выбранной группе
+    if (e.target.value && activeFilter.type !== 'all') {
+      activeFilter = { type: 'all' };
+      resetCategoryUI();
+      document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
+    }
     applyFilters();
   });
 
