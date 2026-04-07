@@ -3288,8 +3288,8 @@
       "has_photos": true,
       "images": []
     },
-    "weight_per_unit": 620,
-    "weight_unit": "кг"
+    "weight_per_unit": null,
+    "weight_unit": null
   },
   {
     "id": "00011766208_1",
