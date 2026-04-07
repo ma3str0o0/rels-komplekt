@@ -2807,3 +2807,30 @@
 [data-theme="dark"] .smart-contact-icon {
   color: var(--color-text-muted);
 }
+
+/* ─── Чекбокс согласия на обработку ПДн ──────────────────────── */
+.form-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-md);
+  line-height: 1.5;
+}
+.form-consent input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+.form-consent a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+.form-consent a:hover {
+  color: var(--color-primary-dark, #0f3d7a);
+}

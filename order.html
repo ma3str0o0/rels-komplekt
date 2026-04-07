@@ -183,6 +183,10 @@
             <input class="input" type="text" name="name" placeholder="Ваше имя" required autocomplete="name">
             <input class="input" type="tel" name="phone" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
           </div>
+          <label class="form-consent">
+            <input type="checkbox" name="consent">
+            <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
+          </label>
           <button class="btn btn-primary" type="submit">Перезвоните мне</button>
         </form>
       </div>
@@ -217,8 +221,11 @@
           <textarea class="textarea" id="req-message" name="message" rows="3" placeholder="Чем можем помочь?"></textarea>
         </div>
         <div class="modal__footer">
+          <label class="form-consent">
+            <input type="checkbox" name="consent">
+            <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
+          </label>
           <button class="btn btn-primary" type="submit" style="width:100%;">Отправить</button>
-          <p class="modal__note">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных</p>
         </div>
       </form>
     </div>

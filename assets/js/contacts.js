@@ -18,6 +18,12 @@ function initContactForm() {
   form.addEventListener('submit', e => {
     e.preventDefault();
     if (!validateContactForm()) return;
+    const consent = form.querySelector('[name="consent"]');
+    if (consent && !consent.checked) {
+      window.RK?.showToast('Подтвердите согласие на обработку персональных данных', 'error');
+      consent.focus();
+      return;
+    }
 
     // Отправка (заглушка — будет заменена на EmailJS/Telegram)
     sendContactForm({

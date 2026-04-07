@@ -129,6 +129,10 @@ function _tplCta() {
             <input class="input" type="text" name="name" placeholder="Ваше имя" required autocomplete="name">
             <input class="input" type="tel" name="phone" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
           </div>
+          <label class="form-consent">
+            <input type="checkbox" name="consent">
+            <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
+          </label>
           <button class="btn btn-primary" type="submit">Перезвоните мне</button>
         </form>
       </div>
@@ -239,8 +243,11 @@ function _tplModal() {
           <textarea class="textarea" id="req-message" name="message" rows="3" placeholder="Чем можем помочь?"></textarea>
         </div>
         <div class="modal__footer">
+          <label class="form-consent">
+            <input type="checkbox" name="consent">
+            <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
+          </label>
           <button class="btn btn-primary" type="submit" style="width:100%;">Получить КП</button>
-          <p class="modal__note">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных</p>
         </div>
       </form>
     </div>
@@ -407,6 +414,7 @@ function initCtaContactForm() {
         phoneField?.focus();
         return;
       }
+      if (!_checkConsent(form)) return;
       if (_isThrottled()) {
         showToast('Подождите немного перед повторной отправкой.', 'error');
         return;
@@ -443,6 +451,7 @@ function initInlineForm() {
       form.querySelector('[name="contact"]').focus();
       return;
     }
+    if (!_checkConsent(form)) return;
     if (_isThrottled()) { showToast('Подождите немного перед повторной отправкой.', 'error'); return; }
 
     btn.disabled = true;
@@ -475,6 +484,17 @@ function initInlineForm() {
   });
 }
 
+/* ─── Проверка чекбокса согласия на обработку ПДн ───────────── */
+function _checkConsent(form) {
+  const cb = form.querySelector('[name="consent"]');
+  if (cb && !cb.checked) {
+    showToast('Подтвердите согласие на обработку персональных данных', 'error');
+    cb.focus();
+    return false;
+  }
+  return true;
+}
+
 /* ─── Rate limiting: не чаще одного запроса в 30 секунд ─────── */
 const _submitThrottle = { lastAt: 0, limit: 30_000 };
 
@@ -498,6 +518,7 @@ async function handleRequestSubmit(e) {
   }
 
   if (!validateForm(form)) return;
+  if (!_checkConsent(form)) return;
 
   // Состояние загрузки
   btn.disabled = true;
