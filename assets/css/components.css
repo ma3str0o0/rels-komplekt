@@ -1552,7 +1552,7 @@
   display: grid;
   grid-template-columns: minmax(300px, 38%) 1fr;
   gap: var(--space-2xl);
-  align-items: start;
+  align-items: stretch;
 }
 
 /* Заглушка изображения */
@@ -1895,9 +1895,13 @@
   background: #F8FBFF;
 }
 
-/* Калькулятор под спеками */
+/* Калькулятор — растягивается вниз до совпадения с левой колонкой */
 .product-pricing-wrap {
   margin-top: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 /* Адаптивность: планшет */
