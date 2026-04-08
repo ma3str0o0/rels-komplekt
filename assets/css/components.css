@@ -1555,6 +1555,12 @@
   align-items: stretch;
 }
 
+/* Левая колонка: flex-column чтобы кнопки прижались к низу через margin-top:auto */
+.product-image {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Заглушка изображения */
 .product-image__placeholder {
   width: 100%;
@@ -1816,6 +1822,7 @@
   display: flex;
   gap: var(--space-md);
   flex-wrap: wrap;
+  margin-top: auto;
 }
 
 .product-actions .btn {
