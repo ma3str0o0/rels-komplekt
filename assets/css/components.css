@@ -1547,10 +1547,10 @@
   padding: var(--space-md) 0;
 }
 
-/* Двухколоночная сетка */
+/* Двухколоночная сетка: ~38% инфо | ~62% спеки+калькулятор */
 .product-layout {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
+  grid-template-columns: minmax(300px, 38%) 1fr;
   gap: var(--space-2xl);
   align-items: start;
 }
@@ -1824,10 +1824,86 @@
   justify-content: center;
 }
 
+/* ─── Компактная инфо-карточка (левая колонка) ──────────────── */
+.product-card-info {
+  border: 0.5px solid var(--color-border, #E2E8F0);
+  border-radius: var(--radius-md, 8px);
+  padding: var(--space-md);
+  margin-top: var(--space-md);
+  background: var(--color-surface, #fff);
+}
+
+.product-card-info .product-info__name {
+  font-size: clamp(15px, 2vw, 18px);
+  margin: var(--space-xs) 0 var(--space-xs);
+}
+
+.product-card-info .product-info__uid {
+  margin-bottom: var(--space-sm);
+}
+
+.product-card-info .product-specs {
+  margin-bottom: 0;
+}
+
+.product-card-info .product-specs__label,
+.product-card-info .product-specs__value {
+  font-size: 13px;
+  padding: 7px var(--space-sm) 7px 0;
+}
+
+.product-card-info .product-specs__price {
+  font-size: 15px;
+}
+
+/* ─── Правая колонка: спеки + калькулятор ───────────────────── */
+.product-details {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Враппер таблицы технических характеристик */
+.product-specs-wrap {
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  border: 1px solid var(--color-border, #E2E8F0);
+}
+
+.product-specs-header {
+  background: #0A2463;
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.product-specs-wrap .specs-table__key {
+  background: #E6F1FB;
+  color: #0C447C;
+  font-size: 13px;
+  padding: 6px 12px;
+}
+
+.product-specs-wrap .specs-table__val {
+  background: #fff;
+  font-size: 13px;
+  padding: 6px 12px;
+}
+
+.product-specs-wrap .specs-table tr:nth-child(even) .specs-table__val {
+  background: #F8FBFF;
+}
+
+/* Калькулятор под спеками */
+.product-pricing-wrap {
+  margin-top: 16px;
+}
+
 /* Адаптивность: планшет */
 @media (max-width: 900px) {
   .product-layout {
-    grid-template-columns: 1fr 1.2fr;
+    grid-template-columns: minmax(280px, 42%) 1fr;
     gap: var(--space-xl);
   }
 }

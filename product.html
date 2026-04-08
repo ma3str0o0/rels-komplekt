@@ -68,8 +68,10 @@
         <div class="container">
           <div class="product-layout">
 
-            <!-- Левая колонка: заглушка изображения -->
+            <!-- Левая колонка: фото + компактная инфо-карточка + кнопки -->
             <div class="product-image" aria-label="Изображение товара">
+
+              <!-- Заглушка фото -->
               <div class="product-image__placeholder" aria-hidden="true">
                 <!-- Профиль рельса: верхний пояс, левая и правая стенки, нижний пояс -->
                 <svg class="product-image__icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -92,40 +94,43 @@
                 </svg>
                 <span class="product-image__label">Фото отсутствует</span>
               </div>
-            </div>
 
-            <!-- Правая колонка: информация о товаре -->
-            <div class="product-info">
-              <!-- Бейдж подкатегории — заполняется JS -->
-              <div id="productBadge"></div>
-              <!-- Название — заполняется JS -->
-              <h1 class="product-info__name" id="productName"></h1>
-              <!-- Артикул — заполняется JS -->
-              <p class="product-info__uid" id="productUid"></p>
-
-              <!-- Таблица характеристик — заполняется JS -->
-              <table class="product-specs" id="productSpecs" aria-label="Характеристики товара"></table>
-
-              <!-- Блок цены/калькулятора — заполняется JS -->
-              <div id="productPricing"></div>
+              <!-- Компактная инфо-карточка: категория, название, артикул, цена/наличие -->
+              <div class="product-card-info">
+                <!-- Бейдж подкатегории — заполняется JS -->
+                <div id="productBadge"></div>
+                <!-- Название — заполняется JS -->
+                <h1 class="product-info__name" id="productName"></h1>
+                <!-- Артикул — заполняется JS -->
+                <p class="product-info__uid" id="productUid"></p>
+                <!-- Строки: Цена | Состояние | Ед. измерения | Наличие — заполняется JS -->
+                <table class="product-specs" id="productSpecs" aria-label="Характеристики товара"></table>
+              </div>
 
               <!-- Кнопки действий — заполняются JS -->
-              <div class="product-actions" id="productActions"></div>
+              <div class="product-actions" id="productActions" style="margin-top: var(--space-md);"></div>
+
+            </div>
+
+            <!-- Правая колонка: технические характеристики + калькулятор -->
+            <div class="product-details">
+
+              <!-- Таблица технических характеристик — показывает JS при наличии данных -->
+              <div id="product-specs" class="product-specs-wrap" style="display:none;">
+                <div class="product-specs-header">Технические характеристики</div>
+                <table class="specs-table specs-table--compact" id="product-specs-table">
+                  <tbody id="product-specs-tbody"></tbody>
+                </table>
+              </div>
+
+              <!-- Калькулятор / «Цена по запросу» — заполняется JS -->
+              <div id="productPricing" class="product-pricing-wrap"></div>
+
             </div>
 
           </div>
         </div>
       </section>
-
-      <!-- Технические характеристики — внутри карточки товара, под фото -->
-      <div id="product-specs" style="display:none; padding-bottom: var(--space-xl);">
-        <div class="container">
-          <h2 style="font-size:1rem; font-weight:600; color:var(--color-primary); margin:0 0 var(--space-sm); padding-top:var(--space-lg);">Технические характеристики</h2>
-          <table class="specs-table specs-table--compact" id="product-specs-table">
-            <tbody id="product-specs-tbody"></tbody>
-          </table>
-        </div>
-      </div>
 
     </div><!-- /#productPage -->
 
