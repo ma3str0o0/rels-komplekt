@@ -2921,3 +2921,118 @@
 .form-consent a:hover {
   color: var(--color-primary-dark, #0f3d7a);
 }
+
+
+/* ─── Секция описания товара ─────────────────────────────────── */
+.product-description {
+  background: var(--color-surface, #F8FAFC);
+  border-top: 1px solid var(--color-border, #E2E8F0);
+  border-bottom: 1px solid var(--color-border, #E2E8F0);
+}
+
+.product-description .section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary, #0F172A);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-cta, #0369A1);
+  display: inline-block;
+}
+
+.product-description__text {
+  max-width: 860px;
+  color: var(--color-text, #020617);
+}
+
+.product-description__text p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--color-text-muted, #475569);
+  margin-bottom: 12px;
+}
+
+.product-description__text p:last-child {
+  margin-bottom: 0;
+}
+
+/* ─── ГОСТ-таблицы ───────────────────────────────────────────── */
+.gost-tables-section {
+  background: #fff;
+  border-top: 1px solid var(--color-border, #E2E8F0);
+}
+
+.gost-tables-section .section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary, #0F172A);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-cta, #0369A1);
+  display: inline-block;
+}
+
+.gost-table-wrap {
+  margin-bottom: 32px;
+  border: 1px solid var(--color-border, #E2E8F0);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.gost-table-wrap:last-child {
+  margin-bottom: 0;
+}
+
+.gost-table__title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #64748B);
+  background: var(--color-surface, #F8FAFC);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border, #E2E8F0);
+  margin: 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gost-table-wrap .specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.gost-table-wrap .specs-table th {
+  background: var(--color-primary, #0A2463);
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 10px 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.gost-table-wrap .specs-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--color-border, #E2E8F0);
+  color: var(--color-text, #020617);
+  vertical-align: top;
+}
+
+.gost-table-wrap .specs-table tr:last-child td {
+  border-bottom: none;
+}
+
+.gost-table-wrap .specs-table tr:nth-child(even) td {
+  background: var(--color-surface, #F8FAFC);
+}
+
+.gost-table-wrap .specs-table tr:hover td {
+  background: #EFF6FF;
+}
