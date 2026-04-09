@@ -411,7 +411,10 @@ function _renderCompetitorData(item) {
   const descSection = document.getElementById('product-description');
   const descEl      = document.getElementById('product-description-text');
   if (descText && descEl) {
-    const paras = descText.split(/\n\n+/).filter(p => p.trim().length > 20);
+    const paras = descText
+      .split(/\n+/)
+      .map(p => p.trim())
+      .filter(p => p.length > 20);
     descEl.innerHTML = (paras.length > 0 ? paras : [descText])
       .map(p => `<p>${escHtml(p.trim())}</p>`).join('');
     if (descSection) descSection.style.display = '';
