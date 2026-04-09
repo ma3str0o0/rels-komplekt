@@ -204,47 +204,41 @@ def parse_spec_tables(tables) -> list[dict]:
 
 # ─── Парсинг описания ────────────────────────────────────────────
 
-def parse_description(soup: BeautifulSoup) -> str | None:
+def parse_description(soup: BeautifulSoup) -> str:
     """
-    Ищет текстовое описание категории.
-    Приоритет: <article>, div.detail-text, main p, любой длинный блок.
+    Ищет описание категории в блоке bx-section-desc / rubix-section-description.
+    Первый абзац на vsp74.ru зашифрован спам-символами (каждая буква в span) —
+    пропускаем строки где >50% символов латиница вперемешку с кириллицей.
     """
-    candidates = []
+    desc_el = (
+        soup.find(class_='bx-section-desc') or
+        soup.find(class_='rubix-section-description') or
+        soup.find(class_='section-vertical_section-description')
+    )
 
-    # Стратегия 1: article
-    article = soup.find('article')
-    if article:
-        candidates.append(article.get_text(separator='\n'))
+    if not desc_el:
+        return ''
 
-    # Стратегия 2: div.detail-text
-    detail = soup.find('div', class_=re.compile(r'detail.?text', re.I))
-    if detail:
-        candidates.append(detail.get_text(separator='\n'))
+    paragraphs = []
+    for el in desc_el.find_all(['p', 'h2', 'h3', 'li']):
+        text = el.get_text(separator=' ', strip=True)
 
-    # Стратегия 3: main → все параграфы
-    main = soup.find('main') or soup.find('div', id='content') or soup.find('div', class_=re.compile(r'content', re.I))
-    if main:
-        paragraphs = main.find_all('p')
-        candidates.append('\n'.join(p.get_text(strip=True) for p in paragraphs))
+        # Пропускаем короткие строки и навигационный мусор
+        if len(text) < 40:
+            continue
+        if any(w in text for w in JUNK_MARKERS):
+            continue
 
-    for raw in candidates:
-        lines = raw.splitlines()
-        clean_lines = []
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            if any(marker in line for marker in JUNK_MARKERS):
-                continue
-            if len(line) < 20:  # слишком короткие строки — навигация
-                continue
-            clean_lines.append(line)
+        # Пропускаем спам-строки: >50% латиница при наличии кириллицы
+        lat = sum(1 for c in text if 'a' <= c.lower() <= 'z')
+        cyr = sum(1 for c in text if 'а' <= c.lower() <= 'я')
+        if cyr > 10 and lat / max(cyr, 1) > 0.5:
+            continue
 
-        text = ' '.join(clean_lines)
-        if len(text) >= 200:
-            return text[:1500]
+        paragraphs.append(text)
 
-    return None
+    result = ' '.join(paragraphs[:5])
+    return result[:1500].strip()
 
 
 # ─── Основной парсинг одной категории ────────────────────────────
