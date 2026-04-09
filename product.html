@@ -141,6 +141,13 @@
         </div>
       </section>
 
+      <!-- Технические таблицы ГОСТ — скрыта до загрузки JS -->
+      <section class="section section--sm hidden" id="product-gost-tables">
+        <div class="container">
+          <h2 class="section-title">Технические таблицы ГОСТ</h2>
+        </div>
+      </section>
+
       <!-- 5. Плейсхолдеры медиа-контента (has_drawing, has_photos) -->
       <section class="product-media" id="product-media" style="display:none">
         <div class="container">
@@ -219,121 +226,5 @@
   <!-- Скрипты -->
   <script src="assets/js/main.js"></script>
   <script src="assets/js/product.js"></script>
-
-  <script>
-  /* ─── Обогащённый контент (competitor_data) ─── */
-
-/* ─── Экранирование HTML для защиты от XSS ─────────────────── */
-function _escHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-/* Допускаем только http/https URL изображений */
-function _isSafeUrl(url) {
-  try {
-    const u = new URL(url);
-    return u.protocol === 'https:' || u.protocol === 'http:';
-  } catch {
-    return false;
-  }
-}
-
-/* ─── Обогащённый контент из competitor_data ──────────────── */
-function _renderCompetitorData(product) {
-  const cd = product.competitor_data;
-
-  /* Описание */
-  if (cd && cd.description) {
-    const sec = document.getElementById('product-description');
-    const txt = document.getElementById('product-description-text');
-    if (sec && txt) {
-      txt.textContent = cd.description; // textContent — безопасно
-      sec.style.display = '';
-    }
-  }
-
-  /* Таблица характеристик */
-  if (cd && cd.specs && Object.keys(cd.specs).length > 0) {
-    const sec   = document.getElementById('product-specs');
-    const tbody = document.getElementById('product-specs-tbody');
-    if (sec && tbody) {
-      tbody.innerHTML = Object.entries(cd.specs)
-        .map(([k, v]) => `<tr><th class="specs-table__key">${_escHtml(k)}</th><td class="specs-table__val">${_escHtml(v)}</td></tr>`)
-        .join('');
-      sec.style.display = '';
-    }
-  }
-
-  /* Плейсхолдеры медиа */
-  if (cd && (cd.has_drawing || cd.has_photos)) {
-    const sec  = document.getElementById('product-media');
-    const grid = document.getElementById('product-media-grid');
-    if (sec && grid) {
-      const items = [];
-      if (cd.has_photos) {
-        items.push(`
-          <div class="media-placeholder">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
-            <p class="media-placeholder__text">Фотографии доступны — обратитесь к менеджеру</p>
-            <a href="/contacts.html" class="btn btn-secondary btn-sm">Запросить фото</a>
-          </div>`);
-      }
-      if (cd.has_drawing) {
-        items.push(`
-          <div class="media-placeholder">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
-            </svg>
-            <p class="media-placeholder__text">Чертёж доступен — обратитесь к менеджеру</p>
-            <a href="/contacts.html" class="btn btn-secondary btn-sm">Запросить чертёж</a>
-          </div>`);
-      }
-      grid.innerHTML = items.join('');
-      sec.style.display = '';
-    }
-  }
-
-  /* Фото из images[] — только http/https URL */
-  if (cd && cd.images && cd.images.length > 0) {
-    const gallery = document.getElementById('product-gallery');
-    if (gallery) {
-      const safeName = _escHtml(product.name);
-      const imgs = cd.images
-        .filter(src => _isSafeUrl(src))
-        .slice(0, 6)
-        .map(src => {
-          const img = document.createElement('img');
-          img.src = src;
-          img.alt = product.name;
-          img.className = 'product-gallery__img';
-          img.loading = 'lazy';
-          return img.outerHTML;
-        }).join('');
-      gallery.innerHTML = imgs;
-    }
-  }
-}
-
-  /* Вызываем после загрузки товара */
-  document.addEventListener('DOMContentLoaded', () => {
-    const _origRender = window._renderProduct;
-    if (_origRender) {
-      window._renderProduct = function(product) {
-        _origRender(product);
-        _renderCompetitorData(product);
-      };
-    }
-  });
-  </script>
 </body>
 </html>

@@ -149,15 +149,20 @@ const RAIL_WEIGHT_KG = {
   'Рельсы Р50':  646,
   'Рельс Р65':   809,   // 64.72 × 12.5
   'Рельсы Р65':  809,
-  'Рельсы КР 70':  875,    // 70 × 12.5
-  'Рельсы КР 80':  1000,   // 80 × 12.5
-  'Рельсы КР 100': 1250,   // 100 × 12.5
-  'Рельсы КР 120': 1500,   // 120 × 12.5
-  'Рельсы КР 140': 1750,   // 140 × 12.5
+  'Рельсы КР 70':  576,    // 46.10 кг/м × 12.5 (ГОСТ, данные vsp74)
+  'Рельсы КР 80':  748,    // 59.81 кг/м × 12.5
+  'Рельсы КР 100': 1039,   // 83.09 кг/м × 12.5
+  'Рельсы КР 120': 1418,   // 113.47 кг/м × 12.5
+  'Рельсы КР 140': 1771,   // 141.70 кг/м × 12.5
   'Международный стандарт рельс DIN 536': 1250,
 };
 
 function getWeightKg(item) {
+  // Приоритет 1: данные из catalog.json (актуальные, от ГОСТ через vsp74)
+  if (item.weight_per_unit && item.weight_per_unit > 0) {
+    return item.weight_per_unit;
+  }
+  // Приоритет 2: fallback по таблице для позиций без weight_per_unit
   return RAIL_WEIGHT_KG[item.subcategory] || RAIL_WEIGHT_KG[item.category] || null;
 }
 
@@ -394,4 +399,116 @@ function escHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+/* ─── Обогащённый контент (competitor_data) ─────────────────── */
+function _renderCompetitorData(item) {
+  const cd = item.competitor_data;
+  if (!cd) return;
+
+  // 1. Описание — разбиваем на абзацы, экранируем
+  const descText    = cd.description || '';
+  const descSection = document.getElementById('product-description');
+  const descEl      = document.getElementById('product-description-text');
+  if (descText && descEl) {
+    const paras = descText.split(/\n\n+/).filter(p => p.trim().length > 20);
+    descEl.innerHTML = (paras.length > 0 ? paras : [descText])
+      .map(p => `<p>${escHtml(p.trim())}</p>`).join('');
+    if (descSection) descSection.style.display = '';
+  }
+
+  // 2. Таблица технических характеристик (specs)
+  if (cd.specs && Object.keys(cd.specs).length > 0) {
+    const sec   = document.getElementById('product-specs');
+    const tbody = document.getElementById('product-specs-tbody');
+    if (sec && tbody) {
+      tbody.innerHTML = Object.entries(cd.specs)
+        .map(([k, v]) => `<tr>
+          <th class="specs-table__key">${escHtml(k)}</th>
+          <td class="specs-table__val">${escHtml(String(v))}</td>
+        </tr>`).join('');
+      sec.style.display = '';
+    }
+  }
+
+  // 3. ГОСТ-таблицы (gost_tables)
+  const gostWrap = document.getElementById('product-gost-tables');
+  if (cd.gost_tables && cd.gost_tables.length > 0 && gostWrap) {
+    gostWrap.innerHTML = cd.gost_tables.map((tbl, idx) => {
+      const headerRow = tbl.headers?.length
+        ? `<tr>${tbl.headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr>`
+        : '';
+      const bodyRows = (tbl.rows || []).map(row =>
+        `<tr>${row.map(cell => `<td>${escHtml(String(cell))}</td>`).join('')}</tr>`
+      ).join('');
+      return `<div class="gost-table-wrap">
+        <h4 class="gost-table__title">Таблица ${idx + 1}</h4>
+        <div class="table-scroll">
+          <table class="specs-table">${headerRow}${bodyRows}</table>
+        </div>
+      </div>`;
+    }).join('');
+    gostWrap.classList.remove('hidden');
+  }
+
+  // 4. ГОСТ номер — добавляем строку в карточку характеристик
+  if (cd.gost) {
+    const specsTable = document.getElementById('productSpecs');
+    if (specsTable) {
+      const tr = document.createElement('tr');
+      tr.className = 'product-specs__row';
+      tr.innerHTML = `<td class="product-specs__label">ГОСТ</td>
+                      <td class="product-specs__value" id="productGost">${escHtml(cd.gost)}</td>`;
+      specsTable.appendChild(tr);
+    }
+  }
+
+  // 5. Плейсхолдеры медиа (чертёж / фото)
+  if (cd.has_drawing || cd.has_photos) {
+    const sec  = document.getElementById('product-media');
+    const grid = document.getElementById('product-media-grid');
+    if (sec && grid) {
+      const items = [];
+      if (cd.has_photos) {
+        items.push(`<div class="media-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <p class="media-placeholder__text">Фотографии доступны — обратитесь к менеджеру</p>
+          <a href="contacts.html" class="btn btn-secondary btn-sm">Запросить фото</a>
+        </div>`);
+      }
+      if (cd.has_drawing) {
+        items.push(`<div class="media-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <p class="media-placeholder__text">Чертёж доступен — обратитесь к менеджеру</p>
+          <a href="contacts.html" class="btn btn-secondary btn-sm">Запросить чертёж</a>
+        </div>`);
+      }
+      grid.innerHTML = items.join('');
+      sec.style.display = '';
+    }
+  }
+
+  // 6. Галерея изображений — только http/https URL
+  if (cd.images && cd.images.length > 0) {
+    const gallery = document.getElementById('product-gallery');
+    if (gallery) {
+      const imgs = cd.images
+        .filter(src => { try { const u = new URL(src); return u.protocol === 'https:' || u.protocol === 'http:'; } catch { return false; } })
+        .slice(0, 6)
+        .map(src => {
+          const img = document.createElement('img');
+          img.src = src; img.alt = item.name;
+          img.className = 'product-gallery__img'; img.loading = 'lazy';
+          return img.outerHTML;
+        }).join('');
+      gallery.innerHTML = imgs;
+    }
+  }
 }
