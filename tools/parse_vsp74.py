@@ -75,53 +75,94 @@ def parse_weight(raw: str) -> float | None:
     return None
 
 
+# ─── Парсинг одной строки таблицы цен ───────────────────────────
+
+def _clean_price(s: str) -> int | None:
+    """'171 145 ₽' → 171145, '—' / '' → None"""
+    s = s.replace('\xa0', '').replace(' ', '').replace('₽', '').replace('—', '0').strip()
+    try:
+        return int(s) if s and s != '0' else None
+    except ValueError:
+        return None
+
+
+def parse_price_row(row) -> dict | None:
+    """
+    Реальная структура vsp74.ru (проверено инспекцией HTML):
+
+    TD[0] — class="product-item-cell"
+            div.product-item-name >
+              a[data-entity=image-wrapper] title="..."  ← чистое имя
+              div.product-item-title >
+                div.product-item-info-container > div.item_gost
+                div.product-item-info-container > div.item_weight
+    TD[1] — ГОСТ (дублируется из TD[0], берём отсюда как строку)
+    TD[2] — Вес кг/м (дублируется из TD[0])
+    TD[3] — div.product-item-price-container >
+              span.product-item-price-current  ← цена/шт
+              span.product-item-price-old      ← старая цена (hidden, дубль)
+    TD[4] — то же самое → цена/тн
+    TD[5] — кнопка "В корзину" (игнорируем)
+
+    ВАЖНО: get_text() на TD[4] даёт "171 145 ₽171 145 ₽" из-за скрытого span.
+    Нужно брать только span.product-item-price-current.
+    """
+    cells = row.find_all('td')
+    if len(cells) < 5:
+        return None
+
+    # Имя — из title атрибута ссылки-обёртки изображения (не get_text!)
+    name_a = cells[0].find('a', attrs={'data-entity': 'image-wrapper'})
+    name = name_a.get('title', '').strip() if name_a else ''
+    if not name:
+        # Фолбэк: текст <a> внутри div.product-item-title
+        title_div = cells[0].find('div', class_='product-item-title')
+        if title_div:
+            link = title_div.find('a')
+            name = link.get_text(strip=True) if link else ''
+    if not name or name in ('Название', 'Наименование'):
+        return None
+
+    # ГОСТ — из TD[1] (отдельная ячейка)
+    gost_div = cells[1].find('div', class_='item_gost')
+    gost = gost_div.get_text(strip=True) if gost_div else cells[1].get_text(strip=True)
+
+    # Вес — из TD[2] (отдельная ячейка)
+    weight_div = cells[2].find('div', class_='item_weight')
+    weight_str = weight_div.get_text(strip=True) if weight_div else cells[2].get_text(strip=True)
+    weight_str = weight_str.replace(',', '.').split()[0] if weight_str else ''
+    try:
+        weight = float(weight_str)
+    except (ValueError, IndexError):
+        weight = None
+
+    # Цена — берём span.product-item-price-current (один, без дублей из price-old)
+    def get_price(cell) -> int | None:
+        span = cell.find('span', class_='product-item-price-current')
+        raw = span.get_text(strip=True) if span else cell.get_text(strip=True)
+        return _clean_price(raw)
+
+    return {
+        'name':             name,
+        'gost':             gost,
+        'weight_per_meter': weight,
+        'price_per_piece':  get_price(cells[3]),
+        'price_per_ton':    get_price(cells[4]),
+    }
+
+
 # ─── Парсинг таблицы цен ─────────────────────────────────────────
 
 def parse_price_table(table) -> list[dict]:
-    """
-    Первая таблица на странице — таблица цен.
-    Колонки: Название | ГОСТ | Вес кг/м | Цена за ед. | Цена за тн
-    """
+    """Первая таблица на странице — таблица цен."""
     items = []
-    rows = table.find_all('tr')
-
-    for row in rows:
-        cells = row.find_all(['td', 'th'])
-        if not cells:
+    for row in table.find_all('tr'):
+        # Пропускаем строки заголовков
+        if row.find('th'):
             continue
-        # Пропускаем строку заголовков
-        if cells[0].name == 'th' or (cells[0].get_text(strip=True) in ('Название', 'Наименование', '#', '№')):
-            continue
-        # Нужно минимум 3 ячейки для полезной строки
-        if len(cells) < 3:
-            continue
-
-        texts = [c.get_text(strip=True) for c in cells]
-        name = texts[0] if len(texts) > 0 else ''
-        if not name:
-            continue
-
-        # Определяем колонки гибко по количеству
-        gost            = texts[1] if len(texts) > 1 else ''
-        weight_str      = texts[2] if len(texts) > 2 else ''
-        price_piece_str = texts[3] if len(texts) > 3 else ''
-        price_ton_str   = texts[4] if len(texts) > 4 else ''
-
-        # Если только 3 колонки — это имя | вес | цена
-        if len(texts) == 3:
-            gost            = ''
-            weight_str      = texts[1]
-            price_piece_str = ''
-            price_ton_str   = texts[2]
-
-        items.append({
-            "name":           name,
-            "gost":           gost,
-            "weight_per_meter": parse_weight(weight_str),
-            "price_per_piece":  parse_price(price_piece_str),
-            "price_per_ton":    parse_price(price_ton_str),
-        })
-
+        item = parse_price_row(row)
+        if item:
+            items.append(item)
     return items
 
 
