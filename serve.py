@@ -614,8 +614,8 @@ class Handler(SimpleHTTPRequestHandler):
     def end_headers(self):
         # Запрещаем кэширование JS, CSS и HTML
         path = self.path.split('?')[0]
-        if path.endswith(('.js', '.css', '.html')):
-            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+        if path.endswith(('.js', '.css', '.html', '.json')):
+            self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
             self.send_header('Pragma', 'no-cache')
             self.send_header('Expires', '0')
         super().end_headers()

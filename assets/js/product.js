@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 /* ─── Загрузка каталога ──────────────────────────────────────── */
 async function loadCatalog() {
   try {
-    const res = await fetch('data/catalog.json');
+    const res = await fetch('data/catalog.json?v=' + (window._catalogVersion || Date.now()));
     return await res.json();
   } catch (e) {
     console.error('Ошибка загрузки каталога:', e);
