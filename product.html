@@ -68,7 +68,7 @@
         <div class="container">
           <div class="product-layout">
 
-            <!-- Левая колонка: фото -->
+            <!-- Левая колонка: фото + компактная инфо-карточка + кнопки -->
             <div class="product-image" aria-label="Изображение товара">
 
               <!-- Заглушка фото -->
@@ -95,12 +95,7 @@
                 <span class="product-image__label">Фото отсутствует</span>
               </div>
 
-            </div>
-
-            <!-- Правая колонка: инфо-карточка + таблицы + калькулятор + кнопки -->
-            <div class="product-details">
-
-              <!-- 1. Компактная инфо-карточка: категория, название, артикул -->
+              <!-- Компактная инфо-карточка: категория, название, артикул, цена/наличие -->
               <div class="product-card-info">
                 <!-- Бейдж подкатегории — заполняется JS -->
                 <div id="productBadge"></div>
@@ -108,12 +103,19 @@
                 <h1 class="product-info__name" id="productName"></h1>
                 <!-- Артикул — заполняется JS -->
                 <p class="product-info__uid" id="productUid"></p>
+                <!-- Строки: Цена | Состояние | Ед. измерения | Наличие — заполняется JS -->
+                <table class="product-specs" id="productSpecs" aria-label="Характеристики товара"></table>
               </div>
 
-              <!-- 2. Строки: Цена | Состояние | Ед. измерения | Наличие — заполняется JS -->
-              <table class="product-specs" id="productSpecs" aria-label="Характеристики товара"></table>
+              <!-- Кнопки действий — заполняются JS -->
+              <div class="product-actions" id="productActions"></div>
 
-              <!-- 3. Таблица технических характеристик — показывает JS при наличии данных -->
+            </div>
+
+            <!-- Правая колонка: технические характеристики + калькулятор -->
+            <div class="product-details">
+
+              <!-- Таблица технических характеристик — показывает JS при наличии данных -->
               <div id="product-specs" class="product-specs-wrap" style="display:none;">
                 <div class="product-specs-header">Технические характеристики</div>
                 <table class="specs-table specs-table--compact" id="product-specs-table">
@@ -121,11 +123,8 @@
                 </table>
               </div>
 
-              <!-- 4. Калькулятор / «Цена по запросу» — заполняется JS -->
+              <!-- Калькулятор / «Цена по запросу» — заполняется JS -->
               <div id="productPricing" class="product-pricing-wrap"></div>
-
-              <!-- 5. Кнопки действий — заполняются JS -->
-              <div class="product-actions" id="productActions"></div>
 
             </div>
 
