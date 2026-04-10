@@ -454,14 +454,22 @@ function _renderCompetitorData(item) {
     gostWrap.classList.remove('hidden');
   }
 
-  // 4. ГОСТ номер — добавляем строку в карточку характеристик
+  // 4. ГОСТ номер — добавляем строку со ссылками на docs.cntd.ru
   if (cd.gost) {
     const specsTable = document.getElementById('productSpecs');
     if (specsTable) {
+      const linksHtml = cd.gost
+        .split(/[,;]/)
+        .map(g => g.trim())
+        .filter(g => g.length > 3)
+        .map(g => `<a href="https://docs.cntd.ru/search?text=${encodeURIComponent(g)}"
+              target="_blank" rel="noopener noreferrer"
+              class="gost-link">${escHtml(g)}</a>`)
+        .join(', ');
       const tr = document.createElement('tr');
       tr.className = 'product-specs__row';
       tr.innerHTML = `<td class="product-specs__label">ГОСТ</td>
-                      <td class="product-specs__value" id="productGost">${escHtml(cd.gost)}</td>`;
+                      <td class="product-specs__value" id="productGost">${linksHtml}</td>`;
       specsTable.appendChild(tr);
     }
   }

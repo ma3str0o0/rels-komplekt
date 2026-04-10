@@ -3036,3 +3036,14 @@
 .gost-table-wrap .specs-table tr:hover td {
   background: #EFF6FF;
 }
+
+/* ─── Ссылки на ГОСТ (docs.cntd.ru) ─────────────────────────── */
+.gost-link {
+  color: var(--color-cta, #0369A1);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--color-cta, #0369A1);
+  transition: opacity 150ms ease;
+}
+.gost-link:hover {
+  opacity: 0.75;
+}
