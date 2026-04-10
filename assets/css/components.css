@@ -3047,3 +3047,61 @@
 .gost-link:hover {
   opacity: 0.75;
 }
+
+/* ─── Inline specs в секции описания ────────────────────────── */
+.specs-inline-wrap {
+  margin-bottom: 24px;
+  border: 1px solid var(--color-border, #E2E8F0);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.specs-inline__title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #64748B);
+  background: var(--color-surface, #F8FAFC);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border, #E2E8F0);
+  margin: 0;
+}
+
+.specs-inline {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.specs-inline td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--color-border, #E2E8F0);
+  vertical-align: top;
+}
+
+.specs-inline tr:last-child td {
+  border-bottom: none;
+}
+
+.specs-inline__row--even td {
+  background: var(--color-surface, #F8FAFC);
+}
+
+.specs-inline__key {
+  color: var(--color-text-muted, #64748B);
+  width: 55%;
+}
+
+.specs-inline__val {
+  font-weight: 600;
+  color: var(--color-primary, #0F172A);
+}
+
+/* ─── Ссылка на справочник в каталоге ───────────────────────── */
+.catalog-reference-link {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border, #E2E8F0);
+  text-align: center;
+}
