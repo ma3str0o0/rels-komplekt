@@ -434,27 +434,7 @@ function _renderCompetitorData(item) {
     }
   }
 
-  // 3. ГОСТ-таблицы (gost_tables)
-  const gostWrap = document.getElementById('product-gost-tables');
-  if (cd.gost_tables && cd.gost_tables.length > 0 && gostWrap) {
-    gostWrap.innerHTML = cd.gost_tables.map((tbl, idx) => {
-      const headerRow = tbl.headers?.length
-        ? `<tr>${tbl.headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr>`
-        : '';
-      const bodyRows = (tbl.rows || []).map(row =>
-        `<tr>${row.map(cell => `<td>${escHtml(String(cell))}</td>`).join('')}</tr>`
-      ).join('');
-      return `<div class="gost-table-wrap">
-        <h4 class="gost-table__title">Таблица ${idx + 1}</h4>
-        <div class="table-scroll">
-          <table class="specs-table">${headerRow}${bodyRows}</table>
-        </div>
-      </div>`;
-    }).join('');
-    gostWrap.classList.remove('hidden');
-  }
-
-  // 4. ГОСТ номер — добавляем строку со ссылками на docs.cntd.ru
+  // 3. ГОСТ номер — добавляем строку со ссылками на docs.cntd.ru
   if (cd.gost) {
     const specsTable = document.getElementById('productSpecs');
     if (specsTable) {
