@@ -406,35 +406,52 @@ function _renderCompetitorData(item) {
   const cd = item.competitor_data;
   if (!cd) return;
 
-  // 1. Описание — specs таблица + параграфы текста
+  // 1. Описание — разбиваем на абзацы, экранируем
   const descText    = cd.description || '';
   const descSection = document.getElementById('product-description');
   const descEl      = document.getElementById('product-description-text');
-  if ((descText || (cd.specs && Object.keys(cd.specs).length > 0)) && descEl) {
-    let html = '';
-
-    // Specs таблица ДО текста, если есть
-    if (cd.specs && Object.keys(cd.specs).length > 0) {
-      const rows = Object.entries(cd.specs)
-        .map(([k, v], i) => `<tr class="${i % 2 === 1 ? 'specs-inline__row--even' : ''}">
-          <td class="specs-inline__key">${escHtml(k)}</td>
-          <td class="specs-inline__val">${escHtml(String(v))}</td>
-        </tr>`).join('');
-      html += `<div class="specs-inline-wrap">
-        <h3 class="specs-inline__title">Допуски и характеристики по ГОСТ</h3>
-        <table class="specs-inline">${rows}</table>
-      </div>`;
-    }
-
-    // Параграфы текста
-    if (descText) {
-      const paras = descText.split(/\n+/).map(p => p.trim()).filter(p => p.length > 20);
-      html += (paras.length > 0 ? paras : [descText])
-        .map(p => `<p>${escHtml(p.trim())}</p>`).join('');
-    }
-
-    descEl.innerHTML = html;
+  if (descText && descEl) {
+    const paras = descText
+      .split(/\n+/)
+      .map(p => p.trim())
+      .filter(p => p.length > 20);
+    descEl.innerHTML = (paras.length > 0 ? paras : [descText])
+      .map(p => `<p>${escHtml(p.trim())}</p>`).join('');
     if (descSection) descSection.style.display = '';
+  }
+
+  // 2. Таблица технических характеристик (specs)
+  if (cd.specs && Object.keys(cd.specs).length > 0) {
+    const sec   = document.getElementById('product-specs');
+    const tbody = document.getElementById('product-specs-tbody');
+    if (sec && tbody) {
+      tbody.innerHTML = Object.entries(cd.specs)
+        .map(([k, v]) => `<tr>
+          <th class="specs-table__key">${escHtml(k)}</th>
+          <td class="specs-table__val">${escHtml(String(v))}</td>
+        </tr>`).join('');
+      sec.style.display = '';
+    }
+  }
+
+  // 3. ГОСТ-таблицы (gost_tables)
+  const gostWrap = document.getElementById('product-gost-tables');
+  if (cd.gost_tables && cd.gost_tables.length > 0 && gostWrap) {
+    gostWrap.innerHTML = cd.gost_tables.map((tbl, idx) => {
+      const headerRow = tbl.headers?.length
+        ? `<tr>${tbl.headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr>`
+        : '';
+      const bodyRows = (tbl.rows || []).map(row =>
+        `<tr>${row.map(cell => `<td>${escHtml(String(cell))}</td>`).join('')}</tr>`
+      ).join('');
+      return `<div class="gost-table-wrap">
+        <h4 class="gost-table__title">Таблица ${idx + 1}</h4>
+        <div class="table-scroll">
+          <table class="specs-table">${headerRow}${bodyRows}</table>
+        </div>
+      </div>`;
+    }).join('');
+    gostWrap.classList.remove('hidden');
   }
 
   // 4. ГОСТ номер — добавляем строку со ссылками на docs.cntd.ru
