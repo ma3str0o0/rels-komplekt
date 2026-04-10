@@ -18,6 +18,11 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230369A1'/><text y='22' x='6' font-size='20' fill='white' font-family='sans-serif' font-weight='bold'>Р</text></svg>">
+
+  <!-- Hover-эффект для строк таблицы (hover нельзя задать инлайн) -->
+  <style>
+    .trow:hover td { background: #EFF6FF !important; }
+  </style>
 </head>
 <body>
 
@@ -47,65 +52,24 @@
 
         <h2 class="section-title">Категории рельсов по ГОСТ 51685-2022</h2>
 
-        <div class="gost-table-wrap">
-          <div class="table-scroll">
-            <table class="specs-table" aria-label="Категории рельсов по ГОСТ 51685-2022">
-              <tbody>
-                <tr>
-                  <td class="specs-table__key">ДТ370ИК</td>
-                  <td class="specs-table__val">Термоупрочнённый, износостойкий, повышенная прямолинейность</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">ОТ370ИК</td>
-                  <td class="specs-table__val">Объёмно-термоупрочнённый, износостойкий</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">ДТ350ВС</td>
-                  <td class="specs-table__val">Термоупрочнённый, высокая стойкость к хрупкому разрушению</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">ДТ350СС</td>
-                  <td class="specs-table__val">Термоупрочнённый, стойкий к хрупкому разрушению</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">ОТ350СС</td>
-                  <td class="specs-table__val">Объёмно-термоупрочнённый, стойкий к хрупкому разрушению</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">ДТ350НН</td>
-                  <td class="specs-table__val">Термоупрочнённый, необработанные концы</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">ОТ350НН</td>
-                  <td class="specs-table__val">Объёмно-термоупрочнённый, необработанные концы</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">ДТ350</td>
-                  <td class="specs-table__val">Дифференцированно термоупрочнённый</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">ОТ350</td>
-                  <td class="specs-table__val">Объёмно-термоупрочнённый</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">НТ320ВС</td>
-                  <td class="specs-table__val">Нетермоупрочнённый, высокая стойкость к хрупкому разрушению</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">НТ320</td>
-                  <td class="specs-table__val">Нетермоупрочнённый, повышенная твёрдость</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">НТ300</td>
-                  <td class="specs-table__val">Нетермоупрочнённый, нормальная твёрдость</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">НТ260</td>
-                  <td class="specs-table__val">Нетермоупрочнённый, пониженная твёрдость</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:13.5px;" aria-label="Категории рельсов по ГОСТ 51685-2022">
+            <tbody>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">ДТ370ИК</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Термоупрочнённый, износостойкий, повышенная прямолинейность</td></tr>
+        <tr class="trow"><td style="background:#ffffff;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">ОТ370ИК</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Объёмно-термоупрочнённый, износостойкий</td></tr>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">ДТ350ВС</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Термоупрочнённый, высокая стойкость к хрупкому разрушению</td></tr>
+        <tr class="trow"><td style="background:#ffffff;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">ДТ350СС</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Термоупрочнённый, стойкий к хрупкому разрушению</td></tr>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">ОТ350СС</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Объёмно-термоупрочнённый, стойкий к хрупкому разрушению</td></tr>
+        <tr class="trow"><td style="background:#ffffff;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">ДТ350НН</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Термоупрочнённый, необработанные концы</td></tr>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">ОТ350НН</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Объёмно-термоупрочнённый, необработанные концы</td></tr>
+        <tr class="trow"><td style="background:#ffffff;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">ДТ350</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Дифференцированно термоупрочнённый</td></tr>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">ОТ350</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Объёмно-термоупрочнённый</td></tr>
+        <tr class="trow"><td style="background:#ffffff;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">НТ320ВС</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Нетермоупрочнённый, высокая стойкость к хрупкому разрушению</td></tr>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">НТ320</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Нетермоупрочнённый, повышенная твёрдость</td></tr>
+        <tr class="trow"><td style="background:#ffffff;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0;">НТ300</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">Нетермоупрочнённый, нормальная твёрдость</td></tr>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;font-weight:600;border-bottom:1px solid #E2E8F0 border-bottom:none;;">НТ260</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0 border-bottom:none;;">Нетермоупрочнённый, пониженная твёрдость</td></tr>
+            </tbody>
+          </table>
         </div>
 
       </div>
@@ -119,57 +83,25 @@
 
         <h2 class="section-title">Допускаемые отклонения размеров, мм</h2>
 
-        <div class="gost-table-wrap">
-          <div class="table-scroll">
-            <table class="specs-table" aria-label="Допускаемые отклонения размеров">
-              <thead>
-                <tr>
-                  <th>Параметр</th>
-                  <th>Р50</th>
-                  <th>Р65 / Р65К</th>
-                  <th>Р75</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="specs-table__key">Высота рельса</td>
-                  <td class="specs-table__val">±1,0</td>
-                  <td class="specs-table__val">±1,0</td>
-                  <td class="specs-table__val">±1,0</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">Ширина головки</td>
-                  <td class="specs-table__val">±1,0</td>
-                  <td class="specs-table__val">±1,0</td>
-                  <td class="specs-table__val">±1,0</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">Ширина подошвы</td>
-                  <td class="specs-table__val">+3,0/−1,0</td>
-                  <td class="specs-table__val">+3,0/−1,0</td>
-                  <td class="specs-table__val">+3,0/−1,0</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">Толщина шейки</td>
-                  <td class="specs-table__val">+1,0/−0,5</td>
-                  <td class="specs-table__val">+1,0/−0,5</td>
-                  <td class="specs-table__val">+1,0/−0,5</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">Симметричность подошвы</td>
-                  <td class="specs-table__val">2,0</td>
-                  <td class="specs-table__val">2,0</td>
-                  <td class="specs-table__val">2,0</td>
-                </tr>
-                <tr>
-                  <td class="specs-table__key">Перпендикулярность торцов</td>
-                  <td class="specs-table__val">1,0</td>
-                  <td class="specs-table__val">1,0</td>
-                  <td class="specs-table__val">1,0</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:13.5px;" aria-label="Допускаемые отклонения размеров">
+      <thead>
+        <tr>
+          <th style="background:#0A2463;color:#fff;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:10px 16px;text-align:left;white-space:nowrap;">Параметр</th>
+          <th style="background:#0A2463;color:#fff;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:10px 16px;text-align:left;white-space:nowrap;">Р50</th>
+          <th style="background:#0A2463;color:#fff;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:10px 16px;text-align:left;white-space:nowrap;">Р65 / Р65К</th>
+          <th style="background:#0A2463;color:#fff;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:10px 16px;text-align:left;white-space:nowrap;">Р75</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;font-weight:600;">Высота рельса</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">±1,0</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">±1,0</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">±1,0</td></tr>
+        <tr class="trow"><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;font-weight:600;">Ширина головки</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">±1,0</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">±1,0</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">±1,0</td></tr>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;font-weight:600;">Ширина подошвы</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">+3,0/−1,0</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">+3,0/−1,0</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">+3,0/−1,0</td></tr>
+        <tr class="trow"><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;font-weight:600;">Толщина шейки</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">+1,0/−0,5</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">+1,0/−0,5</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">+1,0/−0,5</td></tr>
+        <tr class="trow"><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;font-weight:600;">Симметричность подошвы</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">2,0</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">2,0</td><td style="background:#F8FAFC;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0;">2,0</td></tr>
+        <tr class="trow"><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0 border-bottom:none;;font-weight:600;">Перпендикулярность торцов</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0 border-bottom:none;;">1,0</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0 border-bottom:none;;">1,0</td><td style="background:#ffffff;padding:10px 16px;color:#020617;border-bottom:1px solid #E2E8F0 border-bottom:none;;">1,0</td></tr>
+      </tbody>
+          </table>
         </div>
 
       </div>
@@ -184,87 +116,83 @@
         <h2 class="section-title">Погонный вес рельсов, кг/м</h2>
 
         <div class="grid grid--3" role="list" aria-label="Погонный вес рельсов">
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--blue pcard__badge">Широкая колея</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#DBEAFE;color:#1D4ED8;">Широкая колея</span>
             </div>
             <strong class="pcard__name">Р50</strong>
             <p>51,67 кг/м</p>
           </div>
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--blue pcard__badge">Широкая колея</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#DBEAFE;color:#1D4ED8;">Широкая колея</span>
             </div>
             <strong class="pcard__name">Р65</strong>
             <p>64,88 кг/м</p>
           </div>
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--orange pcard__badge">Крановый</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#DBEAFE;color:#1D4ED8;">Широкая колея</span>
+            </div>
+            <strong class="pcard__name">Р75</strong>
+            <p>74,40 кг/м</p>
+          </div>
+          <div class="pcard" role="listitem">
+            <div class="pcard__top">
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FFEDD5;color:#C2410C;">Крановый</span>
             </div>
             <strong class="pcard__name">КР 70</strong>
             <p>46,10 кг/м</p>
           </div>
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--orange pcard__badge">Крановый</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FFEDD5;color:#C2410C;">Крановый</span>
             </div>
             <strong class="pcard__name">КР 80</strong>
             <p>59,81 кг/м</p>
           </div>
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--orange pcard__badge">Крановый</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FFEDD5;color:#C2410C;">Крановый</span>
             </div>
             <strong class="pcard__name">КР 100</strong>
             <p>83,09 кг/м</p>
           </div>
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--orange pcard__badge">Крановый</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FFEDD5;color:#C2410C;">Крановый</span>
             </div>
             <strong class="pcard__name">КР 120</strong>
             <p>113,47 кг/м</p>
           </div>
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--orange pcard__badge">Крановый</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FFEDD5;color:#C2410C;">Крановый</span>
             </div>
             <strong class="pcard__name">КР 140</strong>
             <p>141,70 кг/м</p>
           </div>
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--gray pcard__badge">Узкоколейный</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#F1F5F9;color:#475569;">Узкоколейный</span>
             </div>
             <strong class="pcard__name">Р33</strong>
             <p>33,48 кг/м</p>
           </div>
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--gray pcard__badge">Узкоколейный</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#F1F5F9;color:#475569;">Узкоколейный</span>
             </div>
             <strong class="pcard__name">Р24</strong>
             <p>24,90 кг/м</p>
           </div>
-
           <div class="pcard" role="listitem">
             <div class="pcard__top">
-              <span class="badge badge--gray pcard__badge">Узкоколейный</span>
+              <span class="pcard__badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#F1F5F9;color:#475569;">Узкоколейный</span>
             </div>
             <strong class="pcard__name">Р18</strong>
             <p>17,91 кг/м</p>
           </div>
-
         </div>
 
       </div>
