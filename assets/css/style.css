@@ -295,6 +295,8 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   transition: box-shadow var(--transition-normal);
+  display: flex;
+  align-items: center;
 }
 
 .header.scrolled {
@@ -383,32 +385,33 @@ h1, h2, h3, h4, h5, h6 {
   gap: var(--space-md);
 }
 
-.header__phone {
+.header__phones {
   display: none;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   line-height: 1.1;
 }
 
 @media (min-width: 768px) {
-  .header__phone {
+  .header__phones {
     display: flex;
   }
 }
 
-.header__phone-number {
+.header__phone {
   font-size: var(--font-size-md);
   font-weight: 600;
   color: var(--color-primary);
   cursor: pointer;
   transition: color var(--transition-fast);
+  text-decoration: none;
 }
 
-.header__phone-number:hover {
+.header__phone:hover {
   color: var(--color-cta);
 }
 
-.header__phone-label {
+.header__schedule {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
 }
