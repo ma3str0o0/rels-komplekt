@@ -48,10 +48,16 @@
             <h1 class="catalog-page-header__title">Каталог продукции</h1>
             <p class="catalog-page-header__sub">158 позиций · рельсы, шпалы, крепёж</p>
           </div>
-          <a href="calculator.html" class="btn btn-secondary btn-sm" style="white-space:nowrap;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
-            Калькулятор тоннажа
-          </a>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="calculator.html" class="btn btn-secondary btn-sm" style="white-space:nowrap;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+              Калькулятор тоннажа
+            </a>
+            <a href="rails-reference.html" class="btn btn-outline btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+              Справочник по рельсам
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -257,14 +263,6 @@
 
           <!-- Пагинация -->
           <nav class="pagination" id="catalogPagination" aria-label="Навигация по страницам каталога"></nav>
-
-          <!-- Ссылка на справочник по рельсам -->
-          <div class="catalog-reference-link">
-            <a href="rails-reference.html" class="btn btn-secondary btn-sm">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-              Справочник по типам рельсов
-            </a>
-          </div>
 
           <!-- Пустой результат -->
           <div class="empty-state hidden" id="emptyState">
