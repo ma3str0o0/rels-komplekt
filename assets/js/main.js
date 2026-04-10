@@ -53,6 +53,7 @@ function _tplHeader() {
         </a>
         <nav class="nav" role="navigation" aria-label="Основная навигация">
           <a href="index.html" class="nav__link">Главная</a>
+          <a href="about.html" class="nav__link">О компании</a>
           <a href="catalog.html" class="nav__link">Каталог</a>
           <a href="calculator.html" class="nav__link">Калькулятор</a>
           <a href="contacts.html" class="nav__link">Контакты</a>
@@ -102,6 +103,7 @@ function _tplHeader() {
     </div>
     <nav class="mobile-menu__nav" role="navigation" aria-label="Мобильная навигация">
       <a href="index.html" class="mobile-menu__link">Главная</a>
+      <a href="about.html" class="mobile-menu__link">О компании</a>
       <a href="catalog.html" class="mobile-menu__link">Каталог продукции</a>
       <a href="calculator.html" class="mobile-menu__link">Калькулятор тоннажа</a>
       <a href="contacts.html" class="mobile-menu__link">Контакты</a>
@@ -176,6 +178,7 @@ function _tplFooterOnly() {
           <div class="footer__col-title">Разделы</div>
           <nav aria-label="Навигация в футере">
             <a href="index.html" class="footer__nav-link">Главная</a>
+            <a href="about.html" class="footer__nav-link">О компании</a>
             <a href="catalog.html" class="footer__nav-link">Каталог продукции</a>
             <a href="calculator.html" class="footer__nav-link">Калькулятор тоннажа</a>
             <a href="contacts.html" class="footer__nav-link">Контакты и реквизиты</a>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <script>(function(){var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="О компании Рельс-Комплект — оптовый поставщик материалов верхнего строения пути с 2009 года. История, партнёры, сертификаты.">
+  <title>О компании — Рельс-Комплект</title>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Рельс-Комплект">
+  <meta property="og:title" content="О компании — Рельс-Комплект">
+  <meta property="og:description" content="Оптовый поставщик материалов верхнего строения пути с 2009 года. Рельсы, шпалы, крепёж. Поставки по России и СНГ.">
+  <meta property="og:url" content="https://rels-komplekt.ru/about.html">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230369A1'/><text y='22' x='6' font-size='20' fill='white' font-family='sans-serif' font-weight='bold'>Р</text></svg>">
+
+  <style>
+  /* ─── Стили страницы about.html ──────────────────────────────── */
+
+  /* Секция «Кто мы» */
+  .about-intro { display: grid; grid-template-columns: 3fr 2fr; gap: 48px; align-items: start; }
+  @media (max-width: 768px) { .about-intro { grid-template-columns: 1fr; } }
+
+  .about-intro__text h2 { font-size: 1.5rem; font-weight: 700; color: #0F172A; margin-bottom: 16px; line-height: 1.3; }
+  .about-intro__text p  { color: #334155; line-height: 1.7; margin-bottom: 14px; }
+
+  /* Карточки-цифры 2×2 */
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .about-stat {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    padding: 20px 16px; text-align: center;
+  }
+  .about-stat__value { font-size: 2.5rem; font-weight: 800; color: #0369A1; line-height: 1; }
+  .about-stat__label { font-size: 0.8rem; color: #64748B; margin-top: 6px; }
+
+  /* Карточки «Почему выбирают нас» */
+  .about-features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  @media (max-width: 1024px) { .about-features { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px)  { .about-features { grid-template-columns: 1fr; } }
+
+  .about-feature {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 24px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .about-feature__icon {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: #EFF6FF; display: flex; align-items: center; justify-content: center;
+    color: #0369A1; flex-shrink: 0;
+  }
+  .about-feature h3 { font-size: 1rem; font-weight: 700; color: #0F172A; margin: 0; }
+  .about-feature p  { font-size: 0.875rem; color: #64748B; margin: 0; line-height: 1.6; }
+
+  /* Таймлайн */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 5px; top: 8px;
+    bottom: 8px; width: 2px; background: #E2E8F0;
+  }
+  .timeline__item { position: relative; margin-bottom: 36px; }
+  .timeline__item:last-child { margin-bottom: 0; }
+  .timeline__dot {
+    position: absolute; left: -31px; top: 4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #0369A1; border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #0369A1;
+  }
+  .timeline__year { font-weight: 700; color: #0369A1; font-size: 1.1rem; margin-bottom: 4px; }
+  .timeline__title { font-weight: 600; color: #0F172A; margin-bottom: 4px; }
+  .timeline__text { font-size: 0.875rem; color: #334155; line-height: 1.6; margin: 0; }
+
+  /* Секция «Завершённые сделки» */
+  .about-deals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 768px) { .about-deals { grid-template-columns: 1fr; } }
+
+  .deal-card {
+    background: #fff; border-radius: 12px;
+    border-top: 4px solid #0369A1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 24px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .deal-card__icon {
+    width: 48px; height: 48px; border-radius: 10px;
+    background: #EFF6FF; display: flex; align-items: center; justify-content: center;
+    color: #0369A1;
+  }
+  .deal-card h3 { font-size: 1.05rem; font-weight: 700; color: #0F172A; margin: 0; }
+  .deal-card p  { font-size: 0.875rem; color: #334155; margin: 0; line-height: 1.6; }
+  .deal-card__examples { font-size: 0.78rem; color: #94A3B8; margin: 0; }
+
+  /* Партнёры */
+  .partners-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .partner-logo {
+    border: 1px solid #E2E8F0; border-radius: 8px;
+    padding: 16px 24px; background: #fff;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    min-width: 150px; transition: box-shadow 0.2s; cursor: default;
+  }
+  .partner-logo:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .partner-name { font-weight: 700; font-size: 14px; color: #0F172A; text-align: center; }
+  .partner-type { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* Сертификаты */
+  .certs-list { display: flex; flex-direction: column; gap: 16px; }
+  .cert-card {
+    background: #F8FAFC; border-radius: 12px;
+    padding: 20px 24px; display: flex; align-items: flex-start; gap: 16px;
+  }
+  .cert-card__icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: #EFF6FF; display: flex; align-items: center; justify-content: center;
+    color: #0369A1; flex-shrink: 0;
+  }
+  .cert-card h3 { font-size: 0.95rem; font-weight: 700; color: #0F172A; margin: 0 0 4px; }
+  .cert-card p  { font-size: 0.875rem; color: #334155; margin: 0; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+  <!-- Шапка вставляется через loadComponents() из main.js -->
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+
+    <!-- ══════════════════════════════════════════════════════════
+         1. HERO
+    ══════════════════════════════════════════════════════════ -->
+    <section class="hero" aria-labelledby="about-hero-title">
+      <div class="container">
+        <div class="hero__inner">
+          <div class="hero__content">
+            <h1 class="hero__title" id="about-hero-title">О компании</h1>
+            <p class="hero__subtitle">
+              Оптовый поставщик материалов верхнего строения пути.<br>
+              Работаем с 2009 года.
+            </p>
+            <div class="hero__actions">
+              <a href="catalog.html" class="btn btn-primary btn-lg">Смотреть каталог</a>
+              <a href="contacts.html" class="btn btn-secondary btn-lg">Связаться с нами</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         2. КТО МЫ
+    ══════════════════════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="about-who-title">
+      <div class="container">
+        <div class="about-intro">
+
+          <!-- Левая колонка: текст -->
+          <div class="about-intro__text">
+            <h2 id="about-who-title">Рельс-Комплект — надёжный поставщик ВСП на Урале</h2>
+            <p>ООО «РКУ» работает на рынке материалов верхнего строения пути с 2009 года.
+            За это время мы выросли из регионального поставщика в федерального игрока,
+            поставляя рельсы, шпалы и крепёж на объекты по всей России и странам СНГ.</p>
+            <p>Офис и склад — Екатеринбург. Доставляем автотранспортом по Свердловской области
+            и через транспортные компании в любой регион страны.</p>
+          </div>
+
+          <!-- Правая колонка: карточки-цифры 2×2 -->
+          <div class="about-stats" role="list" aria-label="Ключевые показатели">
+            <div class="about-stat" role="listitem">
+              <div class="about-stat__value">15+</div>
+              <div class="about-stat__label">лет на рынке ВСП</div>
+            </div>
+            <div class="about-stat" role="listitem">
+              <div class="about-stat__value">158</div>
+              <div class="about-stat__label">позиций в каталоге</div>
+            </div>
+            <div class="about-stat" role="listitem">
+              <div class="about-stat__value">1 ч</div>
+              <div class="about-stat__label">время ответа менеджера</div>
+            </div>
+            <div class="about-stat" role="listitem">
+              <div class="about-stat__value" style="font-size:1.6rem;">Россия<br>и СНГ</div>
+              <div class="about-stat__label">география поставок</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         3. ПОЧЕМУ ВЫБИРАЮТ НАС
+    ══════════════════════════════════════════════════════════ -->
+    <section class="section section--muted" aria-labelledby="about-why-title">
+      <div class="container">
+        <h2 class="section-title" id="about-why-title">Почему выбирают нас</h2>
+
+        <div class="about-features">
+
+          <!-- Широкий ассортимент -->
+          <div class="about-feature">
+            <div class="about-feature__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="2" y1="20" x2="22" y2="20"/>
+                <line x1="2" y1="4" x2="22" y2="4"/>
+                <line x1="6" y1="4" x2="6" y2="20"/>
+                <line x1="12" y1="4" x2="12" y2="20"/>
+                <line x1="18" y1="4" x2="18" y2="20"/>
+              </svg>
+            </div>
+            <h3>Широкий ассортимент</h3>
+            <p>Рельсы всех типов (Р8–Р75, крановые КР70–КР140, узкоколейные),
+            шпалы, крепёж — всё в одном месте.</p>
+          </div>
+
+          <!-- Быстрая доставка -->
+          <div class="about-feature">
+            <div class="about-feature__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13" rx="1"/>
+                <path d="M16 8h4l3 3v5h-7V8z"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+            </div>
+            <h3>Быстрая доставка</h3>
+            <p>Отгрузка со склада в день заявки. Доставка до терминала ТК — бесплатно.
+            Собственный транспорт по Свердловской области.</p>
+          </div>
+
+          <!-- Комплексные поставки -->
+          <div class="about-feature">
+            <div class="about-feature__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
+            <h3>Комплексные поставки</h3>
+            <p>Комплектуем заявки любой сложности. Работаем с ИП, ООО и госструктурами.
+            Договор, счёт, закрывающие документы.</p>
+          </div>
+
+          <!-- Качество по ГОСТ -->
+          <div class="about-feature">
+            <div class="about-feature__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <h3>Качество по ГОСТ</h3>
+            <p>Вся продукция сертифицирована. Поставляем рельсы напрямую с заводов-производителей:
+            НТМК, ЕВРАЗ, ДМЗ.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         4. ИСТОРИЯ КОМПАНИИ — ТАЙМЛАЙН
+    ══════════════════════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="about-history-title">
+      <div class="container">
+        <h2 class="section-title" id="about-history-title">История компании</h2>
+
+        <div class="timeline" role="list" style="max-width: 720px;">
+
+          <div class="timeline__item" role="listitem">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__year">2009</div>
+            <div class="timeline__title">Основание компании</div>
+            <p class="timeline__text">Зарегистрировано ООО «РКУ» в Екатеринбурге. Начало поставок рельсов
+            и крепежа для промышленных предприятий Урала.</p>
+          </div>
+
+          <div class="timeline__item" role="listitem">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__year">2012</div>
+            <div class="timeline__title">Расширение ассортимента</div>
+            <p class="timeline__text">Добавлены шпалы деревянные и железобетонные, стрелочные переводы.
+            Первые поставки в Казахстан и Беларусь.</p>
+          </div>
+
+          <div class="timeline__item" role="listitem">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__year">2015</div>
+            <div class="timeline__title">Собственный склад</div>
+            <p class="timeline__text">Открытие собственной складской площадки. Возможность отгрузки в день заявки.</p>
+          </div>
+
+          <div class="timeline__item" role="listitem">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__year">2018</div>
+            <div class="timeline__title">Федеральные поставки</div>
+            <p class="timeline__text">Первые крупные контракты за пределами Уральского федерального округа.
+            Поставки в Сибирь, Поволжье, Северо-Запад.</p>
+          </div>
+
+          <div class="timeline__item" role="listitem">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__year">2022</div>
+            <div class="timeline__title">Цифровая трансформация</div>
+            <p class="timeline__text">Запуск онлайн-каталога с актуальными ценами. Калькулятор тоннажа пути.</p>
+          </div>
+
+          <div class="timeline__item" role="listitem">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__year">2024</div>
+            <div class="timeline__title">Сегодня</div>
+            <p class="timeline__text">Более 158 позиций в каталоге. 15 лет на рынке. Поставки в Россию и 5 стран СНГ.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         5. ЗАВЕРШЁННЫЕ СДЕЛКИ
+    ══════════════════════════════════════════════════════════ -->
+    <section class="section section--muted" aria-labelledby="about-deals-title">
+      <div class="container">
+        <h2 class="section-title" id="about-deals-title">Завершённые сделки</h2>
+
+        <div class="about-deals">
+
+          <!-- Частные поставки -->
+          <div class="deal-card">
+            <div class="deal-card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <h3>Частные поставки</h3>
+            <p>500+ отгрузок в год для промышленных предприятий,
+            строительных компаний, ремонтных организаций.</p>
+            <p class="deal-card__examples">Заводы, ПГС, ЖКХ, портовые краны</p>
+          </div>
+
+          <!-- Тендеры -->
+          <div class="deal-card">
+            <div class="deal-card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+            </div>
+            <h3>Тендеры (44-ФЗ / 223-ФЗ)</h3>
+            <p>Участвуем в государственных и корпоративных закупках.
+            Опыт поставок по 44-ФЗ и 223-ФЗ.</p>
+            <p class="deal-card__examples">Муниципальные заказы, инфраструктурные проекты</p>
+          </div>
+
+          <!-- Крупный опт -->
+          <div class="deal-card">
+            <div class="deal-card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="2" y1="20" x2="22" y2="20"/>
+                <line x1="2" y1="16" x2="22" y2="16"/>
+                <line x1="6" y1="16" x2="6" y2="20"/>
+                <line x1="18" y1="16" x2="18" y2="20"/>
+                <rect x="4" y="8" width="16" height="8" rx="1"/>
+              </svg>
+            </div>
+            <h3>Крупный опт</h3>
+            <p>Поставки от 100 тонн для строительства и реконструкции
+            железнодорожных и крановых путей.</p>
+            <p class="deal-card__examples">Промышленные предприятия УрФО и СНГ</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         6. НАШИ ПАРТНЁРЫ
+    ══════════════════════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="about-partners-title">
+      <div class="container">
+        <h2 class="section-title" id="about-partners-title">Работаем с ведущими предприятиями России</h2>
+        <p style="color:#64748B; margin-bottom:32px; max-width:720px;">
+          Среди наших клиентов — промышленные предприятия, строительные компании
+          и государственные структуры Уральского региона и России
+        </p>
+
+        <!-- TODO: заменить на реальные логотипы клиента -->
+        <div class="partners-grid" aria-label="Партнёры компании">
+
+          <div class="partner-logo">
+            <span class="partner-name">ЕВРАЗ НТМК</span>
+            <span class="partner-type">Металлургия</span>
+          </div>
+          <div class="partner-logo">
+            <span class="partner-name">ТМК</span>
+            <span class="partner-type">Металлургия</span>
+          </div>
+          <div class="partner-logo">
+            <span class="partner-name">УралВагонЗавод</span>
+            <span class="partner-type">Машиностроение</span>
+          </div>
+          <div class="partner-logo">
+            <span class="partner-name">Уралкалий</span>
+            <span class="partner-type">Химическая промышленность</span>
+          </div>
+          <div class="partner-logo">
+            <span class="partner-name">УГМК</span>
+            <span class="partner-type">Металлургия</span>
+          </div>
+
+          <div class="partner-logo">
+            <span class="partner-name">Сургутнефтегаз</span>
+            <span class="partner-type">Нефтегаз</span>
+          </div>
+          <div class="partner-logo">
+            <span class="partner-name">Магнитогорский МК</span>
+            <span class="partner-type">Металлургия</span>
+          </div>
+          <div class="partner-logo">
+            <span class="partner-name">Первоуральский НТЗ</span>
+            <span class="partner-type">Металлургия</span>
+          </div>
+          <div class="partner-logo">
+            <span class="partner-name">СУЭК</span>
+            <span class="partner-type">Угольная промышленность</span>
+          </div>
+          <div class="partner-logo">
+            <span class="partner-name">РУСАЛ</span>
+            <span class="partner-type">Алюминиевая промышленность</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         7. СЕРТИФИКАТЫ И ДОКУМЕНТЫ
+    ══════════════════════════════════════════════════════════ -->
+    <section class="section section--muted" aria-labelledby="about-certs-title">
+      <div class="container">
+        <h2 class="section-title" id="about-certs-title">Сертификаты и документы</h2>
+
+        <div class="certs-list" style="max-width: 720px;">
+
+          <div class="cert-card">
+            <div class="cert-card__icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="6"/>
+                <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+              </svg>
+            </div>
+            <div>
+              <h3>Сертификат качества продукции</h3>
+              <p>Вся продукция поставляется с сертификатами соответствия ГОСТ и техническими паспортами</p>
+            </div>
+          </div>
+
+          <div class="cert-card">
+            <div class="cert-card__icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+            </div>
+            <div>
+              <h3>Договор и закрывающие документы</h3>
+              <p>Работаем по договору поставки. УПД, счета-фактуры, ТТН — полный пакет.</p>
+            </div>
+          </div>
+
+          <div class="cert-card">
+            <div class="cert-card__icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0110 0v4"/>
+              </svg>
+            </div>
+            <div>
+              <h3>Официальная регистрация</h3>
+              <p>ООО «РКУ», ИНН 6671083158. Состоим в реестре поставщиков.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CTA и футер вставляются через loadComponents() из main.js -->
+  <div id="cta-placeholder"></div>
+  <div id="footer-placeholder"></div>
+
+  <!-- Модальное окно вставляется через loadComponents() из main.js -->
+  <div id="modal-placeholder"></div>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

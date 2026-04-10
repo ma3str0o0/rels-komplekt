@@ -406,21 +406,7 @@ function _renderCompetitorData(item) {
   const cd = item.competitor_data;
   if (!cd) return;
 
-  // 1. Описание — разбиваем на абзацы, экранируем
-  const descText    = cd.description || '';
-  const descSection = document.getElementById('product-description');
-  const descEl      = document.getElementById('product-description-text');
-  if (descText && descEl) {
-    const paras = descText
-      .split(/\n+/)
-      .map(p => p.trim())
-      .filter(p => p.length > 20);
-    descEl.innerHTML = (paras.length > 0 ? paras : [descText])
-      .map(p => `<p>${escHtml(p.trim())}</p>`).join('');
-    if (descSection) descSection.style.display = '';
-  }
-
-  // 2. Таблица технических характеристик (specs)
+  // 1. Таблица технических характеристик (specs)
   if (cd.specs && Object.keys(cd.specs).length > 0) {
     const sec   = document.getElementById('product-specs');
     const tbody = document.getElementById('product-specs-tbody');
