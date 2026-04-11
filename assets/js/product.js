@@ -168,10 +168,12 @@ function getWeightKg(item) {
 
 /* ─── Калькулятор / блок "цена по запросу" ──────────────────── */
 function renderPricing(item) {
-  const el      = document.getElementById('productPricing');
-  const KZT     = 5.5; // курс: 1 RUB = 5.5 KZT
+  const el  = document.getElementById('productPricing');
+  const KZT = 5.5; // курс: 1 RUB = 5.5 KZT
 
-  /* Нет цены — только кнопка запроса */
+  if (!el) return;
+
+  /* Нет цены — заглушка */
   if (item.price === null) {
     el.innerHTML = `
       <div class="product-price-request">
@@ -186,96 +188,120 @@ function renderPricing(item) {
     return;
   }
 
-  const weightKg   = getWeightKg(item);
-  const initCostRub = weightKg
-    ? Math.round((weightKg / 1000) * item.price) // 1 шт → тонны → цена
-    : item.price;                                 // 1 тонна если нет веса
+  const weightPerUnit = item.weight_per_unit;           // кг на рельс 12.5 м
+  const hasWeight     = weightPerUnit && weightPerUnit > 0;
+  const wpm           = hasWeight ? weightPerUnit / 12.5 : null; // кг/м
+  const pricePerMeter = hasWeight ? (wpm / 1000) * item.price : null; // ₽/м
 
-  /* Строки ввода: шт + кг (для рельсов) или просто т (для остального) */
-  const fieldsHTML = weightKg ? `
-    <div class="calc-field">
-      <label class="calc-label" for="calcPcs">Кол-во, шт</label>
-      <input class="input calc-input" type="number" id="calcPcs" min="1" step="1" value="1">
-    </div>
-    <span class="calc-eq" aria-hidden="true">=</span>
-    <div class="calc-field">
-      <label class="calc-label" for="calcKg">Кол-во, кг</label>
-      <input class="input calc-input" type="number" id="calcKg" min="0" step="1"
-             value="${Math.round(weightKg)}">
-    </div>` : `
-    <div class="calc-field">
-      <label class="calc-label" for="calcTons">Количество, т</label>
-      <input class="input calc-input" type="number" id="calcTons" min="0.001" step="0.1" value="1">
-    </div>`;
+  /* Начальные значения */
+  const initMeters   = 12.5;
+  const initWeightKg = hasWeight ? Math.round(initMeters * wpm) : 0;
+  const initCost     = hasWeight
+    ? Math.round(initMeters * pricePerMeter)
+    : item.price;
+
+  /* HTML секций */
+  const tabsHTML = hasWeight ? `
+    <div class="calc-tabs" id="calcTabs">
+      <button class="calc-tab active" data-tab="meters">По метражу</button>
+      <button class="calc-tab" data-tab="weight">По весу</button>
+    </div>` : '';
+
+  const metersPanel = hasWeight ? `
+    <div id="calcMetersPanel">
+      <div class="calc-row">
+        <label>Метраж, м</label>
+        <input class="input calc-input" type="number" id="calcMeters" min="1" step="0.5" value="${initMeters}">
+      </div>
+      <div class="calc-hint" id="calcMetersHint">≈ ${initWeightKg} кг</div>
+    </div>` : '';
+
+  const weightPanel = hasWeight ? `
+    <div id="calcWeightPanel" class="hidden">
+      <div class="calc-row">
+        <label>Вес, кг</label>
+        <input class="input calc-input" type="number" id="calcWeightKg" min="1" step="10" value="${initWeightKg}">
+      </div>
+      <div class="calc-hint" id="calcWeightHint">≈ ${initMeters} м</div>
+    </div>` : '';
+
+  const tonsPanel = !hasWeight ? `
+    <div id="calcTonsPanel">
+      <div class="calc-row">
+        <label>Количество, т</label>
+        <input class="input calc-input" type="number" id="calcTons" min="0.1" step="0.1" value="1">
+      </div>
+    </div>` : '';
 
   el.innerHTML = `
-    <div class="product-calculator">
-      <h3 class="product-calculator__title">Введите данные для расчёта:</h3>
-      <div class="calc-fields">${fieldsHTML}</div>
-      <div class="calc-result-row">
-        <span class="calc-label">Стоимость</span>
-        <div class="calc-result">
-          <strong id="calcCostVal">${fmtPrice(initCostRub)}</strong>
-          <span id="calcCostCurr">₽</span>
+    <div class="product-calc-inline">
+      ${tabsHTML}
+      ${metersPanel}
+      ${weightPanel}
+      ${tonsPanel}
+      <div class="calc-total">
+        <span class="calc-total-label">Стоимость</span>
+        <div class="calc-total-right">
+          <strong class="calc-total-value" id="calcResult">${fmtPrice(initCost)}</strong>
+          <span id="calcCurr">₽</span>
+          <div class="currency-toggle">
+            <label class="currency-opt"><input type="radio" name="cr" value="RUB" checked><span>RUB</span></label>
+            <label class="currency-opt"><input type="radio" name="cr" value="KZT"><span>KZT</span></label>
+          </div>
         </div>
-      </div>
-      <div class="currency-toggle" role="group" aria-label="Валюта">
-        <label class="currency-opt">
-          <input type="radio" name="calcCurr" value="RUB" checked>
-          <span>RUB</span>
-        </label>
-        <label class="currency-opt">
-          <input type="radio" name="calcCurr" value="KZT">
-          <span>KZT</span>
-        </label>
       </div>
     </div>`;
 
   /* Состояние */
-  let costRub  = initCostRub;
+  let costRub  = initCost;
   let currency = 'RUB';
-
-  const costVal  = document.getElementById('calcCostVal');
-  const costCurr = document.getElementById('calcCostCurr');
 
   function updateDisplay() {
     const val = currency === 'KZT' ? Math.round(costRub * KZT) : costRub;
-    costVal.textContent  = fmtPrice(val);
-    costCurr.textContent = currency === 'KZT' ? '₸' : '₽';
+    document.getElementById('calcResult').textContent = fmtPrice(val);
+    document.getElementById('calcCurr').textContent   = currency === 'KZT' ? '₸' : '₽';
   }
 
-  if (weightKg) {
-    /* Режим шт ↔ кг */
-    const pcsEl = document.getElementById('calcPcs');
-    const kgEl  = document.getElementById('calcKg');
+  /* Переключение вкладок */
+  el.querySelectorAll('.calc-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      el.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const isMeters = tab.dataset.tab === 'meters';
+      document.getElementById('calcMetersPanel')?.classList.toggle('hidden', !isMeters);
+      document.getElementById('calcWeightPanel')?.classList.toggle('hidden', isMeters);
+    });
+  });
 
-    pcsEl.addEventListener('input', () => {
-      const pcs = Math.max(1, parseInt(pcsEl.value) || 1);
-      pcsEl.value   = pcs;
-      const kg      = Math.round(pcs * weightKg);
-      kgEl.value    = kg;
-      costRub       = Math.round((kg / 1000) * item.price);
+  /* Вкладка «По метражу» */
+  if (hasWeight) {
+    document.getElementById('calcMeters')?.addEventListener('input', e => {
+      const m  = Math.max(0, parseFloat(e.target.value) || 0);
+      const kg = Math.round(m * wpm);
+      document.getElementById('calcMetersHint').textContent = `≈ ${kg} кг`;
+      costRub = Math.round(m * pricePerMeter);
       updateDisplay();
     });
 
-    kgEl.addEventListener('input', () => {
-      const kg   = Math.max(0, parseFloat(kgEl.value) || 0);
-      const pcs  = kg > 0 ? Math.ceil(kg / weightKg) : 0;
-      pcsEl.value = pcs;
-      costRub     = Math.round((kg / 1000) * item.price);
-      updateDisplay();
-    });
-  } else {
-    /* Режим тонн */
-    document.getElementById('calcTons').addEventListener('input', e => {
-      const tons = Math.max(0, parseFloat(e.target.value) || 0);
-      costRub    = Math.round(tons * item.price);
+    /* Вкладка «По весу» */
+    document.getElementById('calcWeightKg')?.addEventListener('input', e => {
+      const kg = Math.max(0, parseFloat(e.target.value) || 0);
+      const m  = Math.round((kg / wpm) * 10) / 10;
+      document.getElementById('calcWeightHint').textContent = `≈ ${m} м`;
+      costRub = Math.round((kg / 1000) * item.price);
       updateDisplay();
     });
   }
+
+  /* Режим «По тоннам» (fallback без веса) */
+  document.getElementById('calcTons')?.addEventListener('input', e => {
+    const t = Math.max(0, parseFloat(e.target.value) || 0);
+    costRub = Math.round(t * item.price);
+    updateDisplay();
+  });
 
   /* Переключатель валюты */
-  el.querySelectorAll('input[name="calcCurr"]').forEach(r => {
+  el.querySelectorAll('input[name="cr"]').forEach(r => {
     r.addEventListener('change', () => { currency = r.value; updateDisplay(); });
   });
 }
