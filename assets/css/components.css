@@ -1547,15 +1547,70 @@
   padding: var(--space-md) 0;
 }
 
-/* Двухколоночная сетка: ~38% инфо | ~62% спеки+калькулятор */
+/* Трёхколоночная сетка: фото | инфо | buy-box */
 .product-layout {
   display: grid;
-  grid-template-columns: minmax(300px, 38%) 1fr;
-  gap: var(--space-2xl);
-  align-items: stretch;
+  grid-template-columns: 300px 1fr 300px;
+  gap: 32px;
+  align-items: start;
+  padding: 32px 0;
 }
 
-/* Левая колонка: flex-column чтобы кнопки прижались к низу через margin-top:auto */
+/* Колонка фото */
+.product-col--media .product-image {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Колонка инфо */
+.product-col--info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Buy-box — sticky карточка справа */
+.product-buy-box {
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 80px;
+}
+
+/* Цена в buy-box */
+.product-buy-box__price {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0369A1;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+/* Кнопки действий — вертикально, на полную ширину */
+.product-hero__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.product-hero__actions .btn {
+  width: 100%;
+  justify-content: center;
+  padding: 13px;
+  font-size: 15px;
+}
+
+/* Левая колонка (legacy): flex-column */
 .product-image {
   display: flex;
   flex-direction: column;
@@ -1593,19 +1648,19 @@
 }
 
 .product-info__name {
-  font-size: clamp(20px, 3vw, 28px);
+  font-size: 1.4rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: #0F172A;
+  line-height: 1.3;
+  margin: 4px 0 0;
   line-height: 1.3;
   margin: 0 0 var(--space-sm);
 }
 
 .product-info__uid {
-  font-size: 12px;
-  color: var(--color-text-muted, #64748B);
-  font-family: monospace;
-  margin: 0 0 var(--space-lg);
-  letter-spacing: 0.03em;
+  font-size: 13px;
+  color: #94A3B8;
+  margin: 0;
 }
 
 /* Таблица характеристик */
@@ -1911,26 +1966,40 @@
   justify-content: flex-end;
 }
 
-/* Адаптивность: планшет */
-@media (max-width: 900px) {
+/* Адаптивность: планшет широкий */
+@media (max-width: 1100px) {
   .product-layout {
-    grid-template-columns: minmax(280px, 42%) 1fr;
-    gap: var(--space-xl);
+    grid-template-columns: 260px 1fr 260px;
+    gap: 20px;
+  }
+}
+
+/* Адаптивность: планшет узкий — buy-box уходит под оба столбца */
+@media (max-width: 860px) {
+  .product-layout {
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+  }
+  .product-col--buy {
+    grid-column: 1 / -1;
   }
 }
 
 /* Адаптивность: мобиле */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .product-layout {
     grid-template-columns: 1fr;
     gap: var(--space-lg);
+    padding: 16px 0;
   }
-
+  .product-col--buy {
+    grid-column: 1;
+  }
   .product-image__placeholder {
     aspect-ratio: 16 / 9;
     max-height: 240px;
   }
-
   .product-calculator__input {
     max-width: 100%;
   }

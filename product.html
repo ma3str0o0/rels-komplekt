@@ -60,78 +60,73 @@
         </div>
       </div>
 
-      <!-- 2. Основной блок -->
+      <!-- 2. Основной блок — 3 колонки: фото | инфо | buy-box -->
       <section class="section section--sm">
         <div class="container">
           <div class="product-layout">
 
-            <!-- Левая колонка: фото + компактная инфо-карточка + кнопки -->
-            <div class="product-image" aria-label="Изображение товара">
-
-              <!-- Заглушка фото -->
-              <div class="product-image__placeholder" aria-hidden="true">
-                <!-- Профиль рельса: верхний пояс, левая и правая стенки, нижний пояс -->
-                <svg class="product-image__icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <!-- Верхний пояс -->
-                  <rect x="10" y="8" width="60" height="8" rx="3"
-                        fill="currentColor" fill-opacity="0.15"
-                        stroke="currentColor" stroke-width="1.5"/>
-                  <!-- Левая стенка -->
-                  <rect x="18" y="16" width="12" height="36" rx="1"
-                        fill="currentColor" fill-opacity="0.15"
-                        stroke="currentColor" stroke-width="1.5"/>
-                  <!-- Правая стенка -->
-                  <rect x="50" y="16" width="12" height="36" rx="1"
-                        fill="currentColor" fill-opacity="0.15"
-                        stroke="currentColor" stroke-width="1.5"/>
-                  <!-- Нижний пояс -->
-                  <rect x="8" y="52" width="64" height="8" rx="3"
-                        fill="currentColor" fill-opacity="0.15"
-                        stroke="currentColor" stroke-width="1.5"/>
-                </svg>
-                <span class="product-image__label">Фото отсутствует</span>
+            <!-- Колонка 1: Фото -->
+            <div class="product-col product-col--media">
+              <div class="product-image" id="productImageWrap" aria-label="Изображение товара">
+                <div class="product-image__placeholder" aria-hidden="true">
+                  <!-- Профиль рельса: верхний пояс, левая и правая стенки, нижний пояс -->
+                  <svg class="product-image__icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="8" width="60" height="8" rx="3"
+                          fill="currentColor" fill-opacity="0.15"
+                          stroke="currentColor" stroke-width="1.5"/>
+                    <rect x="18" y="16" width="12" height="36" rx="1"
+                          fill="currentColor" fill-opacity="0.15"
+                          stroke="currentColor" stroke-width="1.5"/>
+                    <rect x="50" y="16" width="12" height="36" rx="1"
+                          fill="currentColor" fill-opacity="0.15"
+                          stroke="currentColor" stroke-width="1.5"/>
+                    <rect x="8" y="52" width="64" height="8" rx="3"
+                          fill="currentColor" fill-opacity="0.15"
+                          stroke="currentColor" stroke-width="1.5"/>
+                  </svg>
+                  <span class="product-image__label">Фото отсутствует</span>
+                </div>
               </div>
-
-              <!-- Компактная инфо-карточка: категория, название, артикул, цена/наличие -->
-              <div class="product-card-info">
-                <!-- Бейдж подкатегории — заполняется JS -->
-                <div id="productBadge"></div>
-                <!-- Название — заполняется JS -->
-                <h1 class="product-info__name" id="productName"></h1>
-                <!-- Артикул — заполняется JS -->
-                <p class="product-info__uid" id="productUid"></p>
-                <!-- Строки: Цена | Состояние | Ед. измерения | Наличие — заполняется JS -->
-                <table class="product-specs" id="productSpecs" aria-label="Характеристики товара"></table>
-              </div>
-
-              <!-- Кнопки действий — заполняются JS -->
-              <div class="product-actions" id="productActions"></div>
-
             </div>
 
-            <!-- Правая колонка: технические характеристики + калькулятор -->
-            <div class="product-details">
+            <!-- Колонка 2: Инфо о товаре -->
+            <div class="product-col product-col--info">
+              <!-- Бейдж подкатегории — заполняется JS -->
+              <div id="productBadge"></div>
+              <!-- Название — заполняется JS -->
+              <h1 class="product-info__name" id="productName"></h1>
+              <!-- Артикул — заполняется JS -->
+              <p class="product-info__uid" id="productUid"></p>
+              <!-- Строки: Состояние | Ед.изм | Наличие | ГОСТ — заполняется JS -->
+              <table class="product-specs" id="productSpecs" aria-label="Характеристики товара"></table>
+            </div>
 
-              <!-- Таблица технических характеристик — показывает JS при наличии данных -->
-              <div id="product-specs" class="product-specs-wrap" style="display:none;">
-                <div class="product-specs-header">Технические характеристики</div>
-                <table class="specs-table specs-table--compact" id="product-specs-table">
-                  <tbody id="product-specs-tbody"></tbody>
-                </table>
+            <!-- Колонка 3: Buy-box (цена + калькулятор + кнопки) -->
+            <div class="product-col product-col--buy">
+              <div class="product-buy-box">
+                <!-- Цена крупно — заполняется JS -->
+                <div class="product-buy-box__price" id="productPriceDisplay"></div>
+                <!-- Калькулятор — заполняется JS -->
+                <div id="productPricing"></div>
+                <!-- Кнопки — заполняются JS -->
+                <div class="product-hero__actions" id="productActions"></div>
               </div>
-
-              <!-- Калькулятор / «Цена по запросу» — заполняется JS -->
-              <div id="productPricing" class="product-pricing-wrap"></div>
-
             </div>
 
           </div>
         </div>
       </section>
 
-    </div><!-- /#productPage -->
-
+      <!-- Таблица тех. характеристик — отдельная секция под hero, показывается JS -->
       <!-- TODO: добавить описание категории товара на index.html -->
+      <section class="section section--sm hidden" id="product-specs">
+        <div class="container">
+          <h2 class="section-title">Технические характеристики</h2>
+          <div class="product-specs-wrap" id="enrichedSpecsWrap"></div>
+        </div>
+      </section>
+
+    </div><!-- /#productPage -->
 
       <!-- 5. Плейсхолдеры медиа-контента (has_drawing, has_photos) -->
       <section class="product-media" id="product-media" style="display:none">

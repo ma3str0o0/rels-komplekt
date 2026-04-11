@@ -52,6 +52,7 @@ function renderProduct(item, catalog) {
   renderBreadcrumbs(item);
   renderBadge(item);
   renderName(item);
+  renderPriceDisplay(item);
   renderSpecs(item);
   renderPricing(item);
   renderActions(item);
@@ -90,6 +91,17 @@ function renderName(item) {
   document.getElementById('productUid').textContent = `Артикул: ${item.id}`;
 }
 
+/* ─── Цена крупно в buy-box ──────────────────────────────────── */
+function renderPriceDisplay(item) {
+  const el = document.getElementById('productPriceDisplay');
+  if (!el) return;
+  if (item.price === null) {
+    el.innerHTML = `<span style="font-size:1rem;font-weight:500;color:#64748B">Цена по запросу</span>`;
+  } else {
+    el.innerHTML = `${fmtPrice(item.price)} <span style="font-size:1rem;font-weight:400;color:#64748B">₽/${escHtml(item.unit || 'т')}</span>`;
+  }
+}
+
 /* ─── Определение состояния товара из названия ───────────────── */
 function detectCondition(name) {
   const lc = name.toLowerCase();
@@ -103,16 +115,11 @@ function detectCondition(name) {
 function renderSpecs(item) {
   const condition = detectCondition(item.name);
 
-  const priceCell = item.price !== null
-    ? `<strong class="product-specs__price">${fmtPrice(item.price)}&nbsp;₽/${escHtml(item.unit || 'т')}</strong>`
-    : `<span class="product-specs__price--request">Цена по запросу</span>`;
-
   const stockCell = item.in_stock
     ? `<span class="badge badge--green">В наличии</span>`
     : `<span class="badge badge--gray">Под заказ</span>`;
 
   const rows = [
-    ['Цена',           priceCell],
     ['Состояние',      escHtml(condition)],
     ['Ед. измерения',  escHtml(item.unit || 'т')],
     ['Наличие',        stockCell],
@@ -434,15 +441,16 @@ function _renderCompetitorData(item) {
 
   // 1. Таблица технических характеристик (specs)
   if (cd.specs && Object.keys(cd.specs).length > 0) {
-    const sec   = document.getElementById('product-specs');
-    const tbody = document.getElementById('product-specs-tbody');
-    if (sec && tbody) {
-      tbody.innerHTML = Object.entries(cd.specs)
-        .map(([k, v]) => `<tr>
+    const sec  = document.getElementById('product-specs');
+    const wrap = document.getElementById('enrichedSpecsWrap');
+    if (sec && wrap) {
+      wrap.innerHTML = `<table class="specs-table specs-table--compact"><tbody>` +
+        Object.entries(cd.specs).map(([k, v]) => `<tr>
           <th class="specs-table__key">${escHtml(k)}</th>
           <td class="specs-table__val">${escHtml(String(v))}</td>
-        </tr>`).join('');
-      sec.style.display = '';
+        </tr>`).join('') +
+        `</tbody></table>`;
+      sec.classList.remove('hidden');
     }
   }
 
