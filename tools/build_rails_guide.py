@@ -47,9 +47,9 @@ WEIGHTS = [
     ("Р18",    "17,91 кг/м",  "Узкоколейный",   "gray"),
 ]
 
-# ── Инлайн-стили таблиц (только hex, без CSS-переменных) ────────────────────
+# ── Инлайн-стили таблиц (CSS-переменные с hex-fallback) ─────────────────────
 
-S_WRAP  = 'style="border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;overflow-x:auto;"'
+S_WRAP  = 'style="border:1px solid var(--color-border, #E2E8F0);border-radius:8px;overflow:hidden;overflow-x:auto;"'
 S_TABLE = 'style="width:100%;border-collapse:collapse;font-size:13.5px;"'
 
 S_TH = (
@@ -60,11 +60,11 @@ S_TH = (
 
 def td_style(idx, first=False):
     """Возвращает инлайн-стиль для <td> с чередованием строк."""
-    bg = "#F8FAFC" if idx % 2 == 0 else "#ffffff"
+    bg = "var(--color-surface, #F8FAFC)" if idx % 2 == 0 else "var(--color-bg, #ffffff)"
     fw = "font-weight:600;" if first else ""
     return (
-        f'style="background:{bg};padding:10px 16px;color:#020617;'
-        f'border-bottom:1px solid #E2E8F0;{fw}"'
+        f'style="background:{bg};padding:10px 16px;color:var(--color-text, #020617);'
+        f'border-bottom:1px solid var(--color-border, #E2E8F0);{fw}"'
     )
 
 
@@ -74,15 +74,16 @@ def build_categories_table():
     rows = []
     for i, (code, desc) in enumerate(CATEGORIES):
         last = " border-bottom:none;" if i == len(CATEGORIES) - 1 else ""
+        bg = "var(--color-surface, #F8FAFC)" if i % 2 == 0 else "var(--color-bg, #ffffff)"
         td0 = (
-            f'style="background:{"#F8FAFC" if i%2==0 else "#ffffff"};'
-            f'padding:10px 16px;color:#020617;font-weight:600;'
-            f'border-bottom:1px solid #E2E8F0{last};"'
+            f'style="background:{bg};'
+            f'padding:10px 16px;color:var(--color-text, #020617);font-weight:600;'
+            f'border-bottom:1px solid var(--color-border, #E2E8F0){last};"'
         )
         td1 = (
-            f'style="background:{"#F8FAFC" if i%2==0 else "#ffffff"};'
-            f'padding:10px 16px;color:#020617;'
-            f'border-bottom:1px solid #E2E8F0{last};"'
+            f'style="background:{bg};'
+            f'padding:10px 16px;color:var(--color-text, #020617);'
+            f'border-bottom:1px solid var(--color-border, #E2E8F0){last};"'
         )
         rows.append(f'        <tr class="trow"><td {td0}>{code}</td><td {td1}>{desc}</td></tr>')
     return "\n".join(rows)
@@ -102,12 +103,12 @@ def build_tolerances_table():
     rows = []
     for i, (param, r50, r65, r75) in enumerate(TOLERANCES):
         last = " border-bottom:none;" if i == len(TOLERANCES) - 1 else ""
-        bg = "#F8FAFC" if i % 2 == 0 else "#ffffff"
+        bg = "var(--color-surface, #F8FAFC)" if i % 2 == 0 else "var(--color-bg, #ffffff)"
         def cell(val, bold=False):
             fw = "font-weight:600;" if bold else ""
             return (
-                f'<td style="background:{bg};padding:10px 16px;color:#020617;'
-                f'border-bottom:1px solid #E2E8F0{last};{fw}">{val}</td>'
+                f'<td style="background:{bg};padding:10px 16px;color:var(--color-text, #020617);'
+                f'border-bottom:1px solid var(--color-border, #E2E8F0){last};{fw}">{val}</td>'
             )
         rows.append(
             f'        <tr class="trow">'
@@ -152,7 +153,7 @@ def build_html():
 <head>
   <script>(function(){{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}})();</script>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org; frame-src https://yandex.ru https://maps.yandex.ru; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Справочник по типам рельсов: категории по ГОСТ 51685-2022, допускаемые отклонения размеров, погонный вес. Рельс-Комплект.">
   <title>Справочник по типам рельсов — Рельс-Комплект</title>
@@ -171,6 +172,38 @@ def build_html():
   <!-- Hover-эффект для строк таблицы (hover нельзя задать инлайн) -->
   <style>
     .trow:hover td {{ background: #EFF6FF !important; }}
+
+    /* ── Dark theme overrides ── */
+    [data-theme="dark"] body {{
+      background: #0D1117;
+      color: #E6EDF3;
+    }}
+    [data-theme="dark"] .trow td {{
+      background: #161B22 !important;
+      color: #E6EDF3 !important;
+      border-bottom-color: #30363D !important;
+    }}
+    [data-theme="dark"] .trow:nth-child(even) td {{
+      background: #1C2128 !important;
+    }}
+    [data-theme="dark"] .trow:hover td {{
+      background: rgba(47, 129, 247, 0.08) !important;
+    }}
+    [data-theme="dark"] div[style*="border:1px solid"] {{
+      border-color: #30363D !important;
+    }}
+    [data-theme="dark"] .pcard {{
+      background: #161B22;
+      border-color: #30363D;
+    }}
+    [data-theme="dark"] .pcard__name,
+    [data-theme="dark"] .pcard p {{
+      color: #E6EDF3;
+    }}
+    [data-theme="dark"] .cta-section {{
+      background: #161B22;
+      border-color: #30363D;
+    }}
   </style>
 </head>
 <body>

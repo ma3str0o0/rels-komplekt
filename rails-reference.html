@@ -22,6 +22,96 @@
   <!-- Hover-эффект для строк таблицы (hover нельзя задать инлайн) -->
   <style>
     .trow:hover td { background: #EFF6FF !important; }
+
+    /* ── Dark theme overrides ── */
+    [data-theme="dark"] body {
+      background: #0D1117;
+      color: #E6EDF3;
+    }
+
+    [data-theme="dark"] .guide-section h2 {
+      color: #E6EDF3;
+      border-bottom-color: #2F81F7;
+    }
+
+    [data-theme="dark"] .table-wrap {
+      border-color: #30363D;
+      border-radius: 8px;
+    }
+
+    /* Заголовок таблицы — оставить тёмным синим, он уже хорошо выглядит */
+    [data-theme="dark"] .guide-table thead tr {
+      background: #0A2463 !important;
+    }
+    [data-theme="dark"] .guide-table thead th {
+      color: #fff !important;
+    }
+
+    /* Тело таблицы — светлый текст */
+    [data-theme="dark"] .guide-table tbody td {
+      color: #E6EDF3 !important;
+      border-bottom-color: #30363D !important;
+    }
+
+    /* Нечётные строки — чуть темнее поверхности */
+    [data-theme="dark"] .guide-table tbody tr:nth-child(odd) td {
+      background: #161B22 !important;
+    }
+
+    /* Чётные строки — совсем чуть светлее */
+    [data-theme="dark"] .guide-table tbody tr:nth-child(even) td {
+      background: #1C2128 !important;
+    }
+
+    /* Hover строки */
+    [data-theme="dark"] .guide-table tbody tr:hover td {
+      background: rgba(47, 129, 247, 0.08) !important;
+    }
+
+    /* Первая колонка — полужирный, слегка ярче */
+    [data-theme="dark"] .guide-table tbody td:first-child {
+      color: #E6EDF3 !important;
+      font-weight: 600;
+    }
+
+    /* CTA-секция внизу если есть */
+    [data-theme="dark"] .guide-cta,
+    [data-theme="dark"] .cta-section {
+      background: #161B22;
+      border-color: #30363D;
+    }
+    [data-theme="dark"] .guide-cta h2,
+    [data-theme="dark"] .guide-cta p {
+      color: #E6EDF3;
+    }
+
+    /* Таблицы страницы — inline-стили перекрываются через trow */
+    [data-theme="dark"] .trow td {
+      background: #161B22 !important;
+      color: #E6EDF3 !important;
+      border-bottom-color: #30363D !important;
+    }
+    [data-theme="dark"] .trow:nth-child(even) td {
+      background: #1C2128 !important;
+    }
+    [data-theme="dark"] .trow:hover td {
+      background: rgba(47, 129, 247, 0.08) !important;
+    }
+
+    /* Обёртка таблицы */
+    [data-theme="dark"] div[style*="border:1px solid #E2E8F0"] {
+      border-color: #30363D !important;
+    }
+
+    /* Карточки погонного веса */
+    [data-theme="dark"] .pcard {
+      background: #161B22;
+      border-color: #30363D;
+    }
+    [data-theme="dark"] .pcard__name,
+    [data-theme="dark"] .pcard p {
+      color: #E6EDF3;
+    }
   </style>
 </head>
 <body>
