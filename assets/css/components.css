@@ -1987,22 +1987,38 @@
 }
 
 /* Адаптивность: мобиле */
-@media (max-width: 600px) {
+/* Адаптивность: мобиле — 1 колонка */
+@media (max-width: 640px) {
   .product-layout {
-    grid-template-columns: 1fr;
-    gap: var(--space-lg);
+    grid-template-columns: 1fr !important;
+    gap: 16px;
     padding: 16px 0;
   }
   .product-col--buy {
     grid-column: 1;
   }
-  .product-image__placeholder {
-    aspect-ratio: 16 / 9;
+  /* Фото — чуть компактнее */
+  .product-col--media .product-image {
+    aspect-ratio: 4 / 3;
     max-height: 240px;
   }
-  .product-calculator__input {
-    max-width: 100%;
+  .product-image__placeholder {
+    aspect-ratio: 4 / 3;
+    max-height: 240px;
   }
+  /* Buy-box без sticky */
+  .product-buy-box {
+    position: static !important;
+    padding: 16px;
+  }
+  /* Цена поменьше */
+  .product-buy-box__price { font-size: 1.4rem; }
+  /* Название */
+  .product-info__name { font-size: 1.15rem; }
+  /* Калькулятор */
+  .calc-tabs { font-size: 13px; }
+  .calc-row label { min-width: 80px; font-size: 13px; }
+  .product-calculator__input { max-width: 100%; }
 }
 
 @media (max-width: 480px) {

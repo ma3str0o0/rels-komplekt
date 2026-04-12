@@ -1423,3 +1423,32 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(4px);
   color: var(--color-cta);
 }
+
+/* ─── Глобальные мобильные переопределения (≤ 640px) ────────── */
+@media (max-width: 640px) {
+  /* Секции — меньше отступы */
+  .section      { padding-block: var(--space-xl); }    /* 32px */
+  .section--sm  { padding-block: var(--space-lg); }    /* 24px */
+
+  /* Заголовки секций */
+  .section-title  { font-size: 1.3rem; }
+  .section__title { font-size: var(--font-size-2xl); } /* 24px */
+
+  /* Hero */
+  .hero { padding-block: 48px 32px; }
+  .hero__actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .hero__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .hero__stats { gap: var(--space-lg); }
+}
+
+@media (max-width: 480px) {
+  .container { padding-inline: 12px; }
+  .section-title  { font-size: 1.15rem; }
+  .section__title { font-size: var(--font-size-xl); }  /* 20px */
+}
