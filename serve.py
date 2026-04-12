@@ -58,6 +58,38 @@ SMTP_USER    = os.environ.get('SMTP_USER', '')
 SMTP_PASS    = os.environ.get('SMTP_PASS', '')
 NOTIFY_EMAIL = os.environ.get('NOTIFY_EMAIL', 'ooorku@mail.ru')
 
+# ──────────────────────────────────────
+# Пути, закрытые от публичного доступа
+# ──────────────────────────────────────
+BLOCKED_PATHS = [
+    '/data/vsp74_scrape.json',
+    '/data/catalog_enriched.json',
+    '/data/catalog_backup.json',
+    '/data/competitor_raw.json',
+    '/data/competitor_catalog.json',
+    '/data/competitor_details.json',
+    '/data/competitor_report.html',
+    '/data/competitor_report.md',
+    '/data/eshop_10072635.csv',
+    '/proxy/',
+    '/.env',
+    '/CLAUDE.md',
+    '/DEVLOG.md',
+    '/PROJECT_STATUS.md',
+    '/docs/',
+    '/design-system/',
+    '/tools/',
+    '/.claude/',
+    '/.git/',
+    '/_headers',
+]
+
+def _is_blocked(path: str) -> bool:
+    for blocked in BLOCKED_PATHS:
+        if path == blocked or path.startswith(blocked):
+            return True
+    return False
+
 # Цвета бренда
 C_BLUE = colors.HexColor('#0A2463')
 C_RED  = colors.HexColor('#C44536')
@@ -609,6 +641,14 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/':
             self.path = '/index.html'
+        # Блокируем служебные и чувствительные пути
+        clean = self.path.split('?')[0].split('#')[0]
+        if _is_blocked(clean):
+            self.send_response(403)
+            self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(b'403 Forbidden')
+            return
         super().do_GET()
 
     def end_headers(self):

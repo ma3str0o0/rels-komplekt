@@ -14,20 +14,19 @@
 - Шрифт: Inter (Google Fonts)
 - Стиль: строгий промышленный B2B
 - Ориентир: vsp74.ru
+- Design system: `docs/design-system/рельс-комплект/MASTER.md`
 
 ## Структура файлов
 ```
-index.html
-catalog.html
-product.html        (?id=UID)
-calculator.html
-contacts.html
-assets/css/style.css
-assets/css/components.css
-assets/js/main.js
-assets/js/catalog.js
-assets/js/calculator.js
-data/catalog.json   — 158 позиций
+*.html              — страницы в корне
+assets/css/         — style.css, components.css
+assets/js/          — main.js, catalog.js, product.js, ...
+assets/img/certs/   — сертификаты
+data/catalog.json   — 158 позиций (публичный)
+docs/               — документация разработки (DEVLOG, PROJECT_STATUS, design-system)
+tools/              — скрипты парсинга (не для продакшна)
+proxy/              — серверный прокси (секреты в .env)
+serve.py            — единый HTTP-сервер (статика + /api/notify)
 ```
 
 ## Бизнес-логика

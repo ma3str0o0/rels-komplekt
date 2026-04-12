@@ -1,2 +1,47 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Sensitive
 proxy/.env
 *.env
+.env.*
+*.key
+*.pem
+
+# Данные конкурента (не для публичного репо)
+data/vsp74_scrape.json
+data/catalog_enriched.json
+data/catalog_backup.json
+data/competitor_raw.json
+data/competitor_catalog.json
+data/competitor_details.json
+data/competitor_report.html
+data/competitor_report.md
+data/eshop_10072635.csv
+
+# Артефакты разработки
+product_backup.html
+bolt-prompts.txt
+run_parser.sh
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Claude Code (локальные настройки, не для репо)
+.claude/
+
+# Логи
+*.log
+logs/
