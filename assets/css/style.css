@@ -1784,3 +1784,175 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--color-surface);
   border-color: var(--color-border);
 }
+
+/* ── ПРОБЛЕМА 1: about.html — белые карточки ─────────────────── */
+[data-theme="dark"] .about-stat,
+[data-theme="dark"] .deal-card,
+[data-theme="dark"] .cert-card,
+[data-theme="dark"] .about-feature {
+  background: var(--color-surface-2, #1C2128);
+  border-color: var(--color-border, #30363D);
+}
+[data-theme="dark"] .about-stat strong,
+[data-theme="dark"] .about-stat__value {
+  color: var(--color-cta, #2F81F7);
+}
+[data-theme="dark"] .about-stat__label,
+[data-theme="dark"] .deal-card__text,
+[data-theme="dark"] .about-feature__text {
+  color: var(--color-text-muted, #8B949E);
+}
+[data-theme="dark"] .about-feature__icon {
+  background: rgba(47, 129, 247, 0.12);
+  color: var(--color-cta, #2F81F7);
+}
+
+/* ── ПРОБЛЕМА 2: contacts.html — форма сливается с фоном ─────── */
+[data-theme="dark"] .contacts-form-section {
+  background: var(--color-surface, #161B22);
+}
+[data-theme="dark"] .contact-form,
+[data-theme="dark"] .contacts-form__card,
+[data-theme="dark"] .form-card {
+  background: var(--color-surface-2, #1C2128);
+  border: 1px solid var(--color-border, #30363D);
+  border-radius: 12px;
+}
+[data-theme="dark"] .contacts-form-section h2,
+[data-theme="dark"] .contacts-form-section .section-title {
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .contacts-form-section input,
+[data-theme="dark"] .contacts-form-section textarea,
+[data-theme="dark"] .contacts-form-section select {
+  background: var(--color-input-bg, #0D1117);
+  border-color: var(--color-border, #30363D);
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .contacts-form-section input:focus,
+[data-theme="dark"] .contacts-form-section textarea:focus {
+  border-color: var(--color-cta, #2F81F7);
+  box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.15);
+}
+[data-theme="dark"] .contacts-form-section input::placeholder,
+[data-theme="dark"] .contacts-form-section textarea::placeholder {
+  color: var(--color-text-subtle, #6E7681);
+}
+[data-theme="dark"] .form-label,
+[data-theme="dark"] .contacts-form-section label {
+  color: var(--color-text-muted, #8B949E);
+}
+[data-theme="dark"] .contacts-info__icon {
+  background: rgba(47, 129, 247, 0.12);
+}
+
+/* ── ПРОБЛЕМА 3: about.html — невидимые h2 в секциях ─────────── */
+[data-theme="dark"] .about-intro h2,
+[data-theme="dark"] .about-intro__title,
+[data-theme="dark"] section h2:not(.section-title):not(.modal__title) {
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .about-intro p,
+[data-theme="dark"] .about-intro__text {
+  color: var(--color-text-muted, #8B949E);
+}
+
+/* ── ПРОБЛЕМА 4: таблицы — белые строки ──────────────────────── */
+[data-theme="dark"] table {
+  background: var(--color-surface, #161B22);
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] thead tr,
+[data-theme="dark"] thead th {
+  background: var(--color-surface-2, #1C2128) !important;
+  color: var(--color-text-muted, #8B949E) !important;
+  border-bottom-color: var(--color-border, #30363D) !important;
+}
+[data-theme="dark"] tbody tr:nth-child(even) td {
+  background: var(--color-surface, #161B22) !important;
+}
+[data-theme="dark"] tbody tr:nth-child(odd) td {
+  background: transparent !important;
+}
+[data-theme="dark"] tbody tr:hover td {
+  background: rgba(47, 129, 247, 0.06) !important;
+}
+[data-theme="dark"] td,
+[data-theme="dark"] th {
+  border-color: var(--color-border, #30363D) !important;
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .specs-table__key {
+  background: var(--color-surface-2, #1C2128) !important;
+  color: var(--color-text-muted, #8B949E) !important;
+}
+[data-theme="dark"] .specs-table__val {
+  background: transparent !important;
+  color: var(--color-text, #E6EDF3) !important;
+}
+
+/* ── ПРОБЛЕМА 5: унификация всех белых карточек ──────────────── */
+[data-theme="dark"] .card,
+[data-theme="dark"] .pcard,
+[data-theme="dark"] .info-card,
+[data-theme="dark"] .feature-card,
+[data-theme="dark"] .benefit-card,
+[data-theme="dark"] .why-card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .cta-contact__card,
+[data-theme="dark"] .timeline-item,
+[data-theme="dark"] .gost-table-wrap {
+  background: var(--color-surface, #161B22) !important;
+  border-color: var(--color-border, #30363D) !important;
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .cta-contact {
+  background: var(--color-surface, #161B22);
+  border-top: 1px solid var(--color-border, #30363D);
+}
+[data-theme="dark"] .cta-contact h2,
+[data-theme="dark"] .cta-contact__title {
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .cta-contact__sub {
+  color: var(--color-text-muted, #8B949E);
+}
+[data-theme="dark"] .header__phone {
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .header__schedule {
+  color: var(--color-text-subtle, #6E7681);
+}
+
+/* ── ПРОБЛЕМА 6: order.html и calculator.html ────────────────── */
+[data-theme="dark"] .order-table,
+[data-theme="dark"] .cart-table {
+  background: var(--color-surface, #161B22);
+}
+[data-theme="dark"] .order-summary,
+[data-theme="dark"] .order-total {
+  background: var(--color-surface-2, #1C2128);
+  border-color: var(--color-border, #30363D);
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .wizard__step,
+[data-theme="dark"] .wizard-card,
+[data-theme="dark"] .wizard__result {
+  background: var(--color-surface, #161B22);
+  border-color: var(--color-border, #30363D);
+}
+[data-theme="dark"] .wizard__step-title,
+[data-theme="dark"] .wizard__label {
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .wizard__option,
+[data-theme="dark"] .rail-option {
+  background: var(--color-surface-2, #1C2128);
+  border-color: var(--color-border, #30363D);
+  color: var(--color-text-muted, #8B949E);
+}
+[data-theme="dark"] .wizard__option:hover,
+[data-theme="dark"] .wizard__option.selected {
+  border-color: var(--color-cta, #2F81F7);
+  color: var(--color-text, #E6EDF3);
+}
