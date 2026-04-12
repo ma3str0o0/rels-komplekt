@@ -74,9 +74,13 @@
 /* ─── Тёмная тема ────────────────────────────────────────────── */
 [data-theme="dark"] {
   /* Фоны */
+  --color-bg:            #0D1117;
   --color-background:    #0D1117;
   --color-surface:       #161B22;
+  --color-surface-2:     #1C2128;
   --color-surface-muted: #161B22;
+  --color-section-alt:   #161B22;
+  --color-card-bg:       #1C2128;
 
   /* Границы */
   --color-border:        #30363D;
@@ -85,13 +89,24 @@
   /* Текст */
   --color-text:          #E6EDF3;
   --color-text-muted:    #8B949E;
+  --color-text-subtle:   #6E7681;
 
   /* Бренд */
-  --color-primary:       #1A56A0;
+  --color-primary:       #58A6FF;
   --color-secondary:     #79C0FF;
   --color-cta:           #2F81F7;
   --color-cta-hover:     #58A6FF;
   --color-tint-blue:     rgba(47, 129, 247, 0.12);
+
+  /* Навигация */
+  --color-nav-bg:        #161B22;
+
+  /* Инпуты */
+  --color-input-bg:      #0D1117;
+  --color-input-border:  #30363D;
+
+  /* Бейджи */
+  --color-badge-bg:      #1C2128;
 
   /* Тени — глубже на тёмном */
   --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.5);
@@ -1451,4 +1466,321 @@ h1, h2, h3, h4, h5, h6 {
   .container { padding-inline: 12px; }
   .section-title  { font-size: 1.15rem; }
   .section__title { font-size: var(--font-size-xl); }  /* 20px */
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK THEME OVERRIDES
+   Все компонентные оверрайды для тёмной темы
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ── Секции ──────────────────────────────────────────────────── */
+[data-theme="dark"] .section {
+  background-color: var(--color-bg);
+}
+[data-theme="dark"] .section--muted,
+[data-theme="dark"] .section--alt {
+  background-color: var(--color-surface);
+}
+
+/* Заголовки секций — были цвета --color-primary (#0F172A), невидимы */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--color-text);
+}
+[data-theme="dark"] .section__title,
+[data-theme="dark"] .section-title {
+  color: var(--color-text);
+}
+[data-theme="dark"] .section__subtitle,
+[data-theme="dark"] .section__label {
+  color: var(--color-text-muted);
+}
+
+/* ── Хэдер ───────────────────────────────────────────────────── */
+[data-theme="dark"] .nav__link {
+  color: var(--color-text-muted);
+}
+[data-theme="dark"] .nav__link:hover,
+[data-theme="dark"] .nav__link.active {
+  color: var(--color-text);
+}
+
+/* ── Карточки (преимущества, features, why) ─────────────────── */
+[data-theme="dark"] .adv-card,
+[data-theme="dark"] .feature-card,
+[data-theme="dark"] .why-card,
+[data-theme="dark"] .benefit-card,
+[data-theme="dark"] .perk-card,
+[data-theme="dark"] .info-card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .adv-card__title,
+[data-theme="dark"] .feature-card__title {
+  color: var(--color-text);
+}
+[data-theme="dark"] .adv-card__text,
+[data-theme="dark"] .feature-card__text {
+  color: var(--color-text-muted);
+}
+
+/* Карточки категорий */
+[data-theme="dark"] .cat-card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .cat-card__title {
+  color: var(--color-text);
+}
+[data-theme="dark"] .cat-card__desc {
+  color: var(--color-text-muted);
+}
+
+/* ── Product страница ────────────────────────────────────────── */
+[data-theme="dark"] .product-info__name {
+  color: var(--color-text) !important;
+}
+[data-theme="dark"] .product-col--info {
+  color: var(--color-text);
+}
+[data-theme="dark"] .product-buy-box {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .product-buy-box__price {
+  color: var(--color-cta-hover);
+  border-bottom-color: var(--color-border);
+}
+[data-theme="dark"] .product-calc-inline {
+  background: var(--color-surface-2);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .calc-tabs {
+  background: var(--color-surface-2);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .calc-tab {
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .calc-tab.active {
+  background: var(--color-cta);
+  color: #fff;
+}
+[data-theme="dark"] .calc-input {
+  background: var(--color-input-bg);
+  border-color: var(--color-input-border);
+  color: var(--color-text);
+}
+[data-theme="dark"] .calc-hint {
+  color: var(--color-text-subtle);
+}
+[data-theme="dark"] .calc-total {
+  border-top-color: var(--color-border);
+  color: var(--color-text);
+}
+[data-theme="dark"] .calc-total-label {
+  color: var(--color-text-muted);
+}
+[data-theme="dark"] .calc-total-value {
+  color: var(--color-text);
+}
+
+/* Specs таблица в карточке товара */
+[data-theme="dark"] .product-specs td,
+[data-theme="dark"] .product-specs th {
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+[data-theme="dark"] .product-specs__label {
+  color: var(--color-text-muted);
+}
+[data-theme="dark"] .product-specs__value {
+  color: var(--color-text);
+}
+
+/* ── Бейджи ──────────────────────────────────────────────────── */
+[data-theme="dark"] .badge--gray {
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .badge--green {
+  background: rgba(35, 134, 54, 0.2);
+  color: #3FB950;
+}
+[data-theme="dark"] .badge--orange {
+  background: rgba(187, 128, 9, 0.2);
+  color: #D29922;
+}
+
+/* ── Каталог ─────────────────────────────────────────────────── */
+[data-theme="dark"] .catalog-sidebar {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .catalog-table th {
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+}
+[data-theme="dark"] .catalog-table td {
+  border-bottom-color: var(--color-border);
+  color: var(--color-text);
+}
+[data-theme="dark"] .catalog-table tr:hover td {
+  background: var(--color-surface);
+}
+[data-theme="dark"] .catalog-page-header,
+[data-theme="dark"] .product-page-header,
+[data-theme="dark"] .calc-page-header {
+  background: var(--color-surface);
+  border-bottom-color: var(--color-border);
+}
+
+/* ── Инпуты и формы ──────────────────────────────────────────── */
+[data-theme="dark"] .input,
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--color-input-bg);
+  border-color: var(--color-input-border);
+  color: var(--color-text);
+}
+[data-theme="dark"] .input::placeholder,
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--color-text-subtle);
+}
+[data-theme="dark"] .input:focus,
+[data-theme="dark"] input:focus {
+  border-color: var(--color-cta);
+}
+
+/* CTA-форма */
+[data-theme="dark"] .cta-contact__card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+/* ── Кнопки ──────────────────────────────────────────────────── */
+[data-theme="dark"] .btn-secondary {
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .btn-secondary:hover {
+  background: var(--color-surface);
+}
+[data-theme="dark"] .btn-outline {
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .btn-outline:hover {
+  background: var(--color-surface);
+}
+
+/* ── О компании ──────────────────────────────────────────────── */
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .about-stats .stat-card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .stat-card__value {
+  color: var(--color-cta-hover);
+}
+[data-theme="dark"] .stat-card__label {
+  color: var(--color-text-muted);
+}
+[data-theme="dark"] .partner-card,
+[data-theme="dark"] .partner-logo {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .partner-name {
+  color: var(--color-text);
+}
+[data-theme="dark"] .cert-card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .cert-card__body,
+[data-theme="dark"] .cert-card__text {
+  color: var(--color-text-muted);
+}
+[data-theme="dark"] .timeline-item__year {
+  color: var(--color-cta-hover);
+}
+[data-theme="dark"] .timeline-item__text,
+[data-theme="dark"] .timeline-item__desc {
+  color: var(--color-text-muted);
+}
+
+/* ── Хлебные крошки ──────────────────────────────────────────── */
+[data-theme="dark"] .breadcrumbs__item {
+  color: var(--color-text-muted);
+}
+[data-theme="dark"] .breadcrumbs__item.active,
+[data-theme="dark"] .breadcrumbs__item[aria-current] {
+  color: var(--color-text-subtle);
+}
+[data-theme="dark"] .breadcrumbs__sep {
+  color: var(--color-text-subtle);
+}
+
+/* ── Похожие товары ──────────────────────────────────────────── */
+[data-theme="dark"] .pcard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+/* ── Калькулятор (calculator.html) ───────────────────────────── */
+[data-theme="dark"] .calc-card,
+[data-theme="dark"] .calculator-wrap {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .calc-result-box {
+  background: var(--color-surface-2);
+  border-color: var(--color-border);
+}
+
+/* ── Sidebar каталога ────────────────────────────────────────── */
+[data-theme="dark"] .cat-tree__cat,
+[data-theme="dark"] .cat-tree__sub {
+  color: var(--color-text-muted);
+}
+[data-theme="dark"] .cat-tree__cat:hover,
+[data-theme="dark"] .cat-tree__sub:hover,
+[data-theme="dark"] .cat-tree__cat.active,
+[data-theme="dark"] .cat-tree__sub.active {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+[data-theme="dark"] .sidebar__section-title {
+  color: var(--color-text-muted);
+}
+[data-theme="dark"] .search-box {
+  background: var(--color-input-bg);
+  border-color: var(--color-input-border);
+}
+
+/* ── Контакты ────────────────────────────────────────────────── */
+[data-theme="dark"] .contacts-info__label {
+  color: var(--color-text-subtle);
+}
+[data-theme="dark"] .contacts-info__value {
+  color: var(--color-text);
+}
+[data-theme="dark"] .contacts-form-wrap {
+  background: var(--color-surface);
+  border-color: var(--color-border);
 }
