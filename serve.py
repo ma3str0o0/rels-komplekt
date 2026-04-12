@@ -15,7 +15,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from io import BytesIO
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import SimpleHTTPRequestHandler
+from socketserver import ThreadingMixIn
 from urllib.parse import urlparse
 
 import requests
@@ -597,6 +598,15 @@ def send_email(data: dict, file_bytes: bytes = None, file_name: str = None) -> N
 
 
 # ══════════════════════════════════════
+# HTTP-сервер (многопоточный)
+# ══════════════════════════════════════
+from http.server import HTTPServer
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    """Каждый запрос в отдельном потоке — зависший запрос не блокирует сервер."""
+    daemon_threads = True
+
+# ══════════════════════════════════════
 # HTTP-обработчик
 # ══════════════════════════════════════
 class Handler(SimpleHTTPRequestHandler):
@@ -714,7 +724,8 @@ class Handler(SimpleHTTPRequestHandler):
 
     def end_headers(self):
         # Запрещаем кэширование JS, CSS и HTML
-        path = self.path.split('?')[0]
+        # getattr — защита от вызова до установки self.path (parse_request → send_error)
+        path = (getattr(self, 'path', '') or '').split('?')[0]
         if path.endswith(('.js', '.css', '.html', '.json')):
             self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
             self.send_header('Pragma', 'no-cache')
@@ -732,4 +743,4 @@ if __name__ == '__main__':
     if not SMTP_USER:
         log.warning('SMTP_USER не задан — Email уведомления отключены')
     log.info('Starting on http://0.0.0.0:%d', PORT)
-    HTTPServer(('0.0.0.0', PORT), Handler).serve_forever()
+    ThreadedHTTPServer(('0.0.0.0', PORT), Handler).serve_forever()
