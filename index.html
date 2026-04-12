@@ -3,7 +3,7 @@
 <head>
   <script>(function(){var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org; frame-src https://yandex.ru https://maps.yandex.ru; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com; frame-src https://yandex.ru https://maps.yandex.ru; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Оптовые поставки рельсов, шпал и крепежа. Широкий ассортимент, быстрая отгрузка, работаем с юридическими лицами по всей России.">
   <meta name="keywords" content="рельсы оптом, рельсы Р65, крановые рельсы, шпалы, рельсовый крепёж, рельсы купить">
@@ -331,6 +331,39 @@
                 </div>
               </div>
 
+              <!-- Загрузка файла -->
+              <div class="form-group" id="il-file-group">
+                <label class="form-label" for="il-file">
+                  Прикрепить файл
+                  <span class="form-hint">Спецификация, техзадание — PDF, Word, Excel до 10 МБ</span>
+                </label>
+                <div class="file-upload" id="il-file-drop">
+                  <input
+                    type="file"
+                    id="il-file"
+                    name="file"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                    class="file-upload__input"
+                    aria-describedby="il-file-hint"
+                  >
+                  <div class="file-upload__placeholder" id="il-file-placeholder">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span>Перетащите файл или <u>выберите на компьютере</u></span>
+                  </div>
+                  <div class="file-upload__selected hidden" id="il-file-selected">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span id="il-file-name"></span>
+                    <button type="button" class="file-upload__clear" id="il-file-clear" aria-label="Удалить файл">✕</button>
+                  </div>
+                </div>
+                <span class="form-hint" id="il-file-hint">Необязательно — если у вас есть спецификация или техзадание</span>
+                <span class="form-error hidden" id="il-file-error"></span>
+              </div>
+
               <label class="form-consent">
                 <input type="checkbox" name="consent">
                 <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
@@ -440,6 +473,7 @@
   </div>
 
   <!-- Скрипты -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" crossorigin="anonymous"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

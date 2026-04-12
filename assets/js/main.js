@@ -4,8 +4,17 @@
 
 'use strict';
 
+/* ─── EmailJS ─────────────────────────────────────────────────── */
+const EMAILJS_SERVICE_ID  = 'service_vc2oz9j';
+const EMAILJS_TEMPLATE_ID = 'template_e7f1ke6';
+const EMAILJS_PUBLIC_KEY  = 'FZzMmOJ5mTIGrPV3j';
+
 /* ─── Инициализация при загрузке DOM ─────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  // Инициализируем EmailJS если CDN загружен
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
   loadComponents(); // вставляет шапку/футер если есть плейсхолдеры
   initTheme();
   initHeader();
@@ -537,6 +546,11 @@ function initInlineForm() {
         throw new Error(err.error || `HTTP ${res.status}`);
       }
       showToast('Спасибо! Мы свяжемся с вами.', 'success');
+      // Дублируем в EmailJS (fire-and-forget, не блокирует UX)
+      sendEmailJS(_buildEmailJSParams(
+        { name, contact, message: message || '' },
+        'Главная страница'
+      )).catch(err => console.warn('EmailJS (inline):', err));
       form.reset();
       // Сбрасываем file upload UI
       document.getElementById('il-file-placeholder')?.classList.remove('hidden');
@@ -615,6 +629,8 @@ async function handleRequestSubmit(e) {
     }
     await sendTelegram(data);
     showToast('Спасибо! Мы свяжемся с вами.', 'success');
+    // Дублируем в EmailJS (fire-and-forget)
+    sendEmailJS(_buildEmailJSParams(data, 'Форма заявки')).catch(err => console.warn('EmailJS (modal):', err));
     form.reset();
     if (overlay) closeModal(overlay);
   } catch (err) {
@@ -624,6 +640,36 @@ async function handleRequestSubmit(e) {
     btn.disabled = false;
     btn.textContent = origText;
   }
+}
+
+/* ─── EmailJS: отправка уведомления о заявке ─────────────────── */
+function _buildEmailJSParams(data, source) {
+  const items = Array.isArray(data.items) ? data.items : [];
+  let itemsText = '—';
+  if (items.length) {
+    itemsText = items.map((it, i) => {
+      const price = it.price
+        ? `${Number(it.price).toLocaleString('ru-RU')} ₽/т`
+        : 'По запросу';
+      return `${i + 1}. ${it.name} — ${it.qty} ${it.unit || 'т'} × ${price}`;
+    }).join('\n');
+  }
+  const contact = data.contact || data.phone || data.email || '—';
+  const isEmail = contact.includes('@');
+  return {
+    subject:      'Новая заявка — Рельс-Комплект',
+    from_name:    data.name    || '—',
+    from_contact: contact,
+    reply_to:     isEmail ? contact : '',
+    message:      data.message || '—',
+    items_text:   itemsText,
+    source:       source || 'Сайт',
+  };
+}
+
+async function sendEmailJS(params) {
+  if (typeof emailjs === 'undefined') return;
+  return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
 }
 
 /* ─── Отправка в Telegram через proxy ────────────────────────── */

@@ -9,10 +9,10 @@
 const CART_KEY      = 'cart';
 const RAIL_LENGTH_M = 12.5; // стандартная длина рельса в метрах
 
-/* EmailJS — вставить реальные ключи после настройки аккаунта */
-const EMAILJS_SERVICE_ID  = 'DEMO';
-const EMAILJS_TEMPLATE_ID = 'DEMO';
-const EMAILJS_PUBLIC_KEY  = 'DEMO';
+/* EmailJS */
+const EMAILJS_SERVICE_ID  = 'service_vc2oz9j';
+const EMAILJS_TEMPLATE_ID = 'template_e7f1ke6';
+const EMAILJS_PUBLIC_KEY  = 'FZzMmOJ5mTIGrPV3j';
 
 /* Telegram Bot — вставить реальный токен и chat_id после настройки бота */
 const TELEGRAM_BOT_TOKEN = 'DEMO';
@@ -572,20 +572,7 @@ async function handleSendEmail(e) {
 
   setEmailSubmitLoading(true);
 
-  /* ─── DEMO-режим: реальные ключи не настроены ─────────────── */
-  if (EMAILJS_SERVICE_ID === 'DEMO') {
-    // Имитируем задержку сети
-    await new Promise(res => setTimeout(res, 800));
-    setEmailSubmitLoading(false);
-    closeEmailModal();
-    window.RK?.showToast(
-      'Функция отправки будет доступна после настройки',
-      'success'
-    );
-    return;
-  }
-
-  /* ─── Реальная отправка через EmailJS ─────────────────────── */
+  /* ─── Отправка через EmailJS ──────────────────────────────── */
   try {
     await emailjs.send(
       EMAILJS_SERVICE_ID,

@@ -73,25 +73,46 @@ function clearError(fieldId) {
   if (err)   err.hidden = true;
 }
 
-function sendContactForm(data) {
-  // TODO: подключить EmailJS или Telegram Bot API
-  console.log('[contacts] Отправка формы:', data);
+async function sendContactForm(data) {
+  const btn      = document.querySelector('.contacts-form__submit');
+  const origHTML = btn?.innerHTML || '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Отправка...'; }
 
-  // Имитируем отправку
-  const btn = document.querySelector('.contacts-form__submit');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Отправка...';
+  // Telegram через /api/notify
+  try {
+    await fetch('/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:    data.name,
+        contact: data.phone,
+        message: data.message || '',
+      }),
+    });
+  } catch (e) {
+    console.warn('[contacts] Telegram error:', e);
   }
 
-  setTimeout(() => {
-    window.RK?.showToast('Спасибо! Мы свяжемся с вами.', 'success');
-    document.getElementById('contactsForm').reset();
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Отправить`;
+  // EmailJS
+  try {
+    if (typeof emailjs !== 'undefined') {
+      await emailjs.send('service_vc2oz9j', 'template_e7f1ke6', {
+        subject:      'Новая заявка — Рельс-Комплект',
+        from_name:    data.name    || '—',
+        from_contact: data.phone   || '—',
+        reply_to:     '',
+        message:      data.message || '—',
+        items_text:   '—',
+        source:       'Страница контактов',
+      });
     }
-  }, 600);
+  } catch (e) {
+    console.warn('[contacts] EmailJS error:', e);
+  }
+
+  window.RK?.showToast('Спасибо! Мы свяжемся с вами.', 'success');
+  document.getElementById('contactsForm').reset();
+  if (btn) { btn.disabled = false; btn.innerHTML = origHTML; }
 }
 
 /* ─── Бейдж корзины ──────────────────────────────────────────── */
