@@ -4,6 +4,149 @@
 
 ---
 
+## [2026-04-12] — Итерация 33: Фикс тёмной темы — полный аудит и оверрайды
+
+**Коммит:** `a755b17`  
+**Файлы:** `assets/css/style.css`
+
+### Изменения
+
+**Расширен блок `[data-theme="dark"]` переменных:**
+- Добавлены новые переменные: `--color-bg`, `--color-surface-2`, `--color-text-subtle`, `--color-nav-bg`, `--color-input-bg`, `--color-input-border`, `--color-badge-bg`, `--color-section-alt`, `--color-card-bg`
+- `--color-primary` исправлен с `#1A56A0` → `#58A6FF` (был почти невидим на тёмном фоне)
+
+**Добавлен блок DARK THEME OVERRIDES (~200 строк) в конец style.css:**
+- Заголовки `h1–h6`: `color: var(--color-text)` — раньше наследовали `--color-primary` (#0F172A = чёрный, невидим)
+- Секции, `.section--alt`, `.section--muted`
+- Product: buy-box, цена, calculator tabs/inputs/hints
+- Catalog: таблица, sidebar, cat-tree, search-box
+- Badges: gray, green, orange
+- Формы: инпуты, placeholder, CTA-карточка
+- Кнопки: btn-secondary, btn-outline
+- About: stat-card, partner-card, cert-card, timeline
+- Хлебные крошки, контакты, каталог-хэдеры
+
+**Python-аудит хардкоженных цветов выявил:**
+- `components.css`: `#E2E8F0` (33x), `#fff` (29x), `#F8FAFC` (18x), `#64748B` (20x)
+- `style.css`: `#fff` (15x), `#64748B` (5x), `#94A3B8` (4x)
+- Глобальная замена не производилась (сломала бы светлую тему) — исправлено точечно через `[data-theme="dark"]`
+
+---
+
+## [2026-04-12] — Итерация 32: Удаление телефона из хэдера
+
+**Коммит:** `02db14f`  
+**Файлы:** `assets/js/main.js`
+
+### Изменения
+
+- Из `_tplHeader()` удалён блок `.header__phones` с номером телефона и расписанием
+- Изменение автоматически применяется ко всем страницам (хэдер централизован)
+
+---
+
+## [2026-04-12] — Итерация 31: Полный адаптивный аудит и фикс
+
+**Коммит:** `af89faa`  
+**Файлы:** `assets/css/components.css`, `assets/css/style.css`
+
+### Изменения
+
+**Аудит показал — уже реализовано ранее:**
+- Бургер-меню (`.burger` + `.mobile-menu` + `initMobileMenu()`) — работало
+- Каталог mobile drawer (`#openFiltersBtn`, bottom sheet, `openDrawer()`/`closeDrawer()`) — работало
+- Скрытие колонок таблицы каталога на мобиле — было
+
+**Добавлено:**
+
+`components.css`:
+- Заменён breakpoint 600px → 640px для product layout
+- Добавлены mobile-стили: `position: static` у buy-box, `aspect-ratio: 4/3` у фото, меньшие шрифты цены/названия/calc-tabs
+
+`style.css`:
+- Добавлен блок `@media (max-width: 640px)`: секции 32px/24px padding, hero 48px, `.hero__actions` в колонку, меньше section-title
+- Добавлен блок `@media (max-width: 480px)`: container 12px, ещё меньше заголовки
+
+---
+
+## [2026-04-12] — Итерация 30: Трёхколоночный layout карточки товара
+
+**Коммит:** `ece570f`  
+**Файлы:** `product.html`, `assets/js/product.js`, `assets/css/components.css`
+
+### Изменения
+
+**`product.html`:**
+- Старый 2-колоночный layout заменён на 3-колоночный: `[ФОТО] | [ИНФО] | [КАЛЬКУЛЯТОР+КНОПКИ]`
+- Новые классы: `.product-col--media`, `.product-col--info`, `.product-col--buy`
+- Цена вынесена в отдельный `#productPriceDisplay` в buy-box
+- Тех. характеристики конкурента — отдельная секция ниже hero с `#enrichedSpecsWrap`
+
+**`assets/js/product.js`:**
+- Добавлена функция `renderPriceDisplay(item)` — рендерит цену крупно в buy-box
+- Из `renderSpecs()` убрана строка «Цена»
+- `_renderCompetitorData()` переведён на `#enrichedSpecsWrap` + `classList.remove('hidden')`
+
+**`assets/css/components.css`:**
+- `.product-layout`: 3-col grid `300px 1fr 300px`, `align-items: start`
+- Breakpoints: 1100px (260px), 860px (2-col + buy-box full width), 640px (1-col)
+- Новые классы: `.product-col--media .product-image`, `.product-col--info`, `.product-buy-box`, `.product-buy-box__price`, `.product-hero__actions`
+
+---
+
+## [2026-04-12] — Итерация 29: Двухрежимный калькулятор «По метражу / По весу»
+
+**Коммит:** `d2fefb1`  
+**Файлы:** `assets/js/product.js`
+
+### Изменения
+
+**`renderPricing(item)` полностью переработана:**
+- Два режима переключаются табами: «По метражу» и «По весу»
+- Вкладка «По метражу»: вводишь метры → показывает кг и стоимость
+- Вкладка «По весу»: вводишь кг → показывает метры и стоимость
+- Fallback «По тоннам» для позиций без `weight_per_unit`
+- Переключатель валюты RUB / KZT (1 RUB = 5.5 KZT)
+- `wpm = weight_per_unit / 12.5` (кг/м из кг/рельс 12.5м)
+- `pricePerMeter = (wpm / 1000) * price` (₽/м)
+
+---
+
+## [2026-04-11] — Итерация 28: Страница «О компании» + справочник рельсов + фиксы хэдера
+
+**Коммиты:** `4ee019b`, `4cd3c7d`, `649be8e`, `aa806a5`, `84627b9`, `d94aa1b`  
+**Файлы:** `about.html`, `rails-reference.html`, `assets/js/main.js`, `assets/css/style.css`, `sitemap.xml`, `tools/build_rails_guide.py`
+
+### Изменения
+
+**`about.html` — новая страница (8 секций):**
+- Hero с кнопками «Каталог» и «Связаться с нами»
+- Цифры компании (stat-cards): год основания, количество позиций, регионов, лет
+- История (таймлайн по годам)
+- Партнёры и поставщики (карточки с логотипами)
+- Раздел сделок / крупных проектов
+- Сертификаты качества (cert-cards с изображениями ТМК, TenderPro)
+- CTA-секция и форма обратной связи
+- Добавлена в навигацию всех страниц (позиция 4, перед «Контакты»)
+- Добавлена в `sitemap.xml` (priority 0.8)
+
+**`rails-reference.html` — новая страница:**
+- Генерируется `tools/build_rails_guide.py`
+- Справочник по ГОСТам, допускам, весам рельсов
+- Таблицы со стилями инлайн (хардкоженный hex) — иначе CSS переменные давали чёрный фон в thead
+- Кнопка «Справочник по рельсам» добавлена в шапку каталога
+
+**`assets/js/main.js` — фиксы хэдера:**
+- `align-items: center` вместо `flex-end` у `.header__phones`
+- Два телефона заменены одним: `+7 (343) 345-13-33`
+- Порядок навигации: Главная / Каталог / Калькулятор / **О компании** / Контакты
+
+**`product.html` / `product.js` — удалена секция `gost_tables`:**
+- Таблицы ГОСТ перенесены на `rails-reference.html`
+- Из product.js удалена функция отрисовки gost_tables
+
+---
+
 ## [2026-04-06] — Итерация 27: Умное поле «телефон или email» + кнопка «Получить КП»
 
 **Файлы:** `index.html`, `assets/js/main.js`, `assets/css/components.css`, `serve.py`
