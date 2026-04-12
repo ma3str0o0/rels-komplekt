@@ -4,6 +4,7 @@
 Раздаёт статику + POST /api/notify → Telegram + Email (параллельно)
 """
 
+import cgi
 import os
 import json
 import smtplib
@@ -528,8 +529,8 @@ def build_pdf_spec(data: dict, catalog: dict) -> bytes:
 # ══════════════════════════════════════
 # EMAIL — отправка
 # ══════════════════════════════════════
-def send_email(data: dict) -> None:
-    """Отправляет HTML-письмо + PDF-вложение (если есть товары). Не бросает исключений."""
+def send_email(data: dict, file_bytes: bytes = None, file_name: str = None) -> None:
+    """Отправляет HTML-письмо + PDF-вложение (если есть товары) + файл от клиента."""
     if not SMTP_USER or not SMTP_PASS:
         log.warning('SMTP не настроен (нет SMTP_USER / SMTP_PASS) — email пропущен')
         return
@@ -554,7 +555,7 @@ def send_email(data: dict) -> None:
         html_body = build_email_html(data, has_items)
         msg.attach(MIMEText(html_body, 'html', 'utf-8'))
 
-        # PDF-вложение (только если есть товары)
+        # PDF-спецификация (только если есть товары)
         if has_items:
             try:
                 pdf_bytes = build_pdf_spec(data, CATALOG)
@@ -566,6 +567,22 @@ def send_email(data: dict) -> None:
                 msg.attach(attachment)
             except Exception as e:
                 log.error('Ошибка генерации PDF: %s', e)
+
+        # Файл от клиента (спецификация, техзадание и т.п.)
+        if file_bytes and file_name:
+            ext = file_name.rsplit('.', 1)[-1].lower() if '.' in file_name else 'bin'
+            mime_map = {
+                'pdf': 'pdf',
+                'doc': 'msword',
+                'docx': 'vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'xls': 'vnd.ms-excel',
+                'xlsx': 'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'jpg': 'jpeg', 'jpeg': 'jpeg', 'png': 'png',
+            }
+            subtype = mime_map.get(ext, 'octet-stream')
+            user_attachment = MIMEApplication(file_bytes, _subtype=subtype)
+            user_attachment.add_header('Content-Disposition', 'attachment', filename=file_name)
+            msg.attach(user_attachment)
 
         # Отправка через SSL
         ctx = ssl.create_default_context()
@@ -594,10 +611,44 @@ class Handler(SimpleHTTPRequestHandler):
             return
 
         try:
-            length = int(self.headers.get('Content-Length', 0))
-            body   = json.loads(self.rfile.read(length))
-        except Exception:
-            self._json(400, {'ok': False, 'error': 'Invalid JSON'})
+            content_type = self.headers.get('Content-Type', '')
+
+            if 'multipart/form-data' in content_type:
+                # Парсим multipart/form-data (с файлом)
+                form = cgi.FieldStorage(
+                    fp=self.rfile,
+                    headers=self.headers,
+                    environ={
+                        'REQUEST_METHOD': 'POST',
+                        'CONTENT_TYPE': content_type,
+                    }
+                )
+                body = {
+                    'name':    form.getvalue('name', '').strip(),
+                    'contact': form.getvalue('contact', '').strip(),
+                    'message': form.getvalue('message', '').strip(),
+                }
+                # Items (корзина) — JSON строка
+                items_raw = form.getvalue('items', '')
+                if items_raw:
+                    try:
+                        body['items'] = json.loads(items_raw)
+                    except Exception:
+                        pass
+                # Файл
+                file_field = form['file'] if 'file' in form else None
+                file_bytes = file_field.file.read() if file_field and file_field.filename else None
+                file_name  = file_field.filename if file_field and file_field.filename else None
+            else:
+                # Обычный JSON (без файла)
+                length = int(self.headers.get('Content-Length', 0))
+                body   = json.loads(self.rfile.read(length))
+                file_bytes = None
+                file_name  = None
+
+        except Exception as e:
+            log.error('Parse error: %s', e)
+            self._json(400, {'ok': False, 'error': 'Invalid request'})
             return
 
         # Принимаем phone или contact
@@ -612,6 +663,16 @@ class Handler(SimpleHTTPRequestHandler):
         tg_err = None
         try:
             send_telegram(body)
+            # Если есть файл — отправить отдельным сообщением через sendDocument
+            if file_bytes and file_name and BOT_TOKEN and CHAT_ID:
+                files   = {'document': (file_name, file_bytes)}
+                caption = f'📎 Файл от {name} ({contact})'
+                requests.post(
+                    f'https://api.telegram.org/bot{BOT_TOKEN}/sendDocument',
+                    data={'chat_id': CHAT_ID, 'caption': caption},
+                    files=files,
+                    timeout=30,
+                )
             tg_ok = True
         except Exception as e:
             tg_err = str(e)
@@ -619,7 +680,7 @@ class Handler(SimpleHTTPRequestHandler):
 
         # ── Email (параллельно, не блокирует ответ) ───────────────
         try:
-            send_email(body)
+            send_email(body, file_bytes=file_bytes, file_name=file_name)
         except Exception as e:
             log.error('Email error (unexpected): %s', e)
 

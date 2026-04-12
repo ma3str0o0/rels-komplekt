@@ -3355,3 +3355,88 @@
   font-weight: 700;
   color: var(--color-primary, #0F172A);
 }
+
+
+/* ── File Upload ── */
+.file-upload {
+  position: relative;
+  border: 2px dashed var(--color-border, #E2E8F0);
+  border-radius: 8px;
+  padding: 20px 16px;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+  background: var(--color-surface, #F8FAFC);
+}
+.file-upload:hover,
+.file-upload.drag-over {
+  border-color: var(--color-cta, #0369A1);
+  background: rgba(3, 105, 161, 0.04);
+}
+.file-upload__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+.file-upload__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-muted, #64748B);
+  font-size: 14px;
+  pointer-events: none;
+}
+.file-upload__placeholder svg {
+  color: var(--color-cta, #0369A1);
+  opacity: 0.6;
+}
+.file-upload__placeholder u { color: var(--color-cta, #0369A1); }
+
+.file-upload__selected {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text, #0F172A);
+  pointer-events: none;
+  justify-content: center;
+}
+.file-upload__selected svg { color: var(--color-cta, #0369A1); flex-shrink: 0; }
+.file-upload__clear {
+  pointer-events: all;
+  background: none;
+  border: none;
+  color: var(--color-text-muted, #94A3B8);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+  margin-left: 4px;
+}
+.file-upload__clear:hover { color: #ef4444; background: rgba(239,68,68,0.08); }
+.form-hint {
+  font-size: 12px;
+  color: var(--color-text-muted, #94A3B8);
+  margin-top: 4px;
+  display: block;
+}
+
+/* Dark theme */
+[data-theme="dark"] .file-upload {
+  background: var(--color-surface, #161B22);
+  border-color: var(--color-border, #30363D);
+}
+[data-theme="dark"] .file-upload:hover,
+[data-theme="dark"] .file-upload.drag-over {
+  border-color: var(--color-cta, #2F81F7);
+  background: rgba(47, 129, 247, 0.06);
+}
+[data-theme="dark"] .file-upload__selected {
+  color: var(--color-text, #E6EDF3);
+}

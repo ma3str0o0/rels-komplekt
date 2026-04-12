@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initActiveNavLink();
   initRequestModal();
+  initFileUpload();
   initInlineForm();
   initCtaContactForm();
   initPhoneMask();
@@ -427,6 +428,63 @@ function initCtaContactForm() {
   });
 }
 
+/* ─── File upload UX ────────────────────────────────────────── */
+function initFileUpload() {
+  const input       = document.getElementById('il-file');
+  const drop        = document.getElementById('il-file-drop');
+  const placeholder = document.getElementById('il-file-placeholder');
+  const selected    = document.getElementById('il-file-selected');
+  const nameEl      = document.getElementById('il-file-name');
+  const clearBtn    = document.getElementById('il-file-clear');
+  const errorEl     = document.getElementById('il-file-error');
+  if (!input) return;
+
+  const MAX_SIZE = 10 * 1024 * 1024; // 10 МБ
+  const ALLOWED  = ['.pdf','.doc','.docx','.xls','.xlsx','.jpg','.jpeg','.png'];
+
+  function showFile(file) {
+    if (!file) return;
+    if (file.size > MAX_SIZE) {
+      errorEl.textContent = 'Файл слишком большой (максимум 10 МБ)';
+      errorEl.classList.remove('hidden');
+      input.value = '';
+      return;
+    }
+    const ext = '.' + file.name.split('.').pop().toLowerCase();
+    if (!ALLOWED.includes(ext)) {
+      errorEl.textContent = 'Формат не поддерживается. Допустимо: PDF, Word, Excel, JPG, PNG';
+      errorEl.classList.remove('hidden');
+      input.value = '';
+      return;
+    }
+    errorEl.classList.add('hidden');
+    nameEl.textContent = file.name;
+    placeholder.classList.add('hidden');
+    selected.classList.remove('hidden');
+  }
+
+  function clearFile() {
+    input.value = '';
+    placeholder.classList.remove('hidden');
+    selected.classList.add('hidden');
+    nameEl.textContent = '';
+    errorEl.classList.add('hidden');
+  }
+
+  input.addEventListener('change', () => { if (input.files[0]) showFile(input.files[0]); });
+  clearBtn?.addEventListener('click', (e) => { e.stopPropagation(); clearFile(); });
+
+  // Drag & drop
+  drop.addEventListener('dragover',  (e) => { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', ()  => drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', (e) => {
+    e.preventDefault();
+    drop.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) { input.files = e.dataTransfer.files; showFile(file); }
+  });
+}
+
 /* ─── Инлайн-форма на главной странице ──────────────────────── */
 function initInlineForm() {
   const form = document.querySelector('#inlineRequestForm');
@@ -451,17 +509,39 @@ function initInlineForm() {
     const origText = btn.textContent;
     btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;margin:0 auto;"></span>';
 
-    const isEmail = contact.includes('@');
+    const isEmail  = contact.includes('@');
+    const fileInput = document.getElementById('il-file');
+    const file      = fileInput?.files?.[0];
+
+    // Формируем запрос: multipart если есть файл, иначе JSON
+    let fetchOptions;
+    if (file) {
+      const fd = new FormData();
+      fd.append('name',    name);
+      fd.append('contact', contact);
+      fd.append('message', message || '');
+      fd.append('file', file, file.name);
+      fetchOptions = { method: 'POST', body: fd };
+    } else {
+      fetchOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, contact, message: message || '' }),
+      };
+    }
+
     try {
-      await sendTelegram({
-        name,
-        phone: isEmail ? '' : contact,
-        email: isEmail ? contact : '',
-        contact,
-        message: message || ''
-      });
+      const res = await fetch('/api/notify', fetchOptions);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
       showToast('Спасибо! Мы свяжемся с вами.', 'success');
       form.reset();
+      // Сбрасываем file upload UI
+      document.getElementById('il-file-placeholder')?.classList.remove('hidden');
+      document.getElementById('il-file-selected')?.classList.add('hidden');
+      if (document.getElementById('il-file-name')) document.getElementById('il-file-name').textContent = '';
       document.querySelectorAll('#inlineRequestForm .smart-contact-wrap').forEach(w => {
         w.dataset.type = '';
         const hint = w.querySelector('.smart-contact-hint');
