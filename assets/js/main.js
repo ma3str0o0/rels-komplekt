@@ -59,10 +59,6 @@ function _tplHeader() {
           <a href="contacts.html" class="nav__link">Контакты</a>
         </nav>
         <div class="header__actions">
-          <div class="header__phones">
-            <a href="tel:+73433451333" class="header__phone">+7 (343) 345-13-33</a>
-            <span class="header__schedule">Пн–пт 9:00–18:00</span>
-          </div>
           <a href="order.html" class="cart-btn" id="cartBtn" aria-label="Перейти к заявке" title="Позиции в заявке">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
