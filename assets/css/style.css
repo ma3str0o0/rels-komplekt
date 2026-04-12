@@ -924,6 +924,40 @@ h1, h2, h3, h4, h5, h6 {
   color: #64748B;
 }
 
+/* Кликабельная карточка hero */
+.hero__mini-card--link {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  overflow: hidden;
+}
+.hero__mini-card--link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.10);
+}
+.hero__mini-card--link:hover .hero__mini-card-name {
+  color: #58A6FF;
+}
+.hero__mini-card--link::after {
+  content: '→';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--color-cta, #2F81F7);
+  opacity: 0;
+  transition: opacity var(--transition-fast), right var(--transition-fast);
+}
+.hero__mini-card--link:hover::after {
+  opacity: 1;
+  right: 14px;
+}
+
 /* ─── Хлебные крошки ────────────────────────────────────────── */
 .breadcrumbs {
   display: flex;

@@ -157,16 +157,32 @@ function initCategoryFilter() {
     });
   });
 
-  // Обработка URL-параметра ?cat= при загрузке
-  const catParam = new URLSearchParams(location.search).get('cat');
-  if (catParam) {
+  // Обработка URL-параметров ?cat= и ?cats= при загрузке
+  const params    = new URLSearchParams(location.search);
+  const catParam  = params.get('cat');
+  const catsParam = params.get('cats');
+
+  if (catsParam) {
+    // Мультикатегория — значения через | (например: Рельсы широкой колеи|Рельсы Р50)
+    const cats = decodeURIComponent(catsParam).split('|');
+    activeFilter = { type: 'multi-category', value: cats };
+    // Подсвечиваем кнопку дерева с совпадающим data-cats
+    const matchBtn = document.querySelector(`.cat-tree__cat[data-cats="${CSS.escape(decodeURIComponent(catsParam))}"]`);
+    if (matchBtn) {
+      resetCategoryUI();
+      matchBtn.classList.add('active');
+      const subs = matchBtn.closest('li')?.querySelector('.cat-tree__subs');
+      if (subs) { subs.hidden = false; matchBtn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
+    }
+  } else if (catParam) {
+    // Одиночная категория — существующая логика
     const decoded = decodeURIComponent(catParam);
     const btn = document.querySelector(`.cat-tree__cat[data-cat="${CSS.escape(decoded)}"]`);
     if (btn) {
       resetCategoryUI();
       btn.classList.add('active');
       activeFilter = { type: 'category', value: decoded };
-      const subs = btn.closest('li').querySelector('.cat-tree__subs');
+      const subs = btn.closest('li')?.querySelector('.cat-tree__subs');
       if (subs) { subs.hidden = false; btn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
     }
   } else {
