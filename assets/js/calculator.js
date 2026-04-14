@@ -5,6 +5,16 @@
 
 'use strict';
 
+/* ─── Утилита экранирования HTML ─────────────────────────────── */
+function escHtml(s) {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /* ─── Константы ──────────────────────────────────────────────── */
 const CART_KEY      = 'cart';
 const RAIL_LENGTH_M = 12.5; // стандартная длина рельса в метрах
@@ -291,9 +301,9 @@ function renderTable(r) {
   /* --- Таблица --- */
   document.getElementById('calcTableBody').innerHTML = rows.map(row => `
     <tr>
-      <td>${row.name}</td>
-      <td>${row.qty}</td>
-      <td>${row.unit}</td>
+      <td>${escHtml(row.name)}</td>
+      <td>${escHtml(row.qty)}</td>
+      <td>${escHtml(row.unit)}</td>
       <td>${row.priceStr}</td>
       <td>${row.totalStr}</td>
     </tr>`).join('');
