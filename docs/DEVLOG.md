@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-04-16] — Итерация 39: Telegram Admin Bot — Фаза 1
+
+**Файлы:** `bot/` (новая директория, 16 файлов), `.gitignore`, `.env`
+
+### Что сделано
+
+Создан модульный Telegram admin-бот для управления VPS-сервером:
+
+**Структура `bot/`:**
+- `config.py` — загрузка BOT_TOKEN / CHAT_ID / ADMIN_IDS из `.env`
+- `middleware/auth.py` — декоратор `@admin_only`, режим настройки при пустом ADMIN_IDS
+- `handlers/common.py` — `/start`, `/help`, `/id` (без авторизации)
+- `handlers/server.py` — `/status`, `/ping`, `/restart`, `/logs`
+- `services/system_info.py` — CPU/RAM/диск/uptime через `/proc` и `subprocess` (без psutil)
+- `services/server_monitor.py` — пинг сайта через `curl`
+- `jobs/watchdog.py` — пинг каждые 5 мин, алерт при 2 подряд неудачах + восстановление
+- `main.py` — точка входа, `ApplicationBuilder` + `run_polling`
+
+**Инфраструктура:**
+- `bot/rels-admin-bot.service` → `/etc/systemd/system/` — autostart, restart=always
+- Команды зарегистрированы через `set_my_commands`
+- `.env` в корне проекта (из proxy/.env), в `.gitignore` уже был `*.env`
+- Алиасы `bot-status`, `bot-restart`, `bot-logs` в `~/.bashrc`
+
+### Статус
+Сервис `rels-admin-bot` запущен и работает. Бот в режиме настройки (ADMIN_IDS пуст). Владелец должен: отправить `/id` боту → получить user_id → добавить `ADMIN_IDS=<id>` в `.env` → `sudo systemctl restart rels-admin-bot`.
+
+---
+
 ## [2026-04-16] — Итерация 38: Фикс калькулятора пути + продуктового калькулятора
 
 **Файлы:** `assets/js/calculator.js`, `calculator.html`, `assets/js/product.js`, `data/catalog.json`
