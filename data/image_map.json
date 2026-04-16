@@ -1,0 +1,1100 @@
+{
+  "scraped_at": "2026-04-14T22:16:39.364878+00:00",
+  "stats": {
+    "total_product_pages": 127,
+    "pages_with_images": 114,
+    "pages_without_images": 13,
+    "matched_to_catalog": 93,
+    "unmatched": 31
+  },
+  "products": [
+    {
+      "catalog_id": "00011766304",
+      "catalog_name": "Подкладка Д-43 новая",
+      "cms_slug": "podkladka_d_43_novaya",
+      "cms_name": "Подкладка Д-43",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766304.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/podkladka_kb-65.jpg"
+    },
+    {
+      "catalog_id": "00011766305",
+      "catalog_name": "Подкладка Д-50 новая",
+      "cms_slug": "podkladka_d_50_novaya",
+      "cms_name": "Подкладка Д-50",
+      "match_type": "fuzzy",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011766306",
+      "catalog_name": "Подкладка Д-65 новая",
+      "cms_slug": "podkladka_d_65_novaya",
+      "cms_name": "Подкладка Д-65",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766306.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/podkladka_kb-65.jpg"
+    },
+    {
+      "catalog_id": "00011766309",
+      "catalog_name": "Подкладка КБ-65 новая",
+      "cms_slug": "podkladka_kb-65",
+      "cms_name": "Подкладка КБ-65",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766309.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/podkladka_kb-65.jpg"
+    },
+    {
+      "catalog_id": "00011766311",
+      "catalog_name": "Подкладка КД-65 новая",
+      "cms_slug": "podkladka_kd-65_novaya",
+      "cms_name": "Подкладка КД-65",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766311.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/p001a.png"
+    },
+    {
+      "catalog_id": "00011769878",
+      "catalog_name": "Прокладка подрельсовая ЦП-143",
+      "cms_slug": "prokladka_cp-143",
+      "cms_name": "Прокладка подрельсовая ЦП-143",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769878.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/3t_l2rg8i1baizc9b8amzqho3tzrmwqetditcsng_ptvfmif1x9xpgqjdnjgeb9x9sqvjqfp8l1xygjjji2q_7wvzngsw21.png"
+    },
+    {
+      "catalog_id": "00011769880",
+      "catalog_name": "Прокладка подрельсовая ЦП-74, ЦП-318, ЦП-356",
+      "cms_slug": "prokladka_cp-318",
+      "cms_name": "Прокладка подрельсовая ЦП-74, ЦП-318, ЦП-356 (на КБ-65)",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769880.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/903_original.jpg"
+    },
+    {
+      "catalog_id": "00011769881",
+      "catalog_name": "Прокладка нашпальная ЦП-328",
+      "cms_slug": "prokladka_cp-328",
+      "cms_name": "Прокладка нашпальная ЦП-328 (под КБ-65)",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769881.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/prokladka_pod_podkladky.jpg"
+    },
+    {
+      "catalog_id": "00011769881_1",
+      "catalog_name": "Прокладка нашпальная СП-487, ЦП-487",
+      "cms_slug": "prokladka_cp-329",
+      "cms_name": "Прокладка нашпальная СП-487, ЦП-487 (под КБ-65)",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769881_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/487.jpg"
+    },
+    {
+      "catalog_id": "00011769881_2",
+      "catalog_name": "Прокладка нашпальная ЦП-67",
+      "cms_slug": "prokladka_cp-330",
+      "cms_name": "Прокладка нашпальная ЦП-67 (под Д-65)",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769881_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/podkladka-cp-362.png"
+    },
+    {
+      "catalog_id": "00011769881_5",
+      "catalog_name": "Прокладка нашпальная ЦП-362",
+      "cms_slug": "prokladka_cp-333",
+      "cms_name": "Прокладка нашпальная ЦП-362 (под Д-65)",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769881_5.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/ohifmiy594tsiarv63js.jpg"
+    },
+    {
+      "catalog_id": "00011769881_6",
+      "catalog_name": "Прокладка нашпальная ОП-68-74",
+      "cms_slug": "prokladka_cp-334",
+      "cms_name": "Прокладка нашпальная ОП-68-74 (под Д-50)",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769881_6.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/image040.png"
+    },
+    {
+      "catalog_id": "00011766138_3",
+      "catalog_name": "Накладка 1Р-65 новая",
+      "cms_slug": "nakladka_1r-65_novaya",
+      "cms_name": "Накладка 1Р-65",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766138_3.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2.jpg"
+    },
+    {
+      "catalog_id": "00011766138_3",
+      "catalog_name": "Накладка 1Р-65 новая",
+      "cms_slug": "nakladka_1r-65_novaya-2",
+      "cms_name": "Накладка 1Р-65",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766138_3.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/_3.jpg"
+    },
+    {
+      "catalog_id": "00011766138_1",
+      "catalog_name": "Накладка 1Р-65 ГОСТ 8193-73 хранение",
+      "cms_slug": "nakladka_1r-65_gost_8193-73_novaya_1",
+      "cms_name": "Накладка 1Р-65 ГОСТ 8193-73 хранение",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766138_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2_2.jpg"
+    },
+    {
+      "catalog_id": "00011766138_1_1_1",
+      "catalog_name": "Накладка 1Р-65 ГОСТ 8193-73 восстановленная",
+      "cms_slug": "nakladka_1r-65_gost_8193-73_novaya_1_1_1",
+      "cms_name": "Накладка 1Р-65 ГОСТ 8193-73 восстановленная",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766138_1_1_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2_4.jpg"
+    },
+    {
+      "catalog_id": "00011766153",
+      "catalog_name": "Накладка 1Р-50 новая",
+      "cms_slug": "nakladka_1r-50_gost_19128-73_novaya",
+      "cms_name": "Накладка 1Р-50",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766153.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/50.jpg"
+    },
+    {
+      "catalog_id": "00011766153_1",
+      "catalog_name": "Накладка 1Р-50 ГОСТ 19128-73 с хранения",
+      "cms_slug": "nakladka_1r-50_gost_19128-73_novaya_1",
+      "cms_name": "Накладка 1Р-50 ГОСТ 19128-73 с хранения",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766153_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1.jpg"
+    },
+    {
+      "catalog_id": "00011766153_1_1_1",
+      "catalog_name": "Накладка 1Р-50 ГОСТ 19128-73 восстановленная",
+      "cms_slug": "nakladka_1r-50_gost_19128-73_novaya_1_1_1",
+      "cms_name": "Накладка 1Р-50 ГОСТ 19128-73 восстановленная",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766153_1_1_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1_3.jpg"
+    },
+    {
+      "catalog_id": "00011766140_1",
+      "catalog_name": "Накладка Р-18 ГОСТ 8141-56 хранение",
+      "cms_slug": "nakladka_r-18_gost_8141-56_1",
+      "cms_name": "Накладка Р-18 ГОСТ 8141-56 хранение",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766140_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2_2.jpg"
+    },
+    {
+      "catalog_id": "00011766140_1_1_1",
+      "catalog_name": "Накладка Р-18 ГОСТ 8141-56 восстановленная",
+      "cms_slug": "nakladka_r-18_gost_8141-56_1_1_1",
+      "cms_name": "Накладка Р-18 ГОСТ 8141-56 восстановленная",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766140_1_1_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/content_8_2.gif"
+    },
+    {
+      "catalog_id": "00011766142_1",
+      "catalog_name": "Накладка Р-33 ТУ УДП 14-2-1214-98 хранение",
+      "cms_slug": "nakladka_r-33_tu_udp_14-2-1214-98_novaya_1",
+      "cms_name": "Накладка Р-33 ТУ УДП 14-2-1214-98 хранение",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766142_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/content_2.gif"
+    },
+    {
+      "catalog_id": "00011766142_1_1_1",
+      "catalog_name": "Накладка Р-33 ТУ УДП 14-2-1214-98 восстановленная",
+      "cms_slug": "nakladka_r-33_tu_udp_14-2-1214-98_novaya_1_1_1",
+      "cms_name": "Накладка Р-33 ТУ УДП 14-2-1214-98 восстановленная",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766142_1_1_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2_3.jpg"
+    },
+    {
+      "catalog_id": "00011766149_1",
+      "catalog_name": "Накладка Р-43 ГОСТ 8193-73 хранение",
+      "cms_slug": "nakladka_r-43_gost_8193-73_novaya_1",
+      "cms_name": "Накладка Р-43 ГОСТ 8193-73 хранение",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766149_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2_3.jpg"
+    },
+    {
+      "catalog_id": "00011766149_1_1_1",
+      "catalog_name": "Накладка Р-43 ГОСТ 8193-73 восстановленная",
+      "cms_slug": "nakladka_r-43_gost_8193-73_novaya_1_1_1",
+      "cms_name": "Накладка Р-43 ГОСТ 8193-73 восстановленная",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766149_1_1_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1.jpg"
+    },
+    {
+      "catalog_id": "00011766208",
+      "catalog_name": "Накладка рельсового стыка КР 70  (РС3)",
+      "cms_slug": "nakladka_relsovogo_styka_kr_70_novaya",
+      "cms_name": "Накладка рельсового стыка КР-70",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766208.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/content_8.gif"
+    },
+    {
+      "catalog_id": "00011766208_1",
+      "catalog_name": "Накладка рельсового стыка КР 80  (РС3)",
+      "cms_slug": "nakladka_relsovogo_styka_kr_80_novaya_1",
+      "cms_name": "Накладка рельсового стыка КР-80",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766208_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/content_2.gif"
+    },
+    {
+      "catalog_id": "00011766210",
+      "catalog_name": "Накладка рельсового стыка КР100 (РС4)",
+      "cms_slug": "nakladka_relsovogo_styka_rs-4_dlya_kr_100",
+      "cms_name": "Накладка рельсового стыка КР100 (РС4)",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766210.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/content_8_2.gif"
+    },
+    {
+      "catalog_id": "00011766209",
+      "catalog_name": "Накладка рельсового стыка РС-5 (для КР 120)",
+      "cms_slug": "nakladka_relsovogo_styka_rs-5_dlya_kr_120",
+      "cms_name": "Накладка рельсового стыка РС-5 (для КР 120)",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766209.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1_3.jpg"
+    },
+    {
+      "catalog_id": "00011769871",
+      "catalog_name": "Противоугон П 50",
+      "cms_slug": "protivougon_p_50",
+      "cms_name": "Противоугон П 50",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769871.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/protivougon-p-65-b-u.jpg"
+    },
+    {
+      "catalog_id": "00011769872",
+      "catalog_name": "Противоугон П 65",
+      "cms_slug": "protivougon_p_65",
+      "cms_name": "Противоугон П 65",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769872.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/protivougon-p-65-b-u_2.jpg"
+    },
+    {
+      "catalog_id": "00011769870",
+      "catalog_name": "Противоугон П 43",
+      "cms_slug": "protivougon_p_43",
+      "cms_name": "Противоугон П 43",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769870.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/protivougon-p-65-b-u_4.jpg"
+    },
+    {
+      "catalog_id": "00011769853",
+      "catalog_name": "Болт клеммный М22х75 свободный",
+      "cms_slug": "bolt_klemmnyy_m22h75",
+      "cms_name": "Болт клеммный М22х75 свободный",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769853.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/jukwqly6erlmkn0rctgq.jpg"
+    },
+    {
+      "catalog_id": "00011769854",
+      "catalog_name": "Болт клеммный М22х75 с гайкой",
+      "cms_slug": "bolt_klemmnyy_m22h75_s_gaykoy",
+      "cms_name": "Болт клеммный М22х75 с гайкой",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769854.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/ludz3ohxhw2nssmfnpfn.jpg"
+    },
+    {
+      "catalog_id": "00011769854_2",
+      "catalog_name": "Бoлт клeммный M22x75 c гaйкoй и шaйбoй M25",
+      "cms_slug": "bolt_klemmnyy_m22h75_s_gaykoy_2",
+      "cms_name": "Бoлт клeммный M22x75 c гaйкoй и шaйбoй M25",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769854_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/jukwqly6erlmkn0rctgq.jpg"
+    },
+    {
+      "catalog_id": "00011769854_1",
+      "catalog_name": "Болт клеммный М22х75 в сборе с гайкой шайбой М25 и клеммой ПК",
+      "cms_slug": "bolt_klemmnyy_m22h75_s_gaykoy_1",
+      "cms_name": "Болт клеммный М22х75 в сборе с гайкой шайбой М25 и клеммой ПК",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769854_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/eohmais0jzdpobw9p9sn.jpg"
+    },
+    {
+      "catalog_id": "00011769877_1",
+      "catalog_name": "Шуруп путевой 24х170",
+      "cms_slug": "shurup_putevoy_24h170_1",
+      "cms_name": "Шуруп путевой 24х170",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769877_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/cfdjltwvykbn8959hiw9_2.jpg"
+    },
+    {
+      "catalog_id": "00011769877",
+      "catalog_name": "Шуруп ЦП54  М24х195",
+      "cms_slug": "shurup_putevoy_24h170",
+      "cms_name": "Шуруп ЦП54  М24х195",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769877.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/cfdjltwvykbn8959hiw9.jpg"
+    },
+    {
+      "catalog_id": "00011769851",
+      "catalog_name": "Болт закладной М22х175",
+      "cms_slug": "bolt_zakladnoy_m22h175",
+      "cms_name": "Болт закладной М22х175",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769851.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/axzjfuwmzxt7tafppm6g.jpg"
+    },
+    {
+      "catalog_id": "00011769851_1",
+      "catalog_name": "Бoлт зaклaднoй M22x225 cвoбoдный",
+      "cms_slug": "bolt-zakladnoy-m22x225-cvobodnyy",
+      "cms_name": "Бoлт зaклaднoй M22x225 cвoбoдный",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769851_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/7dpdkhvqypeddyleh2rq.jpg"
+    },
+    {
+      "catalog_id": "00011769846",
+      "catalog_name": "Болт закладной М22х175 с гайкой",
+      "cms_slug": "bgsh_22_zakladnoy",
+      "cms_name": "Болт закладной М22х175 с гайкой",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769846.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/7dpdkhvqypeddyleh2rq.jpg"
+    },
+    {
+      "catalog_id": "00011769852",
+      "catalog_name": "Болт закладной М22х175 в сборе",
+      "cms_slug": "bolt_zakladnoy_m22h175_s_gaykoy",
+      "cms_name": "Болт закладной М22х175 в сборе",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769852.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/kyopmag4djrxihp4scgo.jpg"
+    },
+    {
+      "catalog_id": "00011769868",
+      "catalog_name": "Костыль путевой 14х14х130",
+      "cms_slug": "kostyl_putevoy_14h14h130",
+      "cms_name": "Костыль путевой 14х14х130",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769868.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/losfdjv95d50f8zrpyt6.jpg"
+    },
+    {
+      "catalog_id": "00011769868_1",
+      "catalog_name": "Костыль путевой 16х16х165",
+      "cms_slug": "kostyl_putevoy_16h16h165_1",
+      "cms_name": "Костыль путевой 16х16х165",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769868_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/fev7ivropymwkchwjsif_2.jpg"
+    },
+    {
+      "catalog_id": "00011769868_2",
+      "catalog_name": "Костыль пучинный 16х16х230",
+      "cms_slug": "kostyl_putevoy_16h16h230_2",
+      "cms_name": "Костыль пучинный 16х16х230",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769868_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/fev7ivropymwkchwjsif_3.jpg"
+    },
+    {
+      "catalog_id": "00011769857_1",
+      "catalog_name": "Болт стыковой М18",
+      "cms_slug": "bolt_stykovoy_m18_1",
+      "cms_name": "Болт стыковой М18",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769857_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/bolt-stykovoy_13.jpg"
+    },
+    {
+      "catalog_id": "00011769857_3_1",
+      "catalog_name": "Бoлт cтыкoвoй M22x115 в cбope c гaйкoй и шaйбoй cтыкoвoй M22",
+      "cms_slug": "bolt_stykovoy_m18_3_1",
+      "cms_name": "Бoлт cтыкoвoй M22x115 в cбope c гaйкoй и шaйбoй cтыкoвoй M22",
+      "match_type": "exact_name",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011769858",
+      "catalog_name": "Болт стыковой М18х88 в сборе",
+      "cms_slug": "bolt_stykovoy_m18h88_v_sbore",
+      "cms_name": "Болт стыковой М18х88 в сборе",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769858.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/bolt-stykovoy_13.jpg"
+    },
+    {
+      "catalog_id": "00011769859",
+      "catalog_name": "Болт стыковой М22х135 свободный",
+      "cms_slug": "bolt_stykovoy_m22h135",
+      "cms_name": "Болт стыковой М22х135 свободный",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769859.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/bolt-stykovoy_13.jpg"
+    },
+    {
+      "catalog_id": "00011769859_1",
+      "catalog_name": "Болт стыковой М22х135 в cбope c гaйкoй и шaйбoй cтыкoвoй M22",
+      "cms_slug": "bolt_stykovoy_m22h135_1",
+      "cms_name": "Болт стыковой М22х135 в cбope c гaйкoй и шaйбoй cтыкoвoй M22",
+      "match_type": "exact_name",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011769860",
+      "catalog_name": "Болт стыковой М24х150 свободный",
+      "cms_slug": "bolt_stykovoy_m24h150",
+      "cms_name": "Болт стыковой М24х150 свободный",
+      "match_type": "exact_name",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011769860_1",
+      "catalog_name": "Бoлт cтыкoвoй M24x150 c гaйкoй M24",
+      "cms_slug": "bolt_stykovoy_m24h150_1",
+      "cms_name": "Бoлт cтыкoвoй M24x150 c гaйкoй M24",
+      "match_type": "exact_name",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011769860_2",
+      "catalog_name": "Бoлт cтыкoвoй M24x150 в cбope c гaйкoй и шaйбoй cтыкoвoй M24",
+      "cms_slug": "bolt_stykovoy_m24h150_2",
+      "cms_name": "Бoлт cтыкoвoй M24x150 в cбope c гaйкoй и шaйбoй cтыкoвoй M24",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769860_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1179862.jpg"
+    },
+    {
+      "catalog_id": "00011769861",
+      "catalog_name": "Болт стыковой М27х160 свободный",
+      "cms_slug": "bolt_stykovoy_m27h160",
+      "cms_name": "Болт стыковой М27х160 свободный",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769861.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/bolt-stykovoy_13.jpg"
+    },
+    {
+      "catalog_id": "00011769861_3",
+      "catalog_name": "Бoлт cтыкoвoй M27x160 уcилeнный c гaйкoй для Aпaтэк",
+      "cms_slug": "bolt_stykovoy_m27h160_3",
+      "cms_name": "Бoлт cтыкoвoй M27x160 уcилeнный c гaйкoй для Aпaтэк",
+      "match_type": "exact_name",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011769861_1",
+      "catalog_name": "Бoлт cтыкoвoй M27x160 c гaйкoй M27",
+      "cms_slug": "bolt_stykovoy_m27h160_1",
+      "cms_name": "Бoлт cтыкoвoй M27x160 c гaйкoй M27",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769861_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/bolt-stykovoy_13.jpg"
+    },
+    {
+      "catalog_id": "00011769861_2_1",
+      "catalog_name": "Бoлт cтыкoвoй M27x160 уcилeнный c гaйкoй и шaйбaми для Aпaтэк",
+      "cms_slug": "bolt_stykovoy_m27h160_2_1",
+      "cms_name": "Бoлт cтыкoвoй M27x160 уcилeнный c гaйкoй и шaйбaми для Aпaтэк",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769861_2_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/bolt-stykovoy_13.jpg"
+    },
+    {
+      "catalog_id": "00011769861_2",
+      "catalog_name": "Бoлт cтыкoвoй M27x160 в cбope c гaйкoй M27 и шaйбoй cтыкoвoй M27",
+      "cms_slug": "bolt_stykovoy_m27h160_2",
+      "cms_name": "Бoлт cтыкoвoй M27x160 в cбope c гaйкoй M27 и шaйбoй cтыкoвoй M27",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769861_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1179862.jpg"
+    },
+    {
+      "catalog_id": "00011769848",
+      "catalog_name": "БГШ 22 (стыковой)",
+      "cms_slug": "bgsh_22_stykovoy",
+      "cms_name": "БГШ 22 (стыковой)",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769848.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1179862.jpg"
+    },
+    {
+      "catalog_id": "00011769849",
+      "catalog_name": "БГШ 24 (стыковой)",
+      "cms_slug": "bgsh_24_stykovoy",
+      "cms_name": "БГШ 24 (стыковой)",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769849.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1179862.jpg"
+    },
+    {
+      "catalog_id": "00011769850",
+      "catalog_name": "БГШ 27 (стыковой)",
+      "cms_slug": "bgsh_27_stykovoy",
+      "cms_name": "БГШ 27 (стыковой)",
+      "match_type": "exact_name",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011769847",
+      "catalog_name": "БГШ 22 (клеммный)",
+      "cms_slug": "bgsh_22_klemmnyy",
+      "cms_name": "БГШ 22 (клеммный)",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011769847.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1179862.jpg"
+    },
+    {
+      "catalog_id": "00011763105_1_2",
+      "catalog_name": "Рельс Р43",
+      "cms_slug": "relsy-r-45",
+      "cms_name": "Рельс Р43",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763105_1_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/image-04-04-22-01-41.jpeg"
+    },
+    {
+      "catalog_id": "00011763105_1_2",
+      "catalog_name": "Рельс Р43",
+      "cms_slug": "relsy-r-44",
+      "cms_name": "Рельс Р43",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763105_1_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_foto_r43_hran._2.JPG"
+    },
+    {
+      "catalog_id": "00011763105_1_2",
+      "catalog_name": "Рельс Р43",
+      "cms_slug": "relsy-r-43",
+      "cms_name": "Рельс Р43",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763105_1_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_foto_r43_hran..JPG"
+    },
+    {
+      "catalog_id": "00011974819",
+      "catalog_name": "Рельсы Р38 новый",
+      "cms_slug": "relsy_r38",
+      "cms_name": "Рельсы Р38 новый",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011974819.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/whatsapp-image-2023-04-26-at-15.22.14.jpeg"
+    },
+    {
+      "catalog_id": "00011766099_1",
+      "catalog_name": "Рельс Р33 новый ТУ 14-2Р-383-2004",
+      "cms_slug": "rels_r33_novyy_1",
+      "cms_name": "Рельсы Р33 новые ТУ 14-2Р-383-2004",
+      "match_type": "fuzzy",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011766100",
+      "catalog_name": "Рельс Р33 хранение",
+      "cms_slug": "rels_r33_hranenie",
+      "cms_name": "Рельс Р33 хранение",
+      "match_type": "exact_name",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011763105",
+      "catalog_name": "Рельс Р24 новый ГОСТ 6368-82",
+      "cms_slug": "tovar_1",
+      "cms_name": "Рельсы Р24 новый ГОСТ 6368-82",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763105.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/photo_2026-02-19_16-08-32.jpg"
+    },
+    {
+      "catalog_id": "00011763105_1",
+      "catalog_name": "Рельс Р24 старогодный с хранения  ГОСТ 6368-82",
+      "cms_slug": "tovar_2_1",
+      "cms_name": "Рельс Р24 старогодный с хранения  ГОСТ 6368-82",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763105_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2017-04-28-14-47-23.jpg"
+    },
+    {
+      "catalog_id": "00011763105_2_1",
+      "catalog_name": "Рельсы P24  восстановленные в антикоре",
+      "cms_slug": "tovar_2_2",
+      "cms_name": "Рельсы P24  восстановленные в антикоре",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763105_2_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2017-06-09-09-08-07.jpg"
+    },
+    {
+      "catalog_id": "00011779120_2",
+      "catalog_name": "Рельс Р18 ГОСТ6368-82 новый",
+      "cms_slug": "rels_r18_starogodnyy_2",
+      "cms_name": "Рельсы Р18 ГОСТ6368-82 новый",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011779120_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/r18-foto.png"
+    },
+    {
+      "catalog_id": "00011779104",
+      "catalog_name": "Рельс Р18 хранение",
+      "cms_slug": "rels_r18_hranenie",
+      "cms_name": "Рельс Р18 хранение",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011779104.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_r18_2007_g.v.jpg"
+    },
+    {
+      "catalog_id": "00011779120_3_1",
+      "catalog_name": "Рельс Р15 новый",
+      "cms_slug": "rels_r15_starogodnyy_3_1",
+      "cms_name": "Рельсы Р15 новый",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011779120_3_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/img_0242.jpg"
+    },
+    {
+      "catalog_id": "00011779120_4",
+      "catalog_name": "Рельс Р12 новый",
+      "cms_slug": "rels-r12-novyy",
+      "cms_name": "Рельсы Р12 новый",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011779120_4.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/whatsapp-image-2024-07-18-at-15.29.13.jpeg"
+    },
+    {
+      "catalog_id": "00011779120_3",
+      "catalog_name": "Рельс Р8 ГОСТ6368-82 новый",
+      "cms_slug": "rels-r8-gost6368-82-novyy",
+      "cms_name": "Рельсы Р8 ГОСТ6368-82 новый",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011779120_3.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/whatsapp-image-2024-08-01-at-15.06.09.jpeg"
+    },
+    {
+      "catalog_id": "00011766094",
+      "catalog_name": "Рельсы крановые КР 140 с/г",
+      "cms_slug": "relsy_kranovye_kr_140_hranenie",
+      "cms_name": "Рельсы крановые КР 140 с/г",
+      "match_type": "exact_name",
+      "has_image": false,
+      "image_file": null,
+      "original_url": null
+    },
+    {
+      "catalog_id": "00011766071",
+      "catalog_name": "Рельсы крановые КР 120 новые ГОСТ53866-2010",
+      "cms_slug": "relsy_kranovye_kr_120_novye",
+      "cms_name": "Рельсы крановые КР 120 новые ГОСТ53866-2010",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766071.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/085fa2b10c91bfd6d498439b14870f1d_2.jpg"
+    },
+    {
+      "catalog_id": "00011766071_1",
+      "catalog_name": "Рельсы крановые КР 120 новые ГОСТ4121-96",
+      "cms_slug": "relsy_kranovye_kr_120_novye_1",
+      "cms_name": "Рельсы крановые КР 120 новые ГОСТ4121-96",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766071_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2017-10-05-12-27-02.jpg"
+    },
+    {
+      "catalog_id": "00011766075",
+      "catalog_name": "Рельсы крановые КР 120 с хранения",
+      "cms_slug": "relsy_kranovye_kr_120_hranenie",
+      "cms_name": "Рельсы крановые КР 120 с хранения",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766075.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/image-28-08-20-01-08.jpeg"
+    },
+    {
+      "catalog_id": "00011766075_1",
+      "catalog_name": "Рельсы крановые КР 120 старогодный без износа",
+      "cms_slug": "relsy_kranovye_kr_120_hranenie_1",
+      "cms_name": "Рельсы крановые КР 120 старогодный без износа",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766075_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/whatsapp-image-2024-05-15-at-15.30.04.jpeg"
+    },
+    {
+      "catalog_id": "00011766075_2",
+      "catalog_name": "Рельсы крановые КР 120 б/у старогодный с  минимальным износом",
+      "cms_slug": "relsy_kranovye_kr_120_hranenie_2",
+      "cms_name": "Рельсы крановые КР 120 б/у старогодный с  минимальным износом",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766075_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/whatsapp-image-2020-09-14-at-15.40.41_2.jpeg"
+    },
+    {
+      "catalog_id": "00011765974_1_1_1",
+      "catalog_name": "Рельсы крановые КР 100 хранение",
+      "cms_slug": "relsy_kranovye_kr_70_novye_1_1_1",
+      "cms_name": "Рельсы крановые КР 100 хранение",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011765974_1_1_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/IMG_1217.jpeg"
+    },
+    {
+      "catalog_id": "00011766062",
+      "catalog_name": "Рельсы крановые КР 80 хранение",
+      "cms_slug": "relsy_kranovye_kr_80_hranenie",
+      "cms_name": "Рельсы крановые КР 80 хранение",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766062.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/image-02-09-22-03-21.jpeg"
+    },
+    {
+      "catalog_id": "00011766062_2",
+      "catalog_name": "Рельсы крановые КР 80 б/у старогодный",
+      "cms_slug": "relsy_kranovye_kr_80_hranenie_2",
+      "cms_name": "Рельсы крановые КР 80 б/у старогодный",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766062_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/image-02-09-22-03-21.jpeg"
+    },
+    {
+      "catalog_id": "00011765976_3",
+      "catalog_name": "Рельсы крановые КР 70 новый ГОСТ Р 53866-2010",
+      "cms_slug": "relsy_kranovye_kr_70_hran_3",
+      "cms_name": "Рельсы крановые КР 70 новый ГОСТ Р 53866-2010",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011765976_3.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/d5wqxhrjhvdg307dajdi_3.jpg"
+    },
+    {
+      "catalog_id": "00011765976",
+      "catalog_name": "Рельсы крановые КР 70 хранение",
+      "cms_slug": "relsy_kranovye_kr_70_hran",
+      "cms_name": "Рельсы крановые КР 70 хранение",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011765976.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_IMG_1564.jpg"
+    },
+    {
+      "catalog_id": "00011765976_2",
+      "catalog_name": "Рельсы крановые КР70 б/у старогодный",
+      "cms_slug": "relsy_kranovye_kr_70_hran_2",
+      "cms_name": "Рельсы крановые КР70 б/у старогодный",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011765976_2.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_IMG_2.jpg"
+    },
+    {
+      "catalog_id": "00011766107",
+      "catalog_name": "Рельсы Р50 ОТ350 новые",
+      "cms_slug": "r50_t1_novye",
+      "cms_name": "Рельсы Р50 ОТ350 новые",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011766107.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/661f92658bfee_image-11-04-24-09-42-2.jpeg"
+    },
+    {
+      "catalog_id": "00011763495_1_1_1_1",
+      "catalog_name": "Рельсы Р50 1-я гр. износа старогодные",
+      "cms_slug": "r50-t1-hranenie-nd",
+      "cms_name": "Рельсы Р50 1-я гр. износа старогодные",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763495_1_1_1_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/661f97a6c6c62_whatsapp-image-2024-04-17-at-14.32.05.jpeg"
+    },
+    {
+      "catalog_id": "00011763495",
+      "catalog_name": "Рельсы Р65 ДТ350, ОТ350 новые",
+      "cms_slug": "r65",
+      "cms_name": "Рельсы Р65 Т1  ДТ350, ОТ350 новые",
+      "match_type": "fuzzy",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763495.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1544780116foto1_big.jpg"
+    },
+    {
+      "catalog_id": "00011763495_1",
+      "catalog_name": "Рельсы Р65 Т1 хранение",
+      "cms_slug": "r65_t1",
+      "cms_name": "Рельсы Р65 Т1 хранение",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763495_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/image-10-09-20-01-10.jpeg"
+    },
+    {
+      "catalog_id": "00011763495_1_1",
+      "catalog_name": "Рельсы Р65 Т1 1-я группа износа до 3-х мм",
+      "cms_slug": "r65_1_1",
+      "cms_name": "Рельсы Р65 Т1 1-я группа износа до 3-х мм",
+      "match_type": "exact_name",
+      "has_image": true,
+      "image_file": "assets/img/products/00011763495_1_1.jpg",
+      "original_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/661f95c49724a_whatsapp-image-2024-04-17-at-14.19.12.jpeg"
+    }
+  ],
+  "categories": [],
+  "unmatched_cms": [
+    {
+      "cms_slug": "podkladka_dlya_r18",
+      "cms_name": "Подкладки костыльного скрепления к железнодорожным рельсам типа Р18",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/p001a.png"
+    },
+    {
+      "cms_slug": "podkladka_dlya_r24",
+      "cms_name": "Подкладки костыльного скрепления к железнодорожным рельсам типа Р24",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/p001a_2.png"
+    },
+    {
+      "cms_slug": "podkladka_dlya_r33",
+      "cms_name": "Подкладки костыльного скрепления к железнодорожным рельсам типа Р33",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/p001a_3.png"
+    },
+    {
+      "cms_slug": "podkladka_kb-50_novaya",
+      "cms_name": "Подкладка КБ50",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/p001a.png"
+    },
+    {
+      "cms_slug": "podkladka_kd-50_novaya",
+      "cms_name": "Подкладка КД50",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/p001a_2.png"
+    },
+    {
+      "cms_slug": "podkladka_dn_50_novaya",
+      "cms_name": "Подкладка ДН50",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/p001a_3.png"
+    },
+    {
+      "cms_slug": "podkladka_dn_65_novaya",
+      "cms_name": "Подкладка ДН65",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/p001a_2.png"
+    },
+    {
+      "cms_slug": "prokladka_cp-331",
+      "cms_name": "Прокладка ЦП-363 (на КД-65)",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/prokladka-rezinovaya-czp-363-podrelsovaya-na-kd-65.gif"
+    },
+    {
+      "cms_slug": "prokladka_cp-332",
+      "cms_name": "Прокладка ЦП-361 (под КД-65)",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/prokladka-rezinovaya-czp-361-pod-podkladku-kd-65.jpg"
+    },
+    {
+      "cms_slug": "nakladka_1r-65_gost_8193-73_starogodnaya",
+      "cms_name": "Накладка 1Р-65 б/у",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2_3.jpg"
+    },
+    {
+      "cms_slug": "nakladka_1r-50_gost_19128-73_starogodnaya",
+      "cms_name": "Накладка 1Р-50 б/у",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1_2.jpg"
+    },
+    {
+      "cms_slug": "nakladka_r-18_gost_8141-56",
+      "cms_name": "Накладка Р-18",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/_3.jpg"
+    },
+    {
+      "cms_slug": "nakladka_r-18_gost_8141-56_starogodnaya",
+      "cms_name": "Накладка Р-18 б/у",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/content_2.gif"
+    },
+    {
+      "cms_slug": "nakladka_r-33_tu_udp_14-2-1214-98_novaya",
+      "cms_name": "Накладка Р-33",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1.jpg"
+    },
+    {
+      "cms_slug": "nakladka_r-33_tu_udp_14-2-1214-98_starogodnaya",
+      "cms_name": "Накладка Р-33 б/у",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1_2.jpg"
+    },
+    {
+      "cms_slug": "nakladka_r-43_gost_8193-73_novaya",
+      "cms_name": "Накладка Р-43",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/2_2.jpg"
+    },
+    {
+      "cms_slug": "nakladka_r-43_gost_8193-73_starogodnaya",
+      "cms_name": "Накладка Р-43 б/у",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1_3.jpg"
+    },
+    {
+      "cms_slug": "bolt_m24h90_v_sbore",
+      "cms_name": "Болт М24",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/1179862.jpg"
+    },
+    {
+      "cms_slug": "rels_r18_starogodnyy_1",
+      "cms_name": "Рельсы Р18 б/у",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_IMG_0775_3.JPG"
+    },
+    {
+      "cms_slug": "relsy_kranovye_kr_100",
+      "cms_name": "Рельсы КP 100Рельсы КР100 новые ГОСТ 53866-2010 мерная длина 11 метров147 000руб.КупитьОформить заказРельсы КР100 новые ГОСТ 53866-2010 мерная длина 11 метровПохожие товарыРельсы крановые КР 100 ГОСТ 4121-96 новые147 000руб.КупитьОформить заказРельсы крановые КР 100 хранение115 000руб.КупитьОформить заказ",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/whatsapp-image-2021-03-12-at-16.01.03.jpeg"
+    },
+    {
+      "cms_slug": "relsy_kranovye_kr_101",
+      "cms_name": "Рельсы КP 100Рельсы КР100 новые ГОСТ 4121-96 мерная длина 11, 12 метров147 000руб.КупитьОформить заказВ ассортименте товаров нашей компании новые рельсы КP 100 (ГОСТ) всегда в наличии, что позволяет быстро удовлетворить спрос наших клиентов на подобную продукцию.Данная марка крановых изделий активно используется в строительной индустрии. Купить рельсы КP 100 возникает потребность, если речь идет о прокладке подкрановых путей для движения грузоподъемных агрегатов.Для производства металлоконструкций применяют высокоуглеродистую сталь. По своим конструктивным особенностям они отличаются:наличием утолщенных стенокскругленной головкой.Приемлемая цена и возможность доставки заказа в любой регион РФ – наши главные преимущества.Похожие товарыРельсы крановые КР 100 хранение115 000руб.КупитьОформить заказРельсы крановые КР 100 ГОСТ 53866-2010 новые147 000руб.КупитьОформить заказ",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/whatsapp-image-2021-03-12-at-16.01.03_2.jpeg"
+    },
+    {
+      "cms_slug": "relsy_kranovye_kr_80_novye_1",
+      "cms_name": "Рельсы КР 80",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/image-02-09-22-03-21.jpeg"
+    },
+    {
+      "cms_slug": "relsy_kranovye_kr_80_novye_2",
+      "cms_name": "Рельсы КР 80",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/image-02-09-22-03-21.jpeg"
+    },
+    {
+      "cms_slug": "relsy_kranovye_kr_70_novye_1",
+      "cms_name": "Рельсы КP 70",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/d5wqxhrjhvdg307dajdi_4.jpg"
+    },
+    {
+      "cms_slug": "r50-t1-hranenie",
+      "cms_name": "Рельсы P50 Т1",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/661f92658bfee_image-11-04-24-09-42-2.jpeg"
+    },
+    {
+      "cms_slug": "r50-t1-starogodnye",
+      "cms_name": "Рельсы Р50 Т1 б/у",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/661f97a6c6c62_whatsapp-image-2024-04-17-at-14.32.05.jpeg"
+    },
+    {
+      "cms_slug": "r50-t1-hranenie-nd",
+      "cms_name": "Материалы ВСП",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_relsy.png"
+    },
+    {
+      "cms_slug": "r50-t1-hranenie",
+      "cms_name": "Материалы ВСП",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_relsy.png"
+    },
+    {
+      "cms_slug": "r50_t1_novye",
+      "cms_name": "Материалы ВСП",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_relsy.png"
+    },
+    {
+      "cms_slug": "r50-t1-starogodnye",
+      "cms_name": "Материалы ВСП",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/watermarked_relsy.png"
+    },
+    {
+      "cms_slug": "r65_t1_starogodnye",
+      "cms_name": "Рельсы Р65 Т1 б/у",
+      "image_url": "https://rels-komplekt.ru/uploadedFiles/eshopimages/big/661f95c49724a_whatsapp-image-2024-04-17-at-14.19.12.jpeg"
+    }
+  ]
+}

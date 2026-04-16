@@ -1,0 +1,20 @@
+[Unit]
+Description=Рельс-Комплект — статический сайт + /api/notify прокси
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/rels-komplekt
+ExecStart=/usr/bin/python3 /var/www/rels-komplekt/serve.py
+EnvironmentFile=/var/www/rels-komplekt/proxy/.env
+Restart=on-failure
+RestartSec=5s
+
+# Логи
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rels-komplekt
+
+[Install]
+WantedBy=multi-user.target
