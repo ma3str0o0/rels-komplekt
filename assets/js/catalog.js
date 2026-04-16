@@ -85,6 +85,75 @@ function showError() {
   if (dom.loading) dom.loading.innerHTML = '<p style="color:var(--color-error); padding: var(--space-xl);">Ошибка загрузки данных. Пожалуйста, обновите страницу.</p>';
 }
 
+/* ─── Сохранение состояния каталога перед переходом на товар ─── */
+function saveCatalogState() {
+  try {
+    sessionStorage.setItem('rk_catalog_state', JSON.stringify({
+      filter:      activeFilter,
+      search:      state.search,
+      priceFilter: state.priceFilter,
+    }));
+  } catch(e) { /* sessionStorage недоступен */ }
+}
+
+/* ─── Восстановление визуального состояния дерева категорий ──── */
+function applyCategoryFilterUI(filter) {
+  resetCategoryUI();
+  switch (filter.type) {
+    case 'all':
+      document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
+      break;
+
+    case 'category': {
+      // Сначала ищем кнопку верхнего уровня
+      const topBtn = document.querySelector(`.cat-tree__cat[data-cat="${CSS.escape(filter.value)}"]`);
+      if (topBtn) {
+        topBtn.classList.add('active');
+        const subs = topBtn.closest('li')?.querySelector('.cat-tree__subs');
+        if (subs) { subs.hidden = false; topBtn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
+      } else {
+        // Иначе ищем подкатегорию с sub-type=category
+        const subBtn = document.querySelector(`.cat-tree__sub[data-sub="${CSS.escape(filter.value)}"]`);
+        if (subBtn) {
+          subBtn.classList.add('active');
+          const subsUl = subBtn.closest('.cat-tree__subs');
+          if (subsUl) {
+            subsUl.hidden = false;
+            const parentBtn = subsUl.closest('li')?.querySelector('.cat-tree__cat');
+            if (parentBtn) { parentBtn.classList.add('active'); parentBtn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
+          }
+        }
+      }
+      break;
+    }
+
+    case 'subcategory': {
+      const subBtn = document.querySelector(`.cat-tree__sub[data-sub="${CSS.escape(filter.value)}"]`);
+      if (subBtn) {
+        subBtn.classList.add('active');
+        const subsUl = subBtn.closest('.cat-tree__subs');
+        if (subsUl) {
+          subsUl.hidden = false;
+          const parentBtn = subsUl.closest('li')?.querySelector('.cat-tree__cat');
+          if (parentBtn) { parentBtn.classList.add('active'); parentBtn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
+        }
+      }
+      break;
+    }
+
+    case 'multi-category': {
+      const catsStr = Array.isArray(filter.value) ? filter.value.join('|') : filter.value;
+      const btn = document.querySelector(`.cat-tree__cat[data-cats="${CSS.escape(catsStr)}"]`);
+      if (btn) {
+        btn.classList.add('active');
+        const subs = btn.closest('li')?.querySelector('.cat-tree__subs');
+        if (subs) { subs.hidden = false; btn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
+      }
+      break;
+    }
+  }
+}
+
 /* ─── Сброс визуального состояния дерева категорий ──────────── */
 function resetCategoryUI() {
   document.querySelectorAll('.cat-tree__cat, .cat-tree__sub')
@@ -175,19 +244,57 @@ function initCategoryFilter() {
       if (subs) { subs.hidden = false; matchBtn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
     }
   } else if (catParam) {
-    // Одиночная категория — существующая логика
     const decoded = decodeURIComponent(catParam);
-    const btn = document.querySelector(`.cat-tree__cat[data-cat="${CSS.escape(decoded)}"]`);
+
+    // Сначала ищем точное совпадение data-cat (обычная категория)
+    let btn = document.querySelector(`.cat-tree__cat[data-cat="${CSS.escape(decoded)}"]`);
     if (btn) {
       resetCategoryUI();
       btn.classList.add('active');
       activeFilter = { type: 'category', value: decoded };
       const subs = btn.closest('li')?.querySelector('.cat-tree__subs');
       if (subs) { subs.hidden = false; btn.querySelector('.cat-tree__arrow')?.classList.add('open'); }
+    } else {
+      // Ищем мультикатегорийную кнопку, у которой первое значение data-cats совпадает с параметром
+      // (карточки на главной ссылаются через ?cat= на имя группы)
+      for (const b of document.querySelectorAll('.cat-tree__cat[data-cats]')) {
+        if (b.dataset.cats.split('|')[0] === decoded) {
+          const cats = b.dataset.cats.split('|');
+          activeFilter = { type: 'multi-category', value: cats };
+          resetCategoryUI();
+          b.classList.add('active');
+          const subs = b.closest('li')?.querySelector('.cat-tree__subs');
+          if (subs) { subs.hidden = false; b.querySelector('.cat-tree__arrow')?.classList.add('open'); }
+          break;
+        }
+      }
     }
   } else {
-    // По умолчанию — «Все категории» активна
-    document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
+    // Нет URL-параметров — проверяем сохранённое состояние после возврата с карточки товара
+    const saved = sessionStorage.getItem('rk_catalog_state');
+    if (saved) {
+      try {
+        const s = JSON.parse(saved);
+        sessionStorage.removeItem('rk_catalog_state');
+
+        activeFilter      = s.filter      || { type: 'all' };
+        state.search      = s.search      || '';
+        state.priceFilter = s.priceFilter || 'all';
+
+        // Восстанавливаем UI поиска и фильтров
+        if (dom.searchInput) dom.searchInput.value = state.search;
+        document.querySelectorAll('input[name="priceFilter"]')
+          .forEach(r => { r.checked = r.value === state.priceFilter; });
+
+        // Восстанавливаем визуальное состояние дерева категорий
+        applyCategoryFilterUI(activeFilter);
+      } catch(e) {
+        document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
+      }
+    } else {
+      // По умолчанию — «Все категории» активна
+      document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
+    }
   }
 }
 
@@ -418,7 +525,7 @@ function rowHTML(item) {
   const href   = `product.html?id=${encodeURIComponent(item.id)}`;
 
   return `
-    <tr data-href="${href}" data-id="${escapeHtml(item.id)}" style="cursor:pointer" onclick="window.location.href=this.dataset.href">
+    <tr data-href="${href}" data-id="${escapeHtml(item.id)}" style="cursor:pointer">
       <td>${escapeHtml(item.name)}</td>
       <td><span class="text-muted">${escapeHtml(item.subcategory || '')}</span></td>
       <td>${stateBadge}</td>
@@ -460,6 +567,17 @@ function updateActiveFiltersIndicator() {
 
 /* ─── Привязка событий ───────────────────────────────────────── */
 function bindEvents() {
+
+  // Клик по строке товара → переход на страницу товара
+  dom.grid.addEventListener('click', e => {
+    if (e.target.closest('[data-action="add-to-cart"]')) return;
+    if (e.target.closest('.sort-btn')) return;
+    const row = e.target.closest('tr[data-href]');
+    if (row) {
+      saveCatalogState();
+      window.location.href = row.dataset.href;
+    }
+  });
 
   // Сортировка по колонкам — делегирование, т.к. таблица перегенерируется
   dom.grid.addEventListener('click', e => {

@@ -45,6 +45,24 @@ function loadComponents() {
 }
 
 function _tplHeader() {
+  // Определяем режим шапки по текущей странице
+  const page = window.location.pathname.split('/').pop() || 'index.html';
+  const isCatalogMode = page === 'catalog.html' || page === 'product.html';
+
+  // Корзина — только на страницах каталога и товара
+  const cartHtml = isCatalogMode ? `
+          <a href="order.html" class="cart-btn" id="cartBtn" aria-label="Перейти к заявке" title="Позиции в заявке">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+            <span class="cart-badge hidden" id="cartBadge" aria-live="polite">0</span>
+          </a>` : '';
+
+  // Кнопка обратной связи — только НЕ на страницах каталога и товара
+  const contactHtml = !isCatalogMode ? `
+          <button class="btn btn-primary btn-sm header-contact-btn" data-modal="request" aria-label="Свяжитесь с нами">Свяжитесь с нами</button>` : '';
+
   return `
   <header class="header" role="banner">
     <div class="container">
@@ -69,17 +87,11 @@ function _tplHeader() {
           <a href="contacts.html" class="nav__link">Контакты</a>
         </nav>
         <div class="header__actions">
-          <a href="order.html" class="cart-btn" id="cartBtn" aria-label="Перейти к заявке" title="Позиции в заявке">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 01-8 0"/>
-            </svg>
-            <span class="cart-badge hidden" id="cartBadge" aria-live="polite">0</span>
-          </a>
+          ${cartHtml}
           <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему" title="Переключить тему">
             <svg class="theme-toggle__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           </button>
-          <button class="btn btn-primary btn-sm" data-modal="request" aria-label="Свяжитесь с нами">Свяжитесь с нами</button>
+          ${contactHtml}
           <button class="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobileMenu">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
@@ -259,8 +271,9 @@ function _tplModal() {
 
 /* ─── Тёмная тема ───────────────────────────────────────────── */
 function initTheme() {
-  // Применяем тему из localStorage (также применяется inline-скриптом в <head>)
-  const saved = localStorage.getItem('theme') || 'light';
+  // Применяем тему из localStorage, иначе — системная тема устройства
+  const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const saved = localStorage.getItem('theme') || (systemDark ? 'dark' : 'light');
   document.documentElement.setAttribute('data-theme', saved);
   _updateThemeIcon(saved);
 

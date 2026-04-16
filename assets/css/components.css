@@ -1566,6 +1566,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
 /* Колонка инфо */
@@ -2218,6 +2220,21 @@
   border-color: var(--color-secondary, #334155);
 }
 
+[data-theme="dark"] .radio-option {
+  border-color: var(--color-border, #30363D);
+  background: var(--color-surface-2, #1C2128);
+  color: var(--color-text-muted, #8B949E);
+}
+[data-theme="dark"] .radio-option:hover {
+  border-color: #8B949E;
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .radio-option:has(input:checked) {
+  border-color: var(--color-cta, #2F81F7);
+  background: rgba(47, 129, 247, 0.12);
+  color: var(--color-text, #E6EDF3);
+}
+
 /* Навигационные кнопки wizard */
 .wizard__nav {
   display: flex;
@@ -2520,6 +2537,87 @@
 .contacts-hours__time--closed {
   color: #94A3B8;
   font-weight: 400;
+}
+
+/* ─── Строка с номером + иконками мессенджеров ───────────────── */
+.contacts-phone-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.contacts-phone-row:first-of-type {
+  margin-top: 0;
+}
+
+.contacts-messengers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.messenger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: opacity 150ms ease, transform 100ms ease;
+}
+
+.messenger-btn:hover {
+  opacity: 0.82;
+  transform: translateY(-1px);
+}
+
+.messenger-btn:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+}
+
+.messenger-btn--wa  { background: #25D366; color: #fff; }
+.messenger-btn--tg  { background: #229ED9; color: #fff; }
+.messenger-btn--max { background: #0077FF; color: #fff; }
+
+/* Тёмная тема */
+[data-theme="dark"] .messenger-btn--wa  { background: #1aae56; }
+[data-theme="dark"] .messenger-btn--tg  { background: #1a88b8; }
+[data-theme="dark"] .messenger-btn--max { background: #0060d4; }
+
+/* ─── Кнопка «Назад» на странице товара ──────────────────────── */
+.product-back-wrap {
+  padding-top: var(--space-md);
+}
+
+.product-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-cta);
+  text-decoration: none;
+  padding: 4px 8px 4px 4px;
+  border-radius: var(--radius-md, 6px);
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.product-back-btn:hover {
+  background: var(--color-tint-blue);
+  color: var(--color-cta-hover);
+}
+
+.product-back-btn:hover svg {
+  transform: translateX(-2px);
+}
+
+.product-back-btn svg {
+  flex-shrink: 0;
+  transition: transform 150ms ease;
 }
 
 /* ─── Карта ──────────────────────────────────────────────────── */
@@ -2837,6 +2935,11 @@
   border-color: #2F81F7;
   color: #2F81F7;
   background: rgba(47, 129, 247, 0.1);
+}
+[data-theme="dark"] .theme-toggle:active {
+  background: rgba(47, 129, 247, 0.15);
+  color: #2F81F7;
+  border-color: #2F81F7;
 }
 
 /* ─── Phone widget (flag dropdown) ─────────────────────────── */
@@ -3439,4 +3542,135 @@
 }
 [data-theme="dark"] .file-upload__selected {
   color: var(--color-text, #E6EDF3);
+}
+
+/* ─── Фото товара (product.html) ────────────────────────────── */
+.product-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-md, 8px);
+  display: block;
+}
+
+/* Кнопка-обёртка вокруг фото — делает его кликабельным */
+.product-photo-btn {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
+  position: relative;
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+}
+
+/* Иконка лупы — появляется при наведении */
+.product-photo-zoom {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  pointer-events: none;
+}
+
+.product-photo-btn:hover .product-photo-zoom {
+  opacity: 1;
+}
+
+/* ─── Лайтбокс ───────────────────────────────────────────────── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  cursor: zoom-out;
+}
+
+.lightbox__content {
+  position: relative;
+  z-index: 1;
+  max-width: 92vw;
+  max-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: lightbox-in 180ms ease;
+}
+
+@keyframes lightbox-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.lightbox__img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  display: block;
+}
+
+.lightbox__close {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease;
+  backdrop-filter: blur(4px);
+}
+
+.lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ─── Превью в таблице каталога ─────────────────────────────── */
+.catalog-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 4px;
+  vertical-align: middle;
+  display: block;
+}
+
+/* Колонка с превью: фиксированная ширина, без переноса */
+.col-thumb {
+  width: 60px;
+  padding: 6px 4px;
+  text-align: center;
 }

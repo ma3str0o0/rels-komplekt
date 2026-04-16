@@ -362,6 +362,13 @@ h1, h2, h3, h4, h5, h6 {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   font-weight: 400;
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .header__logo-sub {
+    display: block;
+  }
 }
 
 /* Навигация */
@@ -397,7 +404,25 @@ h1, h2, h3, h4, h5, h6 {
 .header__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .header__actions {
+    gap: var(--space-md);
+  }
+}
+
+/* Кнопка "Свяжитесь" — скрыта на мобилке, видна с 768px */
+.header-contact-btn {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .header-contact-btn {
+    display: inline-flex;
+  }
 }
 
 .header__phones {
@@ -451,6 +476,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--color-cta);
   color: var(--color-cta);
   background: var(--color-tint-blue);
+}
+.theme-toggle:active {
+  background: var(--color-tint-blue);
+  color: var(--color-cta);
 }
 
 /* Кнопка мобильного меню */
@@ -1989,4 +2018,34 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="dark"] .wizard__option.selected {
   border-color: var(--color-cta, #2F81F7);
   color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .wizard__panel {
+  background: var(--color-surface, #161B22);
+  border-color: var(--color-border, #30363D);
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .wizard__panel-title {
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .wizard__progress {
+  background: var(--color-surface, #161B22);
+}
+[data-theme="dark"] .wizard__step-circle {
+  background: var(--color-surface-2, #1C2128);
+  border-color: var(--color-border, #30363D);
+  color: var(--color-text-muted, #8B949E);
+}
+[data-theme="dark"] .wizard__connector {
+  background: var(--color-border, #30363D);
+}
+[data-theme="dark"] .wizard select.input,
+[data-theme="dark"] .wizard input.input,
+[data-theme="dark"] .wizard textarea.input {
+  background: var(--color-surface-2, #1C2128);
+  border-color: var(--color-border, #30363D);
+  color: var(--color-text, #E6EDF3);
+}
+[data-theme="dark"] .wizard__nav .btn-ghost {
+  color: var(--color-text-muted, #8B949E);
+  border-color: var(--color-border, #30363D);
 }
