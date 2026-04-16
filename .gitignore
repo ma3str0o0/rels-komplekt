@@ -45,3 +45,9 @@ Thumbs.db
 # Логи
 *.log
 logs/
+
+# Bot
+bot/__pycache__/
+bot/**/__pycache__/
+data/metrics.db
+data/backups/

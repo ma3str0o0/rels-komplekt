@@ -1,0 +1,15 @@
+[Unit]
+Description=Rels-Komplekt Telegram Admin Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/projects/rels-komplekt
+ExecStart=/usr/bin/python3 -m bot.main
+Restart=always
+RestartSec=5
+EnvironmentFile=/root/projects/rels-komplekt/.env
+
+[Install]
+WantedBy=multi-user.target
