@@ -19,7 +19,7 @@ from bot.services.system_info import (
 from bot.services.server_monitor import ping_site
 from bot.utils.ui import edit_screen, send_screen
 from bot.handlers.metrics import show_stats, show_top_products
-from bot.handlers.leads import handle_lead_callback
+from bot.handlers.leads import handle_lead_callback, show_leads
 from bot.handlers.keyboards import (
     logs_keyboard, main_menu_keyboard, ping_keyboard,
     restart_confirm_keyboard, restart_done_keyboard, status_keyboard,
