@@ -18,6 +18,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   renderProduct(item, catalog);
   updateCartBadge();
+
+  // Обработчики лайтбокса
+  document.getElementById('lightboxClose')?.addEventListener('click', closeLightbox);
+  document.getElementById('lightboxBackdrop')?.addEventListener('click', closeLightbox);
 });
 
 /* ─── Загрузка каталога ──────────────────────────────────────── */
@@ -49,9 +53,11 @@ function renderProduct(item, catalog) {
   if (ogDesc)  ogDesc.content  = pageDesc;
   if (ogUrl)   ogUrl.content   = `https://rels-komplekt.ru/product.html?id=${encodeURIComponent(item.id)}`;
 
+  renderBackButton(item);
   renderBreadcrumbs(item);
   renderBadge(item);
   renderName(item);
+  renderProductImage(item);
   renderPriceDisplay(item);
   renderSpecs(item);
   renderPricing(item);
@@ -67,6 +73,35 @@ function renderProduct(item, catalog) {
   document.getElementById('productPage').classList.remove('hidden');
 }
 
+/* ─── Кнопка «Назад» с именем категории ─────────────────────── */
+function renderBackButton(item) {
+  const wrap = document.getElementById('backBtnWrap');
+  if (!wrap) return;
+
+  // Определяем метку кнопки из сохранённого состояния каталога
+  let label = 'Каталог';
+  try {
+    const saved = sessionStorage.getItem('rk_catalog_state');
+    if (saved) {
+      const s = JSON.parse(saved);
+      const f = s.filter;
+      if (f) {
+        if (f.type === 'category' || f.type === 'subcategory') {
+          label = f.value || 'Каталог';
+        } else if (f.type === 'multi-category' && Array.isArray(f.value) && f.value.length) {
+          label = f.value[0];
+        }
+      }
+    }
+  } catch(e) { /* sessionStorage недоступен */ }
+
+  wrap.innerHTML = `
+    <a href="catalog.html" class="product-back-btn" aria-label="Вернуться: ${escHtml(label)}">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>${escHtml(label)}</span>
+    </a>`;
+}
+
 /* ─── Хлебные крошки ─────────────────────────────────────────── */
 function renderBreadcrumbs(item) {
   const sep = `<span class="breadcrumbs__sep" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>`;
@@ -76,6 +111,69 @@ function renderBreadcrumbs(item) {
     <a href="catalog.html?cat=${encodeURIComponent(item.category)}" class="breadcrumbs__item">${escHtml(item.category)}</a>${sep}
     <span class="breadcrumbs__item active" aria-current="page">${escHtml(item.name)}</span>
   `;
+}
+
+/* ─── Фото товара ────────────────────────────────────────────── */
+function renderProductImage(item) {
+  const wrap = document.getElementById('productImageWrap');
+  if (!wrap) return;
+  if (!item.image) return; // SVG-заглушка из HTML остаётся
+
+  // Сохраняем HTML заглушки до замены содержимого
+  const placeholderHtml = wrap.querySelector('.product-image__placeholder')?.outerHTML
+    || '<div class="product-image__placeholder"><span class="product-image__label">Фото отсутствует</span></div>';
+
+  const btn = document.createElement('button');
+  btn.className = 'product-photo-btn';
+  btn.type = 'button';
+  btn.setAttribute('aria-label', `Увеличить фото: ${item.name}`);
+
+  const img = document.createElement('img');
+  img.className = 'product-photo';
+  img.src = item.image;
+  img.alt = item.name;
+  img.loading = 'lazy';
+  img.addEventListener('error', () => {
+    btn.replaceWith(document.createRange().createContextualFragment(placeholderHtml));
+  });
+
+  const zoom = document.createElement('span');
+  zoom.className = 'product-photo-zoom';
+  zoom.setAttribute('aria-hidden', 'true');
+  zoom.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>`;
+
+  btn.appendChild(img);
+  btn.appendChild(zoom);
+  btn.addEventListener('click', () => openLightbox(item.image, item.name));
+
+  wrap.innerHTML = '';
+  wrap.appendChild(btn);
+}
+
+/* ─── Лайтбокс ───────────────────────────────────────────────── */
+function openLightbox(src, alt) {
+  const lb  = document.getElementById('imgLightbox');
+  const img = document.getElementById('lightboxImg');
+  if (!lb || !img) return;
+  img.src = src;
+  img.alt = alt || '';
+  lb.hidden = false;
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', _onLightboxKey);
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('imgLightbox');
+  if (!lb) return;
+  lb.hidden = true;
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', _onLightboxKey);
+  const img = document.getElementById('lightboxImg');
+  if (img) img.src = '';
+}
+
+function _onLightboxKey(e) {
+  if (e.key === 'Escape') closeLightbox();
 }
 
 /* ─── Бейдж подкатегории ─────────────────────────────────────── */
@@ -195,7 +293,7 @@ function renderPricing(item) {
     return;
   }
 
-  const weightPerUnit = item.weight_per_unit;           // кг на рельс 12.5 м
+  const weightPerUnit = getWeightKg(item);               // кг на рельс 12.5 м (из каталога или таблицы ГОСТ)
   const hasWeight     = weightPerUnit && weightPerUnit > 0;
   const wpm           = hasWeight ? weightPerUnit / 12.5 : null; // кг/м
   const pricePerMeter = hasWeight ? (wpm / 1000) * item.price : null; // ₽/м

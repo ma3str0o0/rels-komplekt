@@ -267,7 +267,7 @@ function renderTable(r) {
   else hasPriceOnRequest = true;
 
   rows.push({
-    name:     `Рельс ${r.railLabel} (${r.kgPerM}&nbsp;кг/м)`,
+    name:     `Рельс ${r.railLabel} (${r.kgPerM}\u00a0кг/м)`,
     qty:      r.weightT < 10 ? r.weightT.toFixed(2) : Math.round(r.weightT),
     unit:     'т',
     priceStr: railCostPerT !== null ? `${fmtPrice(railCostPerT)}&nbsp;₽/т` : '—',
