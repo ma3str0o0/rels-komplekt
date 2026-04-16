@@ -4,6 +4,69 @@
 
 ---
 
+## [2026-04-16] — Итерация 40: Lead Management (CRM-lite) — Фаза 2
+
+**Файлы:** `notify_app.py`, `bot/services/leads.py`, `bot/handlers/leads.py`, `bot/handlers/keyboards.py`, `bot/handlers/server.py`, `bot/main.py`, `assets/js/main.js`, `assets/js/contacts.js`, `assets/js/calculator.js`, `/etc/nginx/sites-enabled/rels-komplekt`
+
+**Задача:** Добавить CRM-lite — сохранение всех заявок с сайта в SQLite с управлением статусами через Telegram-бота.
+
+### Что сделано
+
+**1. SQLite: таблица leads**
+- В `data/metrics.db` добавлена таблица `leads` (id, ts, source, name, contact, message, items_json, status, tg_msg_id, ip)
+- Создаётся в `notify_app.py` → `_get_db()` совместно с `events`
+- Дублирующее создание в `bot/services/leads.py` → `_connect()` (для случаев когда бот обращается первым)
+- Индексы: `idx_leads_status`, `idx_leads_ts`
+
+**2. POST /api/lead**
+- Новый WSGI-эндпоинт в `notify_app.py`
+- Принимает: `{name, contact, message, source, items[]}`
+- Валидация: обязательные name + contact, регулярка `_CONTACT_RE` (телефон / email / @username)
+- Сохраняет лид в БД → получает `lead_id`
+- Отправляет Telegram-уведомление с inline-кнопками CRM (📞/📄/✅/❌) через `_send_lead_thread`
+- Сохраняет `tg_msg_id` обратно в leads для возможного редактирования
+- Rate limit: nginx `api_lead` (3r/m, burst=2) + Python `_check_lead_rate_limit` (3/min)
+- `_CONTACT_RE` обновлён: добавлен паттерн для `@username` (для калькулятора)
+
+**3. Telegram-уведомление с CRM-кнопками**
+- Формат: `📋 Заявка #{id} — {source}\n👤 {name}\n📞 {contact}\n🛒 позиции...`
+- Кнопки: `lead_called_{id}` / `lead_kp_{id}` / `lead_done_{id}` / `lead_reject_{id}`
+- Нажатие кнопки → изменение статуса + сообщение трансформируется в детальный вид
+
+**4. bot/services/leads.py**
+- `save_lead()`, `save_lead_msg_id()`, `update_lead_status()`, `get_lead()`, `get_leads()`, `get_lead_stats()`
+- `STATUS_LABELS`: new / called / kp / done / reject
+
+**5. bot/handlers/leads.py**
+- `show_leads(message, filter)` — список с фильтрами + кнопки первых 5 заявок
+- `show_lead_detail(message, lead_id)` — детальный просмотр + кнопки смены статуса
+- `handle_lead_callback()` — роутер: `leads`, `leads_filter_*`, `lead_view_*`, `lead_{status}_*`
+- `/leads` slash-команда
+
+**6. Главное меню бота**
+- Добавлена кнопка `📬 Заявки` (4-я строка)
+
+**7. JS: переключение форм на /api/lead**
+- `sendTelegram(data, source)` в `main.js`: теперь POST `/api/lead` с нормализацией полей + source
+- Инлайн-форма: JSON-путь → `/api/lead` (multipart/file-upload → `/api/notify` без изменений)
+- `contacts.js`: `/api/notify` → `/api/lead` с `source: 'contacts'`
+- `calculator.js`: DEMO-заглушка + прямой Telegram API заменены на `/api/lead` с `source: 'calculator'`, передаёт позиции (рельс, шпалы, крепёж) как items[]
+
+**8. nginx**
+- Добавлена зона `api_lead` (3r/m) и location `/api/lead` → gunicorn
+
+### Тесты
+```
+curl POST /api/lead → {"ok":true,"lead_id":1}  ✅
+@username contact → accepted  ✅
+4-й запрос → 429  ✅
+Bot imports → OK  ✅
+```
+
+**Коммит:** `b4978a9`
+
+---
+
 ## [2026-04-16] — Итерация 39: Telegram Admin Bot — Фаза 1
 
 **Файлы:** `bot/` (новая директория, 16 файлов), `.gitignore`, `.env`
