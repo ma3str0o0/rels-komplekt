@@ -18,6 +18,7 @@ from bot.services.system_info import (
 from bot.services.server_monitor import ping_site
 from bot.utils.ui import edit_screen, send_screen
 from bot.handlers.metrics import show_stats, show_top_products
+from bot.handlers.leads import handle_lead_callback
 from bot.handlers.keyboards import (
     MENU_TEXT,
     logs_keyboard, main_menu_keyboard, ping_keyboard,
@@ -193,6 +194,8 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     elif data.startswith("top_"):
         days = int(data.split("_")[1])
         await show_top_products(msg, days=days)
+    elif data == "leads" or data.startswith("leads_") or data.startswith("lead_"):
+        await handle_lead_callback(update, context)
 
 
 # ── Slash-команды (удаляют команду + старое сообщение, отправляют новое) ───

@@ -538,6 +538,22 @@ def _get_db() -> sqlite3.Connection:
         _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_events_ts    ON events(ts)')
         _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_events_event ON events(event)')
         _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_events_page  ON events(page)')
+        _db_conn.execute('''
+            CREATE TABLE IF NOT EXISTS leads (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                ts         TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now')),
+                source     TEXT,
+                name       TEXT NOT NULL,
+                contact    TEXT NOT NULL,
+                message    TEXT,
+                items_json TEXT,
+                status     TEXT NOT NULL DEFAULT 'new',
+                tg_msg_id  INTEGER,
+                ip         TEXT
+            )
+        ''')
+        _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status)')
+        _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_leads_ts     ON leads(ts)')
         _db_conn.commit()
     return _db_conn
 
@@ -631,6 +647,168 @@ def _handle_track(environ, start_response):
 
 
 # ══════════════════════════════════════
+# /api/lead — CRM-lite
+# ══════════════════════════════════════
+_rl_lead      : dict = {}
+_rl_lead_lock = threading.Lock()
+
+_LEAD_SOURCE_NAMES = {
+    'order':      '📋 Заявка',
+    'modal':      '📋 Форма',
+    'callback':   '📞 Перезвоните',
+    'contacts':   '📬 Контакты',
+    'calculator': '🔢 Калькулятор',
+    'cart':       '🛒 Корзина',
+    'quick':      '⚡ Быстрый',
+}
+
+
+def _check_lead_rate_limit(ip: str) -> bool:
+    """True — разрешён, False — превышен (3 req/min)."""
+    import time
+    now_min = int(time.time() // 60)
+    with _rl_lead_lock:
+        entry = _rl_lead.get(ip)
+        if entry and entry[1] == now_min:
+            if entry[0] >= 3:
+                return False
+            _rl_lead[ip] = (entry[0] + 1, now_min)
+        else:
+            _rl_lead[ip] = (1, now_min)
+    return True
+
+
+def _format_lead_tg(lead_id: int, data: dict) -> str:
+    src_label = _LEAD_SOURCE_NAMES.get(data.get('source', ''), data.get('source', 'Сайт') or 'Сайт')
+    lines = [
+        f'📋 <b>Заявка #{lead_id}</b> — {src_label}',
+        '',
+        f'👤 {data.get("name") or "—"}',
+        f'📞 {data.get("contact") or "—"}',
+    ]
+    if data.get('message'):
+        lines.append(f'💬 {data["message"]}')
+    items = data.get('items') or []
+    if items:
+        lines.append(f'\n🛒 {len(items)} поз.:')
+        for item in items[:3]:
+            lines.append(f'  · {item.get("name","?")} — {item.get("qty",1)} {item.get("unit","т")}')
+        if len(items) > 3:
+            lines.append(f'  · ...ещё {len(items) - 3}')
+    return '\n'.join(lines)
+
+
+def _send_lead_thread(lead_id: int, data: dict) -> None:
+    if not BOT_TOKEN or not CHAT_ID:
+        return
+    try:
+        keyboard = {
+            'inline_keyboard': [
+                [
+                    {'text': '📞 Позвонил',  'callback_data': f'lead_called_{lead_id}'},
+                    {'text': '📄 Выслал КП', 'callback_data': f'lead_kp_{lead_id}'},
+                ],
+                [
+                    {'text': '✅ Сделка',    'callback_data': f'lead_done_{lead_id}'},
+                    {'text': '❌ Отказ',     'callback_data': f'lead_reject_{lead_id}'},
+                ],
+            ]
+        }
+        r = requests.post(
+            f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage',
+            json={
+                'chat_id':      CHAT_ID,
+                'text':         _format_lead_tg(lead_id, data),
+                'parse_mode':   'HTML',
+                'reply_markup': keyboard,
+            },
+            timeout=10,
+        )
+        if r.ok:
+            msg_id = r.json().get('result', {}).get('message_id')
+            if msg_id:
+                conn = _get_db()
+                with _db_lock:
+                    conn.execute('UPDATE leads SET tg_msg_id=? WHERE id=?', (msg_id, lead_id))
+                    conn.commit()
+    except Exception as e:
+        log.error('Ошибка отправки lead уведомления: %s', e)
+
+
+def _save_lead(name: str, contact: str, source: str, message: str,
+               items: list, ip: str) -> int:
+    items_json = json.dumps(items, ensure_ascii=False) if items else None
+    conn = _get_db()
+    with _db_lock:
+        cur = conn.execute(
+            'INSERT INTO leads (name, contact, source, message, items_json, ip) '
+            'VALUES (?,?,?,?,?,?)',
+            (name, contact, source, message, items_json, ip),
+        )
+        conn.commit()
+        return cur.lastrowid
+
+
+def _handle_lead(environ, start_response):
+    """POST /api/lead — сохранение заявки в CRM + Telegram с inline-кнопками."""
+    ip = (
+        environ.get('HTTP_X_FORWARDED_FOR', '').split(',')[0].strip()
+        or environ.get('HTTP_X_REAL_IP', '')
+        or environ.get('REMOTE_ADDR', '')
+    )
+
+    if not _check_lead_rate_limit(ip):
+        start_response('429 Too Many Requests', [('Content-Type', 'text/plain')])
+        return [b'Too Many Requests']
+
+    try:
+        length = int(environ.get('CONTENT_LENGTH', 0) or 0)
+        if length > _MAX_JSON_BODY:
+            return _json_response(start_response, '413 Request Entity Too Large',
+                                  {'ok': False, 'error': 'Request too large'})
+        raw  = environ['wsgi.input'].read(length)
+        data = json.loads(raw)
+    except Exception:
+        return _json_response(start_response, '400 Bad Request',
+                              {'ok': False, 'error': 'Invalid JSON'})
+
+    name    = str(data.get('name',    '') or '').strip()[:200]
+    contact = str(data.get('contact', '') or '').strip()[:200]
+    message = str(data.get('message', '') or '').strip()[:1000]
+    source  = str(data.get('source',  '') or '').strip()[:50]
+
+    if not name or not contact:
+        return _json_response(start_response, '400 Bad Request',
+                              {'ok': False, 'error': 'Missing name or contact'})
+    if not _CONTACT_RE.match(contact):
+        return _json_response(start_response, '400 Bad Request',
+                              {'ok': False, 'error': 'Invalid contact format'})
+
+    items_raw = data.get('items')
+    items = []
+    if isinstance(items_raw, list):
+        for item in items_raw[:50]:
+            if isinstance(item, dict):
+                items.append({
+                    'id':    str(item.get('id',   '') or '')[:100],
+                    'name':  str(item.get('name', '') or '')[:200],
+                    'qty':   item.get('qty')  if isinstance(item.get('qty'),  (int, float)) else 1,
+                    'unit':  str(item.get('unit', 'т') or 'т')[:10],
+                    'price': item.get('price') if isinstance(item.get('price'), (int, float)) else None,
+                })
+
+    lead_id = _save_lead(name, contact, source, message, items, ip)
+    threading.Thread(
+        target=_send_lead_thread,
+        args=(lead_id, {'name': name, 'contact': contact, 'source': source,
+                        'message': message, 'items': items}),
+        daemon=True,
+    ).start()
+
+    return _json_response(start_response, '200 OK', {'ok': True, 'lead_id': lead_id})
+
+
+# ══════════════════════════════════════
 # Константы валидации
 # ══════════════════════════════════════
 _MAX_JSON_BODY   = 512 * 1024          # 512 KB для JSON без файла
@@ -639,7 +817,8 @@ _MAX_FILE_BYTES  = 10 * 1024 * 1024    # 10 MB для вложения
 _ALLOWED_EXTS    = {'pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png'}
 _CONTACT_RE      = re.compile(
     r'^(\+?[0-9][0-9\s\-\(\)]{6,20}[0-9]'        # телефон
-    r'|[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})$'  # email
+    r'|[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}'    # email
+    r'|@[a-zA-Z][a-zA-Z0-9_]{2,31})$'                         # telegram @username
 )
 
 
@@ -688,6 +867,9 @@ def application(environ, start_response):
 
     if method == 'POST' and path == '/api/track':
         return _handle_track(environ, start_response)
+
+    if method == 'POST' and path == '/api/lead':
+        return _handle_lead(environ, start_response)
 
     if method != 'POST' or path != '/api/notify':
         return _json_response(start_response, '404 Not Found',

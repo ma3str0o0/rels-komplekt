@@ -78,19 +78,19 @@ async function sendContactForm(data) {
   const origHTML = btn?.innerHTML || '';
   if (btn) { btn.disabled = true; btn.textContent = 'Отправка...'; }
 
-  // Telegram через /api/notify
   try {
-    await fetch('/api/notify', {
+    await fetch('/api/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name:    data.name,
         contact: data.phone,
         message: data.message || '',
+        source:  'contacts',
       }),
     });
   } catch (e) {
-    console.warn('[contacts] Telegram error:', e);
+    console.warn('[contacts] lead error:', e);
   }
 
   // EmailJS

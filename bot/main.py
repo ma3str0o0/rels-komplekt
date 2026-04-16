@@ -9,6 +9,7 @@ from bot.config import ADMIN_IDS, BOT_TOKEN
 from bot.handlers.common import get_id, help_cmd, start
 from bot.handlers.server import handle_callback, logs, ping, restart, status
 from bot.handlers.metrics import stats_command
+from bot.handlers.leads import leads_command
 from bot.jobs.watchdog import watchdog_ping
 from bot.jobs.daily_digest import send_daily_digest
 from bot.jobs.cleanup_metrics import cleanup_old_metrics
@@ -41,6 +42,7 @@ def main():
     app.add_handler(CommandHandler("restart", restart))
     app.add_handler(CommandHandler("logs",    logs))
     app.add_handler(CommandHandler("stats",   stats_command))
+    app.add_handler(CommandHandler("leads",   leads_command))
     app.add_handler(CallbackQueryHandler(handle_callback))
 
     if ADMIN_IDS:

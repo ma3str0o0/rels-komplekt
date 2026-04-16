@@ -23,6 +23,9 @@ def main_menu_keyboard() -> InlineKeyboardMarkup:
             InlineKeyboardButton("📈 Аналитика",  callback_data="stats_1"),
             InlineKeyboardButton("🏷 Топ товары", callback_data="top_7"),
         ],
+        [
+            InlineKeyboardButton("📬 Заявки",     callback_data="leads"),
+        ],
     ])
 
 

@@ -440,7 +440,7 @@ function initCtaContactForm() {
           name: nameField.value.trim(),
           phone: phoneField.value.trim(),
           message: 'Запрос "Перезвоните мне"'
-        });
+        }, 'callback');
         form.reset();
         showToast('Спасибо! Перезвоним вам.', 'success');
         if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: 'callback_form' } });
@@ -549,12 +549,13 @@ function initInlineForm() {
       fetchOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, contact, message: message || '' }),
+        body: JSON.stringify({ name, contact, message: message || '', source: 'order' }),
       };
     }
 
+    const fetchUrl = file ? '/api/notify' : '/api/lead';
     try {
-      const res = await fetch('/api/notify', fetchOptions);
+      const res = await fetch(fetchUrl, fetchOptions);
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `HTTP ${res.status}`);
@@ -642,7 +643,7 @@ async function handleRequestSubmit(e) {
       data.phone = isEmail ? '' : data.contact;
       data.email = isEmail ? data.contact : '';
     }
-    await sendTelegram(data);
+    await sendTelegram(data, 'modal');
     showToast('Спасибо! Мы свяжемся с вами.', 'success');
     if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: 'request_form' } });
     // Дублируем в EmailJS (fire-and-forget)
@@ -688,13 +689,18 @@ async function sendEmailJS(params) {
   return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
 }
 
-/* ─── Отправка в Telegram через proxy ────────────────────────── */
-async function sendTelegram(data) {
-  const PROXY_URL = '/api/notify'; // относительный путь — работает с любого хоста и порта
-  const res = await fetch(PROXY_URL, {
+/* ─── Отправка заявки через /api/lead ────────────────────────── */
+async function sendTelegram(data, source) {
+  const res = await fetch('/api/lead', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      name:    data.name    || '',
+      contact: data.contact || data.phone || '',
+      message: data.message || '',
+      source:  source       || 'site',
+      items:   data.items   || [],
+    }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));

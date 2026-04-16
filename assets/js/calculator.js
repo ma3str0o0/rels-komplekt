@@ -448,70 +448,45 @@ async function handleSendTelegram(e) {
 
   setTgSubmitLoading(true);
 
-  /* ─── DEMO-режим ──────────────────────────────────────────── */
-  if (TELEGRAM_BOT_TOKEN === 'DEMO') {
-    await new Promise(res => setTimeout(res, 800));
-    setTgSubmitLoading(false);
-    closeTgModal();
-    window.RK?.showToast(
-      'Запрос принят. Наш менеджер напишет вам в Telegram в течение часа.',
-      'success'
-    );
-    return;
-  }
-
-  /* ─── Реальная отправка через Telegram Bot API ────────────── */
-  const r   = calcResult;
+  /* ─── Отправка через /api/lead ────────────────────────────── */
+  const r = calcResult;
   const railQty = r.weightT < 10 ? r.weightT.toFixed(2) : Math.round(r.weightT);
 
-  const lines = [
-    '<b>📋 Спецификация — Рельс-Комплект</b>',
-    '',
-    `📞 Контакт: ${contact}`,
-    `📅 Дата: ${new Date().toLocaleDateString('ru-RU')}`,
-    '',
-    '<b>Параметры пути:</b>',
-    `  Рельс: ${r.railLabel} (${r.kgPerM} кг/м)`,
-    `  Длина: ${r.trackLenM} м`,
-    `  Нитей: ${r.threads}`,
-    '',
-    '<b>Позиции:</b>',
-    `  Рельс ${r.railLabel} — ${railQty} т (${r.railCount} шт)` +
-      (r.railPrice !== null ? ` — ${fmtPrice(r.weightT * r.railPrice)} ₽` : ' — цена по запросу'),
-  ];
-
+  const items = [];
+  items.push({
+    name:  `Рельс ${r.railLabel}`,
+    qty:   parseFloat(r.weightT.toFixed(3)),
+    unit:  'т',
+    price: r.railPrice,
+  });
   if (r.sleeperType !== 'none' && r.sleeperCount > 0) {
-    lines.push(`  ${r.sleeperLabel} — ${r.sleeperCount} шт — ${fmtPrice(r.sleeperCost)} ₽`);
+    items.push({ name: r.sleeperLabel, qty: r.sleeperCount, unit: 'шт', price: null });
   }
   if (r.fastenType !== 'none' && r.fastenQty > 0) {
-    lines.push(`  ${r.fastenLabel} — ${r.fastenQty} ${r.fastenUnit} — цена по запросу`);
+    items.push({ name: r.fastenLabel, qty: r.fastenQty, unit: r.fastenUnit, price: null });
   }
 
-  let total = r.railPrice !== null ? r.weightT * r.railPrice : 0;
-  total += r.sleeperCost;
-  lines.push('');
-  lines.push(`<b>Итого: ${fmtPrice(total)} ₽</b>` + (r.railPrice === null ? ' (без рельсов)' : ''));
-
   try {
-    const res = await fetch(
-      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id:    TELEGRAM_CHAT_ID,
-          text:       lines.join('\n'),
-          parse_mode: 'HTML',
-        }),
-      }
-    );
-    if (!res.ok) throw new Error(`Telegram API: ${res.status}`);
+    const res = await fetch('/api/lead', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:    'Расчёт из калькулятора',
+        contact: contact,
+        source:  'calculator',
+        message: `Путь: ${r.trackLenM} м, ${r.threads} нит., рельс ${r.railLabel} (${r.kgPerM} кг/м)`,
+        items,
+      }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     closeTgModal();
-    window.RK?.showToast('Спецификация отправлена в Telegram', 'success');
+    window.RK?.showToast('Запрос принят. Менеджер свяжется с вами.', 'success');
+    if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: 'calculator_tg' } });
   } catch (err) {
-    console.error('Telegram send error:', err);
+    console.error('[calc] Ошибка отправки:', err);
+    window.RK?.showToast('Ошибка отправки. Позвоните нам напрямую.', 'error');
+  } finally {
     setTgSubmitLoading(false);
-    window.RK?.showToast('Ошибка отправки. Попробуйте позже.', 'error');
   }
 }
 
