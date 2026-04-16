@@ -11,6 +11,7 @@ from telegram.ext import ContextTypes
 
 from bot.middleware.auth import admin_only
 from bot.config import ADMIN_IDS, CATALOG_PATH, NOTIFY_SERVICE_NAME, SERVE_SERVICE_NAME, SITE_URL
+from bot.utils.ui import MENU_MSG_KEY, SECT_MSG_KEY, _delete_safe
 from bot.services.system_info import (
     get_catalog_count, get_cpu_percent, get_disk,
     get_last_commit, get_ram, get_serve_info, get_uptime,
@@ -20,7 +21,6 @@ from bot.utils.ui import edit_screen, send_screen
 from bot.handlers.metrics import show_stats, show_top_products
 from bot.handlers.leads import handle_lead_callback
 from bot.handlers.keyboards import (
-    MENU_TEXT,
     logs_keyboard, main_menu_keyboard, ping_keyboard,
     restart_confirm_keyboard, restart_done_keyboard, status_keyboard,
 )
@@ -61,21 +61,23 @@ def _build_status_text() -> str:
         info = get_serve_info(name)
         if info["active"]:
             uptime_str = f", {info['uptime']}" if info["uptime"] else ""
-            return f"✅ работает (PID {info['pid']}{uptime_str})"
+            return f"✅ работает  <code>PID {info['pid']}</code>{uptime_str}"
         return "❌ не работает"
 
     return (
-        f"📊 <b>Статус сервера</b>\n"
-        f"<i>обновлено {now}</i>\n\n"
-        "🖥 <b>Система:</b>\n"
-        f"  Uptime: {uptime}\n"
-        f"  CPU: {cpu}  ·  RAM: {ram_pct}%  ·  Диск: {disk_pct}%\n\n"
-        "🌐 <b>Сервисы:</b>\n"
-        f"  nginx (статика :8080): {svc_line(SERVE_SERVICE_NAME)}\n"
-        f"  rels-notify (API):     {svc_line(NOTIFY_SERVICE_NAME)}\n\n"
-        "📁 <b>Проект:</b>\n"
-        f"  catalog.json: {count} позиций\n"
-        f"  Последний коммит: {commit}"
+        f"📊 <b>Статус сервера</b>  <i>{now}</i>\n\n"
+        f"<blockquote>"
+        f"🖥  CPU: <b>{cpu}</b>  ·  RAM: <b>{ram_pct}%</b>  ·  Диск: <b>{disk_pct}%</b>\n"
+        f"⏱  Uptime: {uptime}"
+        f"</blockquote>\n\n"
+        f"<blockquote>"
+        f"🌐 nginx (статика):     {svc_line(SERVE_SERVICE_NAME)}\n"
+        f"🔧 rels-notify (API): {svc_line(NOTIFY_SERVICE_NAME)}"
+        f"</blockquote>\n\n"
+        f"<blockquote>"
+        f"📁 Каталог: <b>{count}</b> позиций\n"
+        f"📝 Коммит: {commit}"
+        f"</blockquote>"
     )
 
 
@@ -83,11 +85,11 @@ def _build_ping_text() -> str:
     now = datetime.now().strftime("%H:%M")
     res = ping_site(SITE_URL)
     if res["ok"]:
-        body = f"✅ {SITE_URL} — {res['code']} OK ({res['time_s']:.3f}s)"
+        body = f"✅ Сайт отвечает  <code>{res['code']}</code>  {res['time_s']:.3f}s\n{SITE_URL}"
     else:
         err  = f" ({res['error']})" if res["error"] else f" (код {res['code']})"
-        body = f"❌ Сайт не отвечает!{err}"
-    return f"🏓 <b>Пинг сайта</b>\n\n{body}\n<i>Проверено: {now}</i>"
+        body = f"❌ Сайт не отвечает{err}\n{SITE_URL}"
+    return f"🏓 <b>Пинг сайта</b>  <i>{now}</i>\n\n<blockquote>{body}</blockquote>"
 
 
 def _build_logs_raw(n: int) -> str:
@@ -99,10 +101,6 @@ def _build_logs_raw(n: int) -> str:
 
 
 # ── Callback show-функции (редактируют текущее сообщение) ──────────────────
-
-
-async def show_menu(message: Message) -> None:
-    await edit_screen(message, MENU_TEXT, reply_markup=main_menu_keyboard())
 
 
 async def show_status(message: Message) -> None:
@@ -174,27 +172,60 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     data = query.data
     msg  = query.message
 
+    # ── «Меню» — закрываем секцию, постоянное меню остаётся ──────────────
     if data == "menu":
-        await show_menu(msg)
-    elif data in ("status", "refresh_status"):
-        await show_status(msg)
+        context.user_data.pop(SECT_MSG_KEY, None)
+        try:
+            await msg.delete()
+        except Exception:
+            pass
+        return
+
+    # ── Хелпер: из меню — открываем новое сообщение; внутри секции — редактируем
+    is_menu = context.user_data.get(MENU_MSG_KEY) == msg.message_id
+
+    async def _open(loading: str) -> Message:
+        if is_menu:
+            old = context.user_data.pop(SECT_MSG_KEY, None)
+            if old:
+                try:
+                    await context.bot.delete_message(msg.chat_id, old)
+                except Exception:
+                    pass
+            new_msg = await msg.chat.send_message(loading, parse_mode='HTML')
+            context.user_data[SECT_MSG_KEY] = new_msg.message_id
+            return new_msg
+        return msg
+
+    # ── Роутинг ────────────────────────────────────────────────────────────
+    if data in ("status", "refresh_status"):
+        m = await _open("⏳ Собираю данные...")
+        await show_status(m)
     elif data in ("ping", "refresh_ping"):
-        await show_ping(msg)
+        m = await _open(f"🔍 Пингую {SITE_URL}...")
+        await show_ping(m)
     elif data == "restart":
-        await show_restart_confirm(msg)
+        m = await _open("🔄 Подтверждение перезапуска...")
+        await show_restart_confirm(m)
     elif data == "restart_yes":
         await do_restart(msg)
     elif data == "logs":
-        await show_logs(msg, n=30)
+        m = await _open("📋 Загружаю логи...")
+        await show_logs(m, n=30)
     elif data == "logs_100":
         await show_logs(msg, n=100)
     elif data.startswith("stats_"):
         days = int(data.split("_")[1])
-        await show_stats(msg, days=days)
+        m = await _open("📈 Загружаю аналитику...")
+        await show_stats(m, days=days)
     elif data.startswith("top_"):
         days = int(data.split("_")[1])
-        await show_top_products(msg, days=days)
-    elif data == "leads" or data.startswith("leads_") or data.startswith("lead_"):
+        m = await _open("🏷 Загружаю топ товаров...")
+        await show_top_products(m, days=days)
+    elif data == "leads":
+        m = await _open("📬 Загружаю заявки...")
+        await show_leads(m)
+    elif data.startswith("leads_") or data.startswith("lead_"):
         await handle_lead_callback(update, context)
 
 

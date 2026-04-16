@@ -549,11 +549,16 @@ def _get_db() -> sqlite3.Connection:
                 items_json TEXT,
                 status     TEXT NOT NULL DEFAULT 'new',
                 tg_msg_id  INTEGER,
-                ip         TEXT
+                ip         TEXT,
+                comment    TEXT
             )
         ''')
         _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status)')
         _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_leads_ts     ON leads(ts)')
+        try:
+            _db_conn.execute("ALTER TABLE leads ADD COLUMN comment TEXT")
+        except Exception:
+            pass
         _db_conn.commit()
     return _db_conn
 

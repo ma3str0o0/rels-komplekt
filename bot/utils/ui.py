@@ -1,5 +1,13 @@
 """
-Хелперы для single-message UI: в чате всегда одно активное сообщение-панель.
+Хелперы для UI бота.
+
+Архитектура сообщений:
+  MENU_MSG_KEY  — ID постоянного сообщения-меню (никогда не удаляется автоматически)
+  SECT_MSG_KEY  — ID текущего сообщения-секции (статус, логи, заявки и т.д.)
+
+Из меню (is_menu=True) → открывается НОВОЕ сообщение-секция.
+Внутри секции (is_menu=False) → редактируем то же сообщение.
+«◀️ Меню» → удаляем сообщение-секцию, меню остаётся.
 """
 import logging
 from telegram import Message, Update
@@ -8,8 +16,9 @@ from telegram.ext import ContextTypes
 
 logger = logging.getLogger(__name__)
 
-# Ключ в context.user_data для хранения ID последнего сообщения бота
-LAST_MSG_KEY = "last_bot_message_id"
+MENU_MSG_KEY = "menu_msg_id"   # постоянное меню
+SECT_MSG_KEY = "sect_msg_id"   # текущая секция
+LAST_MSG_KEY = SECT_MSG_KEY    # backward compat alias
 
 
 async def _delete_safe(bot, chat_id: int, message_id: int) -> None:
@@ -27,21 +36,17 @@ async def send_screen(
     parse_mode: str = "HTML",
 ) -> Message:
     """
-    Отправляет новый экран-панель. Используется из slash-команд.
-
-    1. Удаляет сообщение пользователя (команду)
-    2. Удаляет предыдущее сообщение бота
-    3. Отправляет новое сообщение
-    4. Запоминает его ID, возвращает объект Message
+    Из slash-команды: удаляет команду + старую секцию, отправляет новую секцию.
+    Меню НЕ трогает.
     """
     chat_id = update.effective_chat.id
 
     if update.message:
         await _delete_safe(context.bot, chat_id, update.message.message_id)
 
-    old_id = context.user_data.get(LAST_MSG_KEY)
-    if old_id:
-        await _delete_safe(context.bot, chat_id, old_id)
+    old_sect = context.user_data.get(SECT_MSG_KEY)
+    if old_sect:
+        await _delete_safe(context.bot, chat_id, old_sect)
 
     new_msg = await context.bot.send_message(
         chat_id=chat_id,
@@ -49,7 +54,7 @@ async def send_screen(
         reply_markup=reply_markup,
         parse_mode=parse_mode,
     )
-    context.user_data[LAST_MSG_KEY] = new_msg.message_id
+    context.user_data[SECT_MSG_KEY] = new_msg.message_id
     return new_msg
 
 
@@ -59,10 +64,7 @@ async def edit_screen(
     reply_markup=None,
     parse_mode: str = "HTML",
 ) -> None:
-    """
-    Редактирует текущий экран-панель. Используется из callback-кнопок.
-    Подавляет ошибку 'Message is not modified'.
-    """
+    """Редактирует сообщение-секцию. Подавляет 'Message is not modified'."""
     try:
         await message.edit_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
     except BadRequest as e:

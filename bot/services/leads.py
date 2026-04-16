@@ -44,6 +44,11 @@ def _connect() -> sqlite3.Connection:
         ''')
         conn.execute('CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status)')
         conn.execute('CREATE INDEX IF NOT EXISTS idx_leads_ts ON leads(ts)')
+        # Миграция: добавляем comment если ещё нет
+        try:
+            conn.execute("ALTER TABLE leads ADD COLUMN comment TEXT")
+        except Exception:
+            pass
         conn.commit()
         _table_ok = True
     return conn
@@ -114,6 +119,17 @@ def get_leads(status: Optional[str] = None, limit: int = 20) -> list:
                 (limit,),
             ).fetchall()
         return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def save_comment(lead_id: int, comment: str) -> None:
+    if not db_exists():
+        return
+    conn = _connect()
+    try:
+        conn.execute('UPDATE leads SET comment=? WHERE id=?', (comment.strip()[:500], lead_id))
+        conn.commit()
     finally:
         conn.close()
 
