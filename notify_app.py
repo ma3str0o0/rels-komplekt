@@ -9,6 +9,7 @@ import os
 import json
 import re
 import smtplib
+import sqlite3
 import threading
 import ssl
 import logging
@@ -504,6 +505,132 @@ def send_email(data: dict, file_bytes: bytes = None, file_name: str = None) -> N
 
 
 # ══════════════════════════════════════
+# Трекинг аналитики — SQLite
+# ══════════════════════════════════════
+_DB_PATH   = os.path.join(BASE_DIR, 'data', 'metrics.db')
+_db_conn   = None
+_db_lock   = threading.Lock()
+# Rate limiting: {ip: (count, minute_ts)}
+_rl_track  : dict = {}
+_rl_lock   = threading.Lock()
+_BOT_UA_RE = re.compile(r'bot|crawl|spider|googlebot|yandex|bingbot|baiduspider', re.I)
+
+
+def _get_db() -> sqlite3.Connection:
+    global _db_conn
+    if _db_conn is None:
+        os.makedirs(os.path.dirname(_DB_PATH), exist_ok=True)
+        _db_conn = sqlite3.connect(_DB_PATH, check_same_thread=False)
+        _db_conn.execute('PRAGMA journal_mode=WAL')
+        _db_conn.execute('''
+            CREATE TABLE IF NOT EXISTS events (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                ts         TEXT NOT NULL DEFAULT (strftime(\'%Y-%m-%dT%H:%M:%S\',\'now\')),
+                event      TEXT NOT NULL,
+                page       TEXT,
+                product_id TEXT,
+                ip         TEXT,
+                referrer   TEXT,
+                user_agent TEXT,
+                extra      TEXT
+            )
+        ''')
+        _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_events_ts    ON events(ts)')
+        _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_events_event ON events(event)')
+        _db_conn.execute('CREATE INDEX IF NOT EXISTS idx_events_page  ON events(page)')
+        _db_conn.commit()
+    return _db_conn
+
+
+def _track_event(event: str, page, product_id, ip, referrer, user_agent, extra):
+    try:
+        conn = _get_db()
+        with _db_lock:
+            conn.execute(
+                'INSERT INTO events (event, page, product_id, ip, referrer, user_agent, extra) '
+                'VALUES (?,?,?,?,?,?,?)',
+                (event, page, product_id, ip, referrer, user_agent, extra)
+            )
+            conn.commit()
+    except Exception as e:
+        log.error('Ошибка записи в metrics.db: %s', e)
+
+
+def _check_rate_limit(ip: str) -> bool:
+    """True — запрос разрешён, False — лимит превышен (100 req/min)."""
+    import time
+    now_min = int(time.time() // 60)
+    with _rl_lock:
+        entry = _rl_track.get(ip)
+        if entry and entry[1] == now_min:
+            if entry[0] >= 100:
+                return False
+            _rl_track[ip] = (entry[0] + 1, now_min)
+        else:
+            _rl_track[ip] = (1, now_min)
+            # Чистим старые записи раз в ~1000 проверок
+            if len(_rl_track) > 5000:
+                stale = [k for k, v in _rl_track.items() if v[1] != now_min]
+                for k in stale:
+                    del _rl_track[k]
+    return True
+
+
+def _handle_track(environ, start_response):
+    """POST /api/track — запись событий аналитики."""
+    # User-Agent фильтр
+    ua = environ.get('HTTP_USER_AGENT', '')
+    if _BOT_UA_RE.search(ua):
+        start_response('204 No Content', [])
+        return [b'']
+
+    # IP из заголовков
+    ip = (
+        environ.get('HTTP_X_FORWARDED_FOR', '').split(',')[0].strip()
+        or environ.get('HTTP_X_REAL_IP', '')
+        or environ.get('REMOTE_ADDR', '')
+    )
+
+    # Rate limit (дополнительный уровень поверх nginx)
+    if not _check_rate_limit(ip):
+        start_response('429 Too Many Requests', [('Content-Type', 'text/plain')])
+        return [b'Too Many Requests']
+
+    # Парсинг тела (макс 4 KB)
+    try:
+        length = int(environ.get('CONTENT_LENGTH', 0) or 0)
+        if length > 4096:
+            start_response('413 Request Entity Too Large', [])
+            return [b'']
+        raw = environ['wsgi.input'].read(length)
+        data = json.loads(raw)
+    except Exception:
+        start_response('400 Bad Request', [])
+        return [b'']
+
+    # Валидация
+    event = str(data.get('event', ''))[:50]
+    if not event:
+        start_response('400 Bad Request', [])
+        return [b'']
+
+    page       = str(data.get('page', '') or '')[:200] or None
+    product_id = str(data.get('product_id', '') or '')[:100] or None
+    referrer   = str(data.get('referrer', '') or environ.get('HTTP_REFERER', '') or '')[:500] or None
+    extra_raw  = data.get('extra')
+    extra      = json.dumps(extra_raw, ensure_ascii=False) if isinstance(extra_raw, dict) else None
+
+    threading.Thread(
+        target=_track_event,
+        args=(event, page, product_id, ip, referrer, ua[:500], extra),
+        daemon=True,
+    ).start()
+
+    start_response('204 No Content', [])
+    return [b'']
+
+
+# ══════════════════════════════════════
 # Константы валидации
 # ══════════════════════════════════════
 _MAX_JSON_BODY   = 512 * 1024          # 512 KB для JSON без файла
@@ -558,6 +685,9 @@ def _dispatch_notifications(body, file_bytes, file_name, name, contact):
 def application(environ, start_response):
     method = environ.get('REQUEST_METHOD', '')
     path   = environ.get('PATH_INFO', '/')
+
+    if method == 'POST' and path == '/api/track':
+        return _handle_track(environ, start_response)
 
     if method != 'POST' or path != '/api/notify':
         return _json_response(start_response, '404 Not Found',

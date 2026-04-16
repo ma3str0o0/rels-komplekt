@@ -12,12 +12,16 @@ MENU_TEXT = (
 def main_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
         [
-            InlineKeyboardButton("📊 Статус",   callback_data="status"),
-            InlineKeyboardButton("🏓 Пинг",     callback_data="ping"),
+            InlineKeyboardButton("📊 Статус",     callback_data="status"),
+            InlineKeyboardButton("🏓 Пинг",       callback_data="ping"),
         ],
         [
-            InlineKeyboardButton("🔄 Рестарт",  callback_data="restart"),
-            InlineKeyboardButton("📋 Логи",     callback_data="logs"),
+            InlineKeyboardButton("🔄 Рестарт",    callback_data="restart"),
+            InlineKeyboardButton("📋 Логи",       callback_data="logs"),
+        ],
+        [
+            InlineKeyboardButton("📈 Аналитика",  callback_data="stats_1"),
+            InlineKeyboardButton("🏷 Топ товары", callback_data="top_7"),
         ],
     ])
 

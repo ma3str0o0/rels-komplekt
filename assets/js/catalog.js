@@ -595,6 +595,7 @@ function bindEvents() {
   });
 
   // Поиск в реальном времени
+  let _searchTrackTimer = null;
   dom.searchInput?.addEventListener('input', e => {
     state.search = e.target.value;
     // Если пользователь ввёл текст при активной категории — сбрасываем категорию,
@@ -605,6 +606,14 @@ function bindEvents() {
       document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
     }
     applyFilters();
+    // Трекинг поиска с задержкой 1с (отправляем после паузы, не на каждый символ)
+    clearTimeout(_searchTrackTimer);
+    const q = e.target.value.trim();
+    if (q.length >= 2 && window.rkTrack) {
+      _searchTrackTimer = setTimeout(() => {
+        window.rkTrack('catalog_search', { extra: { query: q } });
+      }, 1000);
+    }
   });
 
   // Радио-кнопки "Наличие цены"
@@ -715,6 +724,7 @@ function addToCart(item) {
 
   updateCartBadge();
   window.RK?.showToast(`«${item.name}» добавлен в заявку`, 'success');
+  if (window.rkTrack) window.rkTrack('add_to_cart', { product_id: item.id });
 }
 
 function updateCartBadge() {

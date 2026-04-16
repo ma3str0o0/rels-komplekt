@@ -51,3 +51,5 @@ bot/__pycache__/
 bot/**/__pycache__/
 data/metrics.db
 data/backups/
+data/metrics.db-wal
+data/metrics.db-shm

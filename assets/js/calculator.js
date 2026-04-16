@@ -195,6 +195,11 @@ function calculate() {
   };
 
   renderResult(calcResult);
+  if (window.rkTrack) {
+    window.rkTrack('calculator_use', {
+      extra: { rail_type: railTypeVal, total_tons: Math.round(calcResult.weightT * 100) / 100 },
+    });
+  }
 }
 
 /* ─── Поиск цены рельса в каталоге ──────────────────────────── */

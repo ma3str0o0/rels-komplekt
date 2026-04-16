@@ -443,6 +443,7 @@ function initCtaContactForm() {
         });
         form.reset();
         showToast('Спасибо! Перезвоним вам.', 'success');
+        if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: 'callback_form' } });
       } catch(err) {
         showToast('Ошибка отправки. Позвоните нам напрямую.', 'error');
       }
@@ -559,6 +560,7 @@ function initInlineForm() {
         throw new Error(err.error || `HTTP ${res.status}`);
       }
       showToast('Спасибо! Мы свяжемся с вами.', 'success');
+      if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: 'order_form' } });
       // Дублируем в EmailJS (fire-and-forget, не блокирует UX)
       sendEmailJS(_buildEmailJSParams(
         { name, contact, message: message || '' },
@@ -642,6 +644,7 @@ async function handleRequestSubmit(e) {
     }
     await sendTelegram(data);
     showToast('Спасибо! Мы свяжемся с вами.', 'success');
+    if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: 'request_form' } });
     // Дублируем в EmailJS (fire-and-forget)
     sendEmailJS(_buildEmailJSParams(data, 'Форма заявки')).catch(err => console.warn('EmailJS (modal):', err));
     form.reset();
