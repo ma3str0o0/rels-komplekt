@@ -3,15 +3,15 @@
 Запуск: python3 -m bot.main
 """
 import logging
-from telegram.ext import ApplicationBuilder, CommandHandler
-from bot.config import BOT_TOKEN, ADMIN_IDS
-from bot.handlers.common import start, help_cmd, get_id
-from bot.handlers.server import status, ping, restart, logs
+from telegram.ext import ApplicationBuilder, CallbackQueryHandler, CommandHandler
+from bot.config import ADMIN_IDS, BOT_TOKEN
+from bot.handlers.common import get_id, help_cmd, start
+from bot.handlers.server import handle_callback, logs, ping, restart, status
 from bot.jobs.watchdog import watchdog_ping
 
 logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
-    level=logging.INFO
+    level=logging.INFO,
 )
 logger = logging.getLogger("admin_bot")
 
@@ -36,6 +36,7 @@ def main():
     app.add_handler(CommandHandler("ping",    ping))
     app.add_handler(CommandHandler("restart", restart))
     app.add_handler(CommandHandler("logs",    logs))
+    app.add_handler(CallbackQueryHandler(handle_callback))
 
     if ADMIN_IDS:
         app.job_queue.run_repeating(watchdog_ping, interval=300, first=10)
