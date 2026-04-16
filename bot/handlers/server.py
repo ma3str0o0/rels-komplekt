@@ -7,7 +7,6 @@ import subprocess
 from datetime import datetime
 
 from telegram import Message, Update
-from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
 from bot.middleware.auth import admin_only
@@ -17,6 +16,7 @@ from bot.services.system_info import (
     get_last_commit, get_ram, get_serve_info, get_uptime,
 )
 from bot.services.server_monitor import ping_site
+from bot.utils.ui import edit_screen, send_screen
 from bot.handlers.keyboards import (
     MENU_TEXT,
     logs_keyboard, main_menu_keyboard, ping_keyboard,
@@ -40,16 +40,7 @@ def _escape(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-async def safe_edit(message: Message, text: str, reply_markup=None, parse_mode: str = "HTML") -> None:
-    """edit_text с тихой обработкой 'Message is not modified'."""
-    try:
-        await message.edit_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
-    except BadRequest as e:
-        if "Message is not modified" not in str(e):
-            raise
-
-
-# ── Builders (чистые функции, возвращают текст) ────────────────────────────
+# ── Builders ────────────────────────────────────────────────────────────────
 
 
 def _build_status_text() -> str:
@@ -105,24 +96,24 @@ def _build_logs_raw(n: int) -> str:
     return output or "(нет логов)"
 
 
-# ── Callback show-функции (редактируют существующее сообщение) ─────────────
+# ── Callback show-функции (редактируют текущее сообщение) ──────────────────
 
 
 async def show_menu(message: Message) -> None:
-    await safe_edit(message, MENU_TEXT, reply_markup=main_menu_keyboard())
+    await edit_screen(message, MENU_TEXT, reply_markup=main_menu_keyboard())
 
 
 async def show_status(message: Message) -> None:
-    await safe_edit(message, _build_status_text(), reply_markup=status_keyboard())
+    await edit_screen(message, _build_status_text(), reply_markup=status_keyboard())
 
 
 async def show_ping(message: Message) -> None:
-    await safe_edit(message, _build_ping_text(), reply_markup=ping_keyboard())
+    await edit_screen(message, _build_ping_text(), reply_markup=ping_keyboard())
 
 
 async def show_restart_confirm(message: Message) -> None:
     text = "🔄 <b>Перезапуск сервера</b>\n\nВы уверены? Сайт будет недоступен несколько секунд."
-    await safe_edit(message, text, reply_markup=restart_confirm_keyboard())
+    await edit_screen(message, text, reply_markup=restart_confirm_keyboard())
 
 
 async def _execute_restart() -> str:
@@ -145,9 +136,9 @@ async def _execute_restart() -> str:
 
 
 async def do_restart(message: Message) -> None:
-    await safe_edit(message, "🔄 Перезапускаю nginx + rels-notify...")
+    await edit_screen(message, "🔄 Перезапускаю nginx + rels-notify...")
     result = await _execute_restart()
-    await safe_edit(message, result, reply_markup=restart_done_keyboard())
+    await edit_screen(message, result, reply_markup=restart_done_keyboard())
 
 
 async def show_logs(message: Message, n: int = 30) -> None:
@@ -155,11 +146,11 @@ async def show_logs(message: Message, n: int = 30) -> None:
     header = f"📋 <b>Логи nginx + rels-notify</b>\n<i>последние {n} строк</i>\n\n"
     text   = header + f"<pre>{_escape(output)}</pre>"
     if len(text) <= 4096:
-        await safe_edit(message, text, reply_markup=logs_keyboard())
+        await edit_screen(message, text, reply_markup=logs_keyboard())
     else:
-        await safe_edit(
+        await edit_screen(
             message,
-            f"📋 <b>Логи nginx + rels-notify</b>\n\nЛог отправлен файлом ⬇️",
+            "📋 <b>Логи nginx + rels-notify</b>\n\nЛог отправлен файлом ⬇️",
             reply_markup=logs_keyboard(),
         )
         buf      = io.BytesIO(output.encode())
@@ -197,26 +188,26 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         await show_logs(msg, n=100)
 
 
-# ── Slash-команды (отправляют новое сообщение) ─────────────────────────────
+# ── Slash-команды (удаляют команду + старое сообщение, отправляют новое) ───
 
 
 @admin_only
 async def status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    msg = await update.message.reply_text("⏳ Собираю данные...")
-    await msg.edit_text(_build_status_text(), reply_markup=status_keyboard(), parse_mode="HTML")
+    msg = await send_screen(update, context, "⏳ Собираю данные...")
+    await edit_screen(msg, _build_status_text(), reply_markup=status_keyboard())
 
 
 @admin_only
 async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    msg = await update.message.reply_text(f"🔍 Пингую {SITE_URL}...")
-    await msg.edit_text(_build_ping_text(), reply_markup=ping_keyboard(), parse_mode="HTML")
+    msg = await send_screen(update, context, f"🔍 Пингую {SITE_URL}...")
+    await edit_screen(msg, _build_ping_text(), reply_markup=ping_keyboard())
 
 
 @admin_only
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    msg    = await update.message.reply_text("🔄 Перезапускаю nginx + rels-notify...")
+    msg    = await send_screen(update, context, "🔄 Перезапускаю nginx + rels-notify...")
     result = await _execute_restart()
-    await msg.edit_text(result, reply_markup=restart_done_keyboard(), parse_mode="HTML")
+    await edit_screen(msg, result, reply_markup=restart_done_keyboard())
 
 
 @admin_only
@@ -231,12 +222,17 @@ async def logs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     header = f"📋 <b>Логи nginx + rels-notify</b>\n<i>последние {n} строк</i>\n\n"
     text   = header + f"<pre>{_escape(output)}</pre>"
     if len(text) <= 4096:
-        await update.message.reply_text(text, reply_markup=logs_keyboard(), parse_mode="HTML")
+        await send_screen(update, context, text, reply_markup=logs_keyboard())
     else:
-        await update.message.reply_text(
+        await send_screen(
+            update, context,
             "📋 <b>Логи nginx + rels-notify</b>\n\nЛог отправлен файлом ⬇️",
-            reply_markup=logs_keyboard(), parse_mode="HTML",
+            reply_markup=logs_keyboard(),
         )
         buf      = io.BytesIO(output.encode())
         buf.name = f"logs_{n}.txt"
-        await update.message.reply_document(buf, caption=f"Лог: последние {n} строк")
+        await context.bot.send_document(
+            chat_id=update.effective_chat.id,
+            document=buf,
+            caption=f"Лог: последние {n} строк",
+        )
