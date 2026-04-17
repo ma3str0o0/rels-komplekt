@@ -10,6 +10,10 @@ from bot.handlers.common import get_id, help_cmd, start
 from bot.handlers.server import handle_callback, logs, ping, restart, status
 from bot.handlers.metrics import stats_command
 from bot.handlers.leads import leads_command, handle_comment_reply
+from bot.handlers.catalog import (
+    handle_csv_document, make_add_conv, make_find_conv, make_price_conv,
+    markup_command, price_command,
+)
 from bot.jobs.watchdog import watchdog_ping
 from bot.jobs.daily_digest import send_daily_digest
 from bot.jobs.cleanup_metrics import cleanup_old_metrics
@@ -43,6 +47,15 @@ def main():
     app.add_handler(CommandHandler("logs",    logs))
     app.add_handler(CommandHandler("stats",   stats_command))
     app.add_handler(CommandHandler("leads",   leads_command))
+    app.add_handler(CommandHandler("price",   price_command))
+    app.add_handler(CommandHandler("markup",  markup_command))
+
+    # ConversationHandlers должны быть до общего CallbackQueryHandler
+    app.add_handler(make_find_conv())   # включает /find command
+    app.add_handler(make_price_conv())
+    app.add_handler(make_add_conv())
+
+    app.add_handler(MessageHandler(filters.Document.FileExtension("csv"), handle_csv_document))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_comment_reply))
     app.add_handler(CallbackQueryHandler(handle_callback))
 

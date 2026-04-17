@@ -25,6 +25,7 @@ def main_menu_keyboard() -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton("📬 Заявки",     callback_data="leads"),
+            InlineKeyboardButton("📦 Каталог",    callback_data="cat_menu"),
         ],
     ])
 

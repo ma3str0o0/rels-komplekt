@@ -20,6 +20,7 @@ from bot.services.server_monitor import ping_site
 from bot.utils.ui import edit_screen, send_screen
 from bot.handlers.metrics import show_stats, show_top_products
 from bot.handlers.leads import handle_lead_callback, show_leads
+from bot.handlers.catalog import handle_catalog_callback
 from bot.handlers.keyboards import (
     logs_keyboard, main_menu_keyboard, ping_keyboard,
     restart_confirm_keyboard, restart_done_keyboard, status_keyboard,
@@ -227,6 +228,8 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         await show_leads(m)
     elif data.startswith("leads_") or data.startswith("lead_"):
         await handle_lead_callback(update, context)
+    elif data.startswith("cat_") or data.startswith("add_cat_") or data.startswith("add_unit_"):
+        await handle_catalog_callback(update, context)
 
 
 # ── Slash-команды (удаляют команду + старое сообщение, отправляют новое) ───

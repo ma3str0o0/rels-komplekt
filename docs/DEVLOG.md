@@ -4,6 +4,46 @@
 
 ---
 
+## [2026-04-17] — Итерация 41: Catalog Management — Фаза 3
+
+**Файлы:** `bot/utils/formatting.py` (новый), `bot/services/catalog.py` (новый), `bot/handlers/catalog.py` (новый), `bot/handlers/keyboards.py`, `bot/handlers/server.py`, `bot/main.py`
+
+**Задача:** Управление каталогом через Telegram-бот: поиск, просмотр, редактирование цен, добавление/удаление товаров, импорт CSV, наценка по категории.
+
+### Что сделано
+
+**1. `bot/utils/formatting.py`**
+- `format_price(price)` → `'144 000 ₽'` или `'По запросу'` при `None`
+
+**2. `bot/services/catalog.py`**
+- `_load()` / `_save()` с кешем по mtime + backup `.json.bak` перед записью
+- `find_products(query, limit=10)` — поиск по имени/категории/подкатегории
+- `get_product(pid)` — получить товар по ID
+- `get_categories()` — список категорий в порядке появления
+- `get_stock_summary()` — сводка: total / in_stock / no_price / by_category (топ-8)
+- `update_price(pid, price)` — обновить цену одного товара
+- `bulk_update_prices(updates: dict)` — массовое обновление
+- `apply_markup(category, pct)` — наценка % по категории (null-цены пропускаются)
+- `add_product(name, category, price, unit)` — добавить товар (авто-ID через транслит)
+- `delete_product(pid)` — удалить товар
+- `parse_csv_prices(content)` — парсинг CSV (id,price или name,price; разделитель , или ;)
+
+**3. `bot/handlers/catalog.py`**
+- Экраны: каталог-меню, сводка склада, результаты поиска, карточка товара, подтверждение удаления, CSV-info
+- ConversationHandler `make_find_conv()`: `/find` + кнопка → ввод запроса → результаты
+- ConversationHandler `make_price_conv()`: кнопка `✏️ Изменить цену` → ввод числа → сохранение
+- ConversationHandler `make_add_conv()`: 4-шаговое добавление товара (имя → категория → цена → единица)
+- `handle_csv_document()`: обработчик .csv файлов — `parse_csv_prices` + `bulk_update_prices`
+- `/price <id> <цена>` — быстрое редактирование цены командой
+- `/markup <категория> <процент>` — наценка по категории
+
+**4. Обновления**
+- `bot/handlers/keyboards.py`: добавлена кнопка `📦 Каталог` в главное меню (рядом с 📬 Заявки)
+- `bot/handlers/server.py`: маршрутизация `cat_*`, `add_cat_*`, `add_unit_*` → `handle_catalog_callback`
+- `bot/main.py`: регистрация ConversationHandlers (перед общим CallbackQueryHandler), новые команды `/price`, `/markup`, обработчик `.csv` документов
+
+---
+
 ## [2026-04-16] — Итерация 40: Lead Management (CRM-lite) — Фаза 2
 
 **Файлы:** `notify_app.py`, `bot/services/leads.py`, `bot/handlers/leads.py`, `bot/handlers/keyboards.py`, `bot/handlers/server.py`, `bot/main.py`, `assets/js/main.js`, `assets/js/contacts.js`, `assets/js/calculator.js`, `/etc/nginx/sites-enabled/rels-komplekt`
