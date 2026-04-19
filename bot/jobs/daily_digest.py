@@ -68,8 +68,16 @@ async def send_daily_digest(context: ContextTypes.DEFAULT_TYPE) -> None:
         f"🔍 Искали: {searches_str}"
     )
 
+    keyboard = {'inline_keyboard': [[
+        {'text': '✕ Закрыть', 'callback_data': 'dismiss'},
+    ]]}
+
     for admin_id in ADMIN_IDS:
         try:
-            await context.bot.send_message(admin_id, text, parse_mode='HTML')
+            await context.bot.send_message(
+                admin_id, text,
+                parse_mode='HTML',
+                reply_markup=keyboard,
+            )
         except Exception as e:
             log.error('Дайджест: не удалось отправить admin %s: %s', admin_id, e)

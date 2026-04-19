@@ -173,6 +173,14 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     data = query.data
     msg  = query.message
 
+    # ── Dismiss — удаляет сообщение (дайджест и прочие уведомления) ─────
+    if data == "dismiss":
+        try:
+            await msg.delete()
+        except Exception:
+            pass
+        return
+
     # ── «Меню» — закрываем секцию, постоянное меню остаётся ──────────────
     if data == "menu":
         context.user_data.pop(SECT_MSG_KEY, None)
