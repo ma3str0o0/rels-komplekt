@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=root
-WorkingDirectory=/root/projects/rels-komplekt
+User=rels-app
+WorkingDirectory=/var/www/rels-komplekt
 ExecStart=/usr/bin/python3 -m bot.main
 Restart=always
 RestartSec=5

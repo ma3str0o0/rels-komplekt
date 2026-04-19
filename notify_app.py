@@ -5,6 +5,7 @@
 """
 
 import cgi
+import html as _html
 import os
 import json
 import re
@@ -102,6 +103,11 @@ def _fmt(n, decimals=0):
     return f'{n:,.{decimals}f}'.replace(',', ' ')
 
 
+def _esc(s) -> str:
+    """HTML-экранирование пользовательских данных для email-шаблона."""
+    return _html.escape(str(s or ''), quote=True)
+
+
 # ══════════════════════════════════════
 # TELEGRAM
 # ══════════════════════════════════════
@@ -154,9 +160,9 @@ def send_telegram(data: dict):
 # EMAIL — HTML-шаблон
 # ══════════════════════════════════════
 def build_email_html(data: dict, has_items: bool) -> str:
-    name    = data.get('name') or '—'
-    contact = data.get('contact') or data.get('phone') or '—'
-    message = data.get('message') or ''
+    name    = _esc(data.get('name') or '—')
+    contact = _esc(data.get('contact') or data.get('phone') or '—')
+    message = _esc(data.get('message') or '')
     items   = data.get('items', [])
     now     = datetime.now().strftime('%d.%m.%Y %H:%M')
 
@@ -187,9 +193,9 @@ def build_email_html(data: dict, has_items: bool) -> str:
             rows_html += f'''
             <tr style="background:{bg};">
               <td style="padding:8px 10px;border-bottom:1px solid #eee;">{i}</td>
-              <td style="padding:8px 10px;border-bottom:1px solid #eee;">{item.get("name","")}</td>
-              <td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;">{qty}</td>
-              <td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;">{unit}</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #eee;">{_esc(item.get("name",""))}</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;">{_esc(qty)}</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;">{_esc(unit)}</td>
               <td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:right;">
                 {"По запросу" if not price else _fmt(price) + " ₽"}
               </td>
