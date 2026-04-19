@@ -67,6 +67,11 @@ BLOCKED_PATHS = [
     '/data/vsp74_scrape.json',
     '/data/catalog_enriched.json',
     '/data/catalog_backup.json',
+    '/data/catalog.json.bak',
+    '/data/image_map.json',
+    '/data/metrics.db',
+    '/data/metrics.db-wal',
+    '/data/metrics.db-shm',
     '/data/competitor_raw.json',
     '/data/competitor_catalog.json',
     '/data/competitor_details.json',
@@ -84,6 +89,9 @@ BLOCKED_PATHS = [
     '/.claude/',
     '/.git/',
     '/_headers',
+    '/notify_app.py',
+    '/serve.py',
+    '/bot/',
 ]
 
 def _is_blocked(path: str) -> bool:

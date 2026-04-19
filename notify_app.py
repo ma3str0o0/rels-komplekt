@@ -108,6 +108,11 @@ def _esc(s) -> str:
     return _html.escape(str(s or ''), quote=True)
 
 
+def _tesc(s) -> str:
+    """Экранирование для Telegram HTML-режима: <, >, &."""
+    return _html.escape(str(s or ''), quote=False)
+
+
 # ══════════════════════════════════════
 # TELEGRAM
 # ══════════════════════════════════════
@@ -115,11 +120,11 @@ def format_telegram(data: dict) -> str:
     lines = [
         '<b>📋 Новая заявка — Рельс-Комплект</b>',
         '',
-        f'👤 Имя: {data.get("name") or "—"}',
-        f'📞 Контакт: {data.get("contact") or data.get("phone") or "—"}',
+        f'👤 Имя: {_tesc(data.get("name") or "—")}',
+        f'📞 Контакт: {_tesc(data.get("contact") or data.get("phone") or "—")}',
     ]
     if data.get('message'):
-        lines.append(f'💬 Комментарий: {data["message"]}')
+        lines.append(f'💬 Комментарий: {_tesc(data["message"])}')
 
     items = data.get('items', [])
     if items:
@@ -130,13 +135,13 @@ def format_telegram(data: dict) -> str:
             unit  = item.get('unit', 'т')
             price = item.get('price')
             if price:
-                price_str = '{} ₽/{}'.format(_fmt(price), unit)
+                price_str = '{} ₽/{}'.format(_fmt(price), _tesc(unit))
                 total += price * qty
             else:
                 price_str = 'По запросу'
             lines.append('{i}. {name} — {qty} {unit} × {price}'.format(
-                i=i, name=item.get('name', '?'),
-                qty=qty, unit=unit, price=price_str
+                i=i, name=_tesc(item.get('name', '?')),
+                qty=qty, unit=_tesc(unit), price=price_str
             ))
         if total:
             lines.append(f'\n💰 Итого: {_fmt(total)} ₽')
@@ -690,20 +695,24 @@ def _check_lead_rate_limit(ip: str) -> bool:
 
 
 def _format_lead_tg(lead_id: int, data: dict) -> str:
-    src_label = _LEAD_SOURCE_NAMES.get(data.get('source', ''), data.get('source', 'Сайт') or 'Сайт')
+    src_raw   = data.get('source', '') or ''
+    src_label = _LEAD_SOURCE_NAMES.get(src_raw, _tesc(src_raw) or 'Сайт')
     lines = [
         f'📋 <b>Заявка #{lead_id}</b> — {src_label}',
         '',
-        f'👤 {data.get("name") or "—"}',
-        f'📞 {data.get("contact") or "—"}',
+        f'👤 {_tesc(data.get("name") or "—")}',
+        f'📞 {_tesc(data.get("contact") or "—")}',
     ]
     if data.get('message'):
-        lines.append(f'💬 {data["message"]}')
+        lines.append(f'💬 {_tesc(data["message"])}')
     items = data.get('items') or []
     if items:
         lines.append(f'\n🛒 {len(items)} поз.:')
         for item in items[:3]:
-            lines.append(f'  · {item.get("name","?")} — {item.get("qty",1)} {item.get("unit","т")}')
+            lines.append(
+                f'  · {_tesc(item.get("name","?"))} — '
+                f'{item.get("qty",1)} {_tesc(item.get("unit","т"))}'
+            )
         if len(items) > 3:
             lines.append(f'  · ...ещё {len(items) - 3}')
     return '\n'.join(lines)
