@@ -1988,6 +1988,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ── ПРОБЛЕМА 6: order.html и calculator.html ────────────────── */
+[data-theme="dark"] .table th {
+  background: var(--color-surface-2, #1C2128);
+  color: var(--color-text-muted, #8B949E);
+  border-bottom-color: var(--color-border, #30363D);
+}
+[data-theme="dark"] .table tbody tr:hover {
+  background: var(--color-surface-2, #1C2128);
+}
 [data-theme="dark"] .order-table,
 [data-theme="dark"] .cart-table {
   background: var(--color-surface, #161B22);

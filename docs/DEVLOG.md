@@ -4,6 +4,38 @@
 
 ---
 
+## [2026-04-19] — Итерация 42: Аудит перед запуском — фикс 3 багов
+
+**Файлы:** `assets/js/calculator.js`, `calculator.html`, `order.html`, `assets/css/style.css`
+
+### Баги
+
+**1. Калькулятор пути — кнопка «Далее» не работала (критический)**
+
+`calculator.js` повторно объявлял `const EMAILJS_SERVICE_ID / EMAILJS_TEMPLATE_ID / EMAILJS_PUBLIC_KEY`, уже объявленные в `main.js`. Браузер бросал `SyntaxError: Identifier '...' has already been declared` при загрузке `calculator.js` — весь файл не выполнялся, `DOMContentLoaded`-обработчик не регистрировался, кнопки оставались без слушателей. Также удалены неиспользуемые `TELEGRAM_BOT_TOKEN = 'DEMO'` и `TELEGRAM_CHAT_ID = 'DEMO'` (калькулятор уже использовал `/api/lead`).
+
+**2. Неверные веса кранового рельса**
+
+В `RAIL_TYPES` (`calculator.js`) и `<option data-kg>` (`calculator.html`) использовались ошибочные значения — имя «КРxx» ошибочно трактовалось как вес в кг/м, хотя это ширина головки в мм. Исправлено по ГОСТ 4121-96 и данным `catalog.json`:
+
+| Тип   | Было (кг/м) | Стало (кг/м) |
+|-------|-------------|--------------|
+| КР70  | 70.00       | 46.10        |
+| КР80  | 80.00       | 59.81        |
+| КР100 | 100.00      | 83.09        |
+| КР120 | 120.00      | 113.47       |
+
+Также добавлен КР140 (141.70 кг/м), который есть в каталоге. Р50/Р65/Р75 были корректны.
+
+**3. Тёмная тема на странице заявки (order.html) — белые секции**
+
+Два источника проблемы:
+- `.order-totals td { background: #F1F5F9 }` — inline-стиль в `order.html` → заменён на `var(--color-surface-muted)` (корректно переключается `#F1F5F9` / `#161B22`)
+- `.table th { background: #F8FAFC }` и `.table tbody tr:hover { background: #F8FAFC }` в `components.css` — без dark-override → добавлен `[data-theme="dark"] .table th` и `tr:hover` в `style.css`
+- Добавлен `[data-theme="dark"] .order-remove-btn:hover` с тёмно-красным фоном вместо белого `#FEE2E2`
+
+---
+
 ## [2026-04-17] — Итерация 41: Catalog Management — Фаза 3
 
 **Файлы:** `bot/utils/formatting.py` (новый), `bot/services/catalog.py` (новый), `bot/handlers/catalog.py` (новый), `bot/handlers/keyboards.py`, `bot/handlers/server.py`, `bot/main.py`

@@ -33,7 +33,7 @@
     }
 
     .order-totals td {
-      background: #F1F5F9;
+      background: var(--color-surface-muted);
       font-weight: 700;
       padding-block: var(--space-md);
       border-top: 2px solid var(--color-border-dark);
@@ -67,6 +67,11 @@
       color: var(--color-error);
       background-color: #FEE2E2;
       border-color: #FEE2E2;
+    }
+
+    [data-theme="dark"] .order-remove-btn:hover {
+      background-color: #3B1010;
+      border-color: #3B1010;
     }
 
     .order-note {

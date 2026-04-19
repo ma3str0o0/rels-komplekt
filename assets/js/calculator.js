@@ -19,23 +19,17 @@ function escHtml(s) {
 const CART_KEY      = 'cart';
 const RAIL_LENGTH_M = 12.5; // стандартная длина рельса в метрах
 
-/* EmailJS */
-const EMAILJS_SERVICE_ID  = 'service_vc2oz9j';
-const EMAILJS_TEMPLATE_ID = 'template_e7f1ke6';
-const EMAILJS_PUBLIC_KEY  = 'FZzMmOJ5mTIGrPV3j';
-
-/* Telegram Bot — вставить реальный токен и chat_id после настройки бота */
-const TELEGRAM_BOT_TOKEN = 'DEMO';
-const TELEGRAM_CHAT_ID   = 'DEMO';
-
+/* Веса рельсов по ГОСТ и данным каталога (кг/м).
+   КР-рельсы: номер = ширина головки мм, не вес! */
 const RAIL_TYPES = {
-  'Р50':   { kgPerM: 51.67, label: 'Р50'   },
-  'Р65':   { kgPerM: 64.72, label: 'Р65'   },
-  'Р75':   { kgPerM: 74.40, label: 'Р75'   },
-  'КР70':  { kgPerM: 70.00, label: 'КР70'  },
-  'КР80':  { kgPerM: 80.00, label: 'КР80'  },
-  'КР100': { kgPerM: 100.00, label: 'КР100' },
-  'КР120': { kgPerM: 120.00, label: 'КР120' },
+  'Р50':   { kgPerM: 51.67,  label: 'Р50'   },
+  'Р65':   { kgPerM: 64.72,  label: 'Р65'   },
+  'Р75':   { kgPerM: 74.41,  label: 'Р75'   },
+  'КР70':  { kgPerM: 46.10,  label: 'КР70'  },
+  'КР80':  { kgPerM: 59.81,  label: 'КР80'  },
+  'КР100': { kgPerM: 83.09,  label: 'КР100' },
+  'КР120': { kgPerM: 113.47, label: 'КР120' },
+  'КР140': { kgPerM: 141.70, label: 'КР140' },
 };
 
 /* ─── Состояние калькулятора ─────────────────────────────────── */
