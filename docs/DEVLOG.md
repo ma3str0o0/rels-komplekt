@@ -4,6 +4,39 @@
 
 ---
 
+## [2026-04-19] — Итерация 43: Финальный security hardening
+
+**Файлы:** `order.html`, `about.html`, `notify_app.py`, `serve.py`, `bot/rels-admin-bot.service`, nginx конфиг
+
+### Исправления
+
+**1. Telegram HTML injection** (`notify_app.py`)
+- Добавлена функция `_tesc()` — экранирует `<`, `>`, `&` для Telegram HTML parse_mode
+- Применена в `format_telegram()` и `_format_lead_tg()`: `name`, `contact`, `message`, `unit`, названия позиций
+- Без экранирования злоумышленник мог вставить `<b>`, `<a>` теги в Telegram-уведомление
+
+**2. Email HTML injection** (`notify_app.py`)
+- Добавлена функция `_esc()` через `html.escape()` — применена во всех пользовательских полях `build_email_html()`
+- Закрывает вектор tracking pixel через `<img src="http://attacker.com/x.gif">` в имени/контакте/позиции
+
+**3. CSP `unsafe-inline` в `script-src`** (`order.html`, `about.html`)
+- Удалён `unsafe-inline` из `script-src` — оставался из-за инлайн-скрипта восстановления темы
+- Инлайн `<script>(function(){...})();</script>` заменён на `<script src="assets/js/theme-init.js"></script>`
+- Добавлен недостающий `https://api.emailjs.com` в `connect-src`
+
+**4. Bot от root** (`bot/rels-admin-bot.service`)
+- `User=root` → `User=rels-app`, `WorkingDirectory` → `/var/www/rels-komplekt`
+
+**5. Незаблокированные пути** (nginx, `serve.py`)
+- nginx: добавлены `data/catalog.json.bak`, `data/image_map` в блок 403
+- `serve.py`: обновлён `BLOCKED_PATHS` — добавлены `catalog.json.bak`, `image_map.json`, `metrics.db*`, `notify_app.py`, `serve.py`, `bot/`
+
+**6. Конкурентные файлы удалены с диска**
+- Удалено 9 файлов: `competitor_raw.json`, `competitor_catalog.json`, `competitor_details.json`, `competitor_report.html/md`, `eshop_10072635.csv`, `vsp74_scrape.json`, `catalog_enriched.json`, `catalog_backup.json`
+- Были заблокированы nginx, но хранились на диске без необходимости
+
+---
+
 ## [2026-04-19] — Итерация 42: Аудит перед запуском — фикс 3 багов
 
 **Файлы:** `assets/js/calculator.js`, `calculator.html`, `order.html`, `assets/css/style.css`
