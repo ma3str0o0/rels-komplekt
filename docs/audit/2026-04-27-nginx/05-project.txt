@@ -1,0 +1,73 @@
+===== ls -la /root/projects/rels-komplekt/ =====
+total 368
+drwxr-xr-x 12 rels-app rels-app  4096 Apr 19 15:37 .
+drwxr-xr-x  4 root     root      4096 Mar 30 09:05 ..
+drwxr-xr-x  4 rels-app rels-app  4096 Apr 19 15:36 .claude
+-rw-r--r--  1 root     root       149 Apr 16 18:00 .env
+drwxr-xr-x  8 rels-app rels-app  4096 Apr 19 17:07 .git
+-rw-r--r--  1 root     root       812 Apr 16 21:12 .gitignore
+drwxr-xr-x  2 rels-app rels-app  4096 Apr 14 21:38 .well-known
+-rw-r--r--  1 rels-app rels-app  1826 Apr 12 19:07 CLAUDE.md
+drwxr-xr-x  2 rels-app rels-app  4096 Apr 16 21:58 __pycache__
+-rw-r--r--  1 rels-app rels-app   526 Mar 27 08:03 _headers
+-rw-r--r--  1 root     root     30124 Apr 19 15:37 about.html
+drwxr-xr-x  5 rels-app rels-app  4096 Apr 10 21:03 assets
+drwxr-xr-x  8 root     root      4096 Apr 19 15:24 bot
+-rw-r--r--  1 root     root     20828 Apr 19 15:17 calculator.html
+-rw-r--r--  1 rels-app rels-app 23964 Apr 16 21:11 catalog.html
+-rw-r--r--  1 root     root     15439 Apr 16 21:11 contacts.html
+drwxr-xr-x  2 rels-app rels-app  4096 Apr 19 15:33 data
+drwxr-xr-x  3 rels-app rels-app  4096 Apr 19 15:43 docs
+-rw-r--r--  1 root     root     37322 Apr 16 21:11 index.html
+-rw-r--r--  1 root     root     41901 Apr 19 15:32 notify_app.py
+-rw-r--r--  1 root     root     11601 Apr 19 15:32 order.html
+-rw-r--r--  1 rels-app rels-app 20530 Apr 16 21:11 privacy.html
+-rw-r--r--  1 root     root     14129 Apr 16 21:11 product.html
+drwxr-xr-x  2 rels-app rels-app  4096 Apr  6 11:49 proxy
+-rw-r--r--  1 rels-app rels-app 20962 Apr 16 21:11 rails-reference.html
+-rw-r--r--  1 root     root       476 Apr 16 16:49 rels-komplekt.service
+-rw-r--r--  1 rels-app rels-app    70 Mar 24 19:10 robots.txt
+-rw-r--r--  1 root     root     33180 Apr 19 15:32 serve.py
+-rw-r--r--  1 root     root      1377 Apr 16 16:49 sitemap.xml
+drwxr-xr-x  4 rels-app rels-app  4096 Apr 15 10:41 tools
+
+===== /root/projects/rels-komplekt/CLAUDE.md =====
+# Рельс-Комплект — инструкции для Claude Code
+
+## О проекте
+Сайт оптового B2B поставщика рельсовых материалов. Дедлайн: 20 апреля 2026.
+
+## Стек
+- Чистый HTML5 / CSS3 / Vanilla JavaScript — никаких фреймворков
+- Полностью статический сайт, без бэкенда
+- Mobile-first
+
+## Дизайн
+- Основной цвет: #1A56A0 (синий)
+- Акцент: #E65100 (оранжевый)
+- Шрифт: Inter (Google Fonts)
+- Стиль: строгий промышленный B2B
+- Ориентир: vsp74.ru
+- Design system: `docs/design-system/рельс-комплект/MASTER.md`
+
+## Структура файлов
+```
+*.html              — страницы в корне
+assets/css/         — style.css, components.css
+assets/js/          — main.js, catalog.js, product.js, ...
+assets/img/certs/   — сертификаты
+data/catalog.json   — 158 позиций (публичный)
+docs/               — документация разработки (DEVLOG, PROJECT_STATUS, design-system)
+tools/              — скрипты парсинга (не для продакшна)
+proxy/              — серверный прокси (секреты в .env)
+serve.py            — единый HTTP-сервер (статика + /api/notify)
+```
+
+## Бизнес-логика
+- Цены в рублях за тонну
+- price: null → показывать "Цена по запросу"
+- Калькулятор: длина(м) × вес_рельса(кг/м) / 1000 = тоннаж
+- Заявки: EmailJS + Telegram Bot API
+- PDF спецификации: jsPDF через CDN
+
+## Комментарии в коде — на русском языке

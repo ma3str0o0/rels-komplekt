@@ -1,0 +1,491 @@
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+# configuration file /etc/nginx/nginx.conf:
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+	worker_connections 768;
+	# multi_accept on;
+}
+
+http {
+
+	##
+	# Basic Settings
+	##
+
+	sendfile on;
+	include /etc/nginx/snippets/security-headers.conf;
+	tcp_nopush on;
+	types_hash_max_size 2048;
+	server_tokens off;
+
+	# server_names_hash_bucket_size 64;
+	# server_name_in_redirect off;
+
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+
+	##
+	# SSL Settings
+	##
+
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+	ssl_prefer_server_ciphers on;
+
+	##
+	# Logging Settings
+	##
+
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+
+	##
+	# Gzip Settings
+	##
+
+	gzip on;
+
+	# gzip_vary on;
+	# gzip_proxied any;
+	# gzip_comp_level 6;
+	# gzip_buffers 16 8k;
+	# gzip_http_version 1.1;
+	# gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+	##
+	# Virtual Host Configs
+	##
+
+	include /etc/nginx/conf.d/*.conf;
+	include /etc/nginx/sites-enabled/*;
+}
+
+
+#mail {
+#	# See sample authentication script at:
+#	# http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript
+#
+#	# auth_http localhost/auth.php;
+#	# pop3_capabilities "TOP" "USER";
+#	# imap_capabilities "IMAP4rev1" "UIDPLUS";
+#
+#	server {
+#		listen     localhost:110;
+#		protocol   pop3;
+#		proxy      on;
+#	}
+#
+#	server {
+#		listen     localhost:143;
+#		protocol   imap;
+#		proxy      on;
+#	}
+#}
+
+# configuration file /etc/nginx/modules-enabled/50-mod-http-geoip2.conf:
+load_module modules/ngx_http_geoip2_module.so;
+
+# configuration file /etc/nginx/modules-enabled/50-mod-http-image-filter.conf:
+load_module modules/ngx_http_image_filter_module.so;
+
+# configuration file /etc/nginx/modules-enabled/50-mod-http-xslt-filter.conf:
+load_module modules/ngx_http_xslt_filter_module.so;
+
+# configuration file /etc/nginx/modules-enabled/50-mod-mail.conf:
+load_module modules/ngx_mail_module.so;
+
+# configuration file /etc/nginx/modules-enabled/50-mod-stream.conf:
+load_module modules/ngx_stream_module.so;
+
+# configuration file /etc/nginx/modules-enabled/70-mod-stream-geoip2.conf:
+load_module modules/ngx_stream_geoip2_module.so;
+
+# configuration file /etc/nginx/snippets/security-headers.conf:
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+# configuration file /etc/nginx/mime.types:
+
+types {
+    text/html                             html htm shtml;
+    text/css                              css;
+    text/xml                              xml;
+    image/gif                             gif;
+    image/jpeg                            jpeg jpg;
+    application/javascript                js;
+    application/atom+xml                  atom;
+    application/rss+xml                   rss;
+
+    text/mathml                           mml;
+    text/plain                            txt;
+    text/vnd.sun.j2me.app-descriptor      jad;
+    text/vnd.wap.wml                      wml;
+    text/x-component                      htc;
+
+    image/png                             png;
+    image/tiff                            tif tiff;
+    image/vnd.wap.wbmp                    wbmp;
+    image/x-icon                          ico;
+    image/x-jng                           jng;
+    image/x-ms-bmp                        bmp;
+    image/svg+xml                         svg svgz;
+    image/webp                            webp;
+
+    application/font-woff                 woff;
+    application/java-archive              jar war ear;
+    application/json                      json;
+    application/mac-binhex40              hqx;
+    application/msword                    doc;
+    application/pdf                       pdf;
+    application/postscript                ps eps ai;
+    application/rtf                       rtf;
+    application/vnd.apple.mpegurl         m3u8;
+    application/vnd.ms-excel              xls;
+    application/vnd.ms-fontobject         eot;
+    application/vnd.ms-powerpoint         ppt;
+    application/vnd.wap.wmlc              wmlc;
+    application/vnd.google-earth.kml+xml  kml;
+    application/vnd.google-earth.kmz      kmz;
+    application/x-7z-compressed           7z;
+    application/x-cocoa                   cco;
+    application/x-java-archive-diff       jardiff;
+    application/x-java-jnlp-file          jnlp;
+    application/x-makeself                run;
+    application/x-perl                    pl pm;
+    application/x-pilot                   prc pdb;
+    application/x-rar-compressed          rar;
+    application/x-redhat-package-manager  rpm;
+    application/x-sea                     sea;
+    application/x-shockwave-flash         swf;
+    application/x-stuffit                 sit;
+    application/x-tcl                     tcl tk;
+    application/x-x509-ca-cert            der pem crt;
+    application/x-xpinstall               xpi;
+    application/xhtml+xml                 xhtml;
+    application/xspf+xml                  xspf;
+    application/zip                       zip;
+
+    application/octet-stream              bin exe dll;
+    application/octet-stream              deb;
+    application/octet-stream              dmg;
+    application/octet-stream              iso img;
+    application/octet-stream              msi msp msm;
+
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document    docx;
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet          xlsx;
+    application/vnd.openxmlformats-officedocument.presentationml.presentation  pptx;
+
+    audio/midi                            mid midi kar;
+    audio/mpeg                            mp3;
+    audio/ogg                             ogg;
+    audio/x-m4a                           m4a;
+    audio/x-realaudio                     ra;
+
+    video/3gpp                            3gpp 3gp;
+    video/mp2t                            ts;
+    video/mp4                             mp4;
+    video/mpeg                            mpeg mpg;
+    video/quicktime                       mov;
+    video/webm                            webm;
+    video/x-flv                           flv;
+    video/x-m4v                           m4v;
+    video/x-mng                           mng;
+    video/x-ms-asf                        asx asf;
+    video/x-ms-wmv                        wmv;
+    video/x-msvideo                       avi;
+}
+
+# configuration file /etc/nginx/sites-enabled/backyard:
+server {
+    # HTTP → HTTPS redirect (apex + www)
+    listen 80;
+    listen [::]:80;
+    server_name backyard-tech.ru www.backyard-tech.ru;
+    return 301 https://backyard-tech.ru$request_uri;
+}
+
+server {
+    # HTTPS — apex (main server)
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name backyard-tech.ru;
+
+    ssl_certificate /etc/ssl/backyard/origin.crt;
+    ssl_certificate_key /etc/ssl/backyard/origin.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    root /var/www/backyard-tech/dist;
+    index index.html;
+
+    # Real IP from Cloudflare
+    set_real_ip_from 103.21.244.0/22;
+    set_real_ip_from 103.22.200.0/22;
+    set_real_ip_from 103.31.4.0/22;
+    set_real_ip_from 104.16.0.0/13;
+    set_real_ip_from 104.24.0.0/14;
+    set_real_ip_from 108.162.192.0/18;
+    set_real_ip_from 131.0.72.0/22;
+    set_real_ip_from 141.101.64.0/18;
+    set_real_ip_from 162.158.0.0/15;
+    set_real_ip_from 172.64.0.0/13;
+    set_real_ip_from 173.245.48.0/20;
+    set_real_ip_from 188.114.96.0/20;
+    set_real_ip_from 190.93.240.0/20;
+    set_real_ip_from 197.234.240.0/22;
+    set_real_ip_from 198.41.128.0/17;
+    real_ip_header CF-Connecting-IP;
+
+    gzip on;
+    gzip_vary on;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml application/xml+rss;
+    gzip_min_length 1000;
+
+    # CSS/JS: no-cache (revalidate every request; immutable blocked hard-refresh)
+    location ~* \.(css|js)$ {
+        add_header Cache-Control "no-cache, must-revalidate";
+        include /etc/nginx/snippets/security-headers.conf;
+    }
+
+    # Fonts/images: long-lived immutable (filenames don't change)
+    location ~* \.(woff2?|ttf|otf|eot|svg|png|jpg|jpeg|webp|ico|gif)$ {
+        expires 365d;
+        add_header Cache-Control "public, immutable";
+        include /etc/nginx/snippets/security-headers.conf;
+    }
+
+    location /static/ {
+        include /etc/nginx/snippets/security-headers.conf;
+    }
+
+    # Legacy .html → clean URL 301 redirects
+    location = /services.html  { return 301 /services/; }
+    location = /about.html     { return 301 /about/; }
+    location = /cases.html     { return 301 /cases/; }
+    location = /contact.html   { return 301 /contact/; }
+
+    location ~* \.html$ {
+        add_header Cache-Control "no-cache";
+        include /etc/nginx/snippets/security-headers.conf;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+        include /etc/nginx/snippets/security-headers.conf;
+    }
+}
+
+server {
+    # HTTPS www → apex redirect
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name www.backyard-tech.ru;
+
+    ssl_certificate /etc/ssl/backyard/origin.crt;
+    ssl_certificate_key /etc/ssl/backyard/origin.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    return 301 https://backyard-tech.ru$request_uri;
+}
+
+# configuration file /etc/nginx/sites-enabled/default:
+##
+# You should look at the following URL's in order to grasp a solid understanding
+# of Nginx configuration files in order to fully unleash the power of Nginx.
+# https://www.nginx.com/resources/wiki/start/
+# https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/
+# https://wiki.debian.org/Nginx/DirectoryStructure
+#
+# In most cases, administrators will remove this file from sites-enabled/ and
+# leave it as reference inside of sites-available where it will continue to be
+# updated by the nginx packaging team.
+#
+# This file will automatically load configuration files provided by other
+# applications, such as Drupal or Wordpress. These applications will be made
+# available underneath a path with that package name, such as /drupal8.
+#
+# Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.
+##
+
+# Default server configuration
+#
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	# SSL configuration
+	#
+	# listen 443 ssl default_server;
+	# listen [::]:443 ssl default_server;
+	#
+	# Note: You should disable gzip for SSL traffic.
+	# See: https://bugs.debian.org/773332
+	#
+	# Read up on ssl_ciphers to ensure a secure configuration.
+	# See: https://bugs.debian.org/765782
+	#
+	# Self signed certs generated by the ssl-cert package
+	# Don't use them in a production server!
+	#
+	# include snippets/snakeoil.conf;
+
+	root /root/projects/rels-komplekt;
+
+	# Add index.php to the list if you are using PHP
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name _;
+
+	# Проксируем /api/notify на Telegram proxy (localhost:3001)
+	# Браузер обращается на порт 80 — он всегда открыт
+	location /api/notify {
+		proxy_pass http://127.0.0.1:3001;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_read_timeout 15s;
+	}
+
+	location / {
+		add_header Cache-Control "no-cache, no-store, must-revalidate";
+		add_header Pragma "no-cache";
+		add_header Expires "0";
+		# First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+		try_files $uri $uri/ =404;
+	}
+
+	# pass PHP scripts to FastCGI server
+	#
+	#location ~ \.php$ {
+	#	include snippets/fastcgi-php.conf;
+	#
+	#	# With php-fpm (or other unix sockets):
+	#	fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+	#	# With php-cgi (or other tcp sockets):
+	#	fastcgi_pass 127.0.0.1:9000;
+	#}
+
+	# deny access to .htaccess files, if Apache's document root
+	# concurs with nginx's one
+	#
+	#location ~ /\.ht {
+	#	deny all;
+	#}
+}
+
+
+# Virtual Host configuration for example.com
+#
+# You can move that to a different file under sites-available/ and symlink that
+# to sites-enabled/ to enable it.
+#
+#server {
+#	listen 80;
+#	listen [::]:80;
+#
+#	server_name example.com;
+#
+#	root /var/www/example.com;
+#	index index.html;
+#
+#	location / {
+		add_header Cache-Control "no-cache, no-store, must-revalidate";
+		add_header Pragma "no-cache";
+		add_header Expires "0";
+#		try_files $uri $uri/ =404;
+#	}
+#}
+
+# configuration file /etc/nginx/sites-enabled/rels-komplekt:
+# Rate limit: не более 10 заявок/мин с одного IP (notify)
+limit_req_zone $binary_remote_addr zone=api_notify:10m rate=10r/m;
+# Rate limit: не более 120 событий/мин с одного IP (tracker)
+limit_req_zone $binary_remote_addr zone=api_track:10m  rate=120r/m;
+# Rate limit: не более 3 заявок/мин с одного IP (lead CRM)
+limit_req_zone $binary_remote_addr zone=api_lead:10m   rate=3r/m;
+
+server {
+    listen 8080;
+    server_name _;
+    root /root/projects/rels-komplekt;
+    charset utf-8;
+    client_max_body_size 11m;
+
+    # ── Блокируем служебные пути ──────────────────────────────────
+    location ~ ^/(proxy|\.git|data/vsp74_scrape|data/catalog_enriched|data/catalog_backup|data/catalog\.json\.bak|data/image_map|data/competitor|data/eshop|data/metrics|docs|tools|\.env|CLAUDE\.md|DEVLOG\.md|PROJECT_STATUS\.md) {
+        return 403;
+    }
+
+    # ── Трекер аналитики → gunicorn ──────────────────────────────
+    location /api/track {
+        limit_req zone=api_track burst=20 nodelay;
+        limit_req_status 429;
+        proxy_pass          http://unix:/run/rels-notify/app.sock;
+        proxy_set_header    Host $host;
+        proxy_set_header    X-Real-IP $remote_addr;
+        proxy_read_timeout  10s;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout  10s;
+        include /etc/nginx/snippets/security-headers.conf;
+    }
+
+    # ── CRM-заявки → gunicorn ────────────────────────────────────
+    location /api/lead {
+        limit_req zone=api_lead burst=2 nodelay;
+        limit_req_status 429;
+        proxy_pass          http://unix:/run/rels-notify/app.sock;
+        proxy_set_header    Host $host;
+        proxy_set_header    X-Real-IP $remote_addr;
+        proxy_read_timeout  15s;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout  15s;
+        include /etc/nginx/snippets/security-headers.conf;
+    }
+
+    # ── API → gunicorn с rate limiting ───────────────────────────
+    location /api/notify {
+        limit_req zone=api_notify burst=3 nodelay;
+        limit_req_status 429;
+        proxy_pass          http://unix:/run/rels-notify/app.sock;
+        proxy_set_header    Host $host;
+        proxy_set_header    X-Real-IP $remote_addr;
+        proxy_read_timeout  65s;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout  65s;
+        include /etc/nginx/snippets/security-headers.conf;
+    }
+
+    # ── JS/CSS/HTML/JSON — без кэша ───────────────────────────────
+    location ~* \.(js|css|html|json)$ {
+        include /etc/nginx/snippets/security-headers.conf;
+        add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+        add_header Pragma        "no-cache"                            always;
+        add_header Expires       "0"                                   always;
+        try_files $uri =404;
+    }
+
+    # ── Картинки/шрифты — кэш 7 дней ─────────────────────────────
+    location ~* \.(jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot)$ {
+        include /etc/nginx/snippets/security-headers.conf;
+        expires 7d;
+        add_header Cache-Control "public" always;
+        try_files $uri =404;
+    }
+
+    # ── Всё остальное ─────────────────────────────────────────────
+    location / {
+        include /etc/nginx/snippets/security-headers.conf;
+        try_files $uri $uri/ =404;
+    }
+}
+

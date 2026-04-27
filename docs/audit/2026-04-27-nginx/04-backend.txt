@@ -1,0 +1,125 @@
+===== rels-notify.service =====
+● rels-notify.service - Рельс-Комплект API (gunicorn)
+     Loaded: loaded (/etc/systemd/system/rels-notify.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2026-04-16 21:58:04 UTC; 1 week 3 days ago
+   Main PID: 26268 (gunicorn)
+      Tasks: 3 (limit: 2133)
+     Memory: 11.8M
+        CPU: 3min 56.927s
+     CGroup: /system.slice/rels-notify.service
+             ├─26268 /usr/bin/python3 /usr/local/bin/gunicorn --bind unix:/run/rels-notify/app.sock --workers 2 --timeout 60 --access-logfile - --error-logfile - notify_app:application
+             ├─26270 /usr/bin/python3 /usr/local/bin/gunicorn --bind unix:/run/rels-notify/app.sock --workers 2 --timeout 60 --access-logfile - --error-logfile - notify_app:application
+             └─26271 /usr/bin/python3 /usr/local/bin/gunicorn --bind unix:/run/rels-notify/app.sock --workers 2 --timeout 60 --access-logfile - --error-logfile - notify_app:application
+
+Apr 27 17:26:43 localhost rels-notify[26270]:  - - [27/Apr/2026:17:26:43 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/about.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+Apr 27 17:26:54 localhost rels-notify[26271]:  - - [27/Apr/2026:17:26:54 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/index.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+Apr 27 17:26:58 localhost rels-notify[26270]:  - - [27/Apr/2026:17:26:58 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/catalog.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+Apr 27 17:27:00 localhost rels-notify[26271]:  - - [27/Apr/2026:17:27:00 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/contacts.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+Apr 27 17:27:14 localhost rels-notify[26270]:  - - [27/Apr/2026:17:27:14 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/about.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+Apr 27 17:27:16 localhost rels-notify[26271]:  - - [27/Apr/2026:17:27:16 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/contacts.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+Apr 27 17:27:25 localhost rels-notify[26271]:  - - [27/Apr/2026:17:27:25 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/index.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+Apr 27 17:27:28 localhost rels-notify[26271]:  - - [27/Apr/2026:17:27:28 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/catalog.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+Apr 27 17:27:37 localhost rels-notify[26271]:  - - [27/Apr/2026:17:27:37 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/order.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+Apr 27 17:27:42 localhost rels-notify[26271]:  - - [27/Apr/2026:17:27:42 +0000] "POST /api/track HTTP/1.0" 204 0 "http://202.148.53.107:8080/calculator.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+
+===== rels-admin-bot.service =====
+● rels-admin-bot.service - Rels-Komplekt Telegram Admin Bot
+     Loaded: loaded (/etc/systemd/system/rels-admin-bot.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2026-04-17 11:00:54 UTC; 1 week 3 days ago
+   Main PID: 34731 (python3)
+      Tasks: 2 (limit: 2133)
+     Memory: 38.2M
+        CPU: 7min 42.649s
+     CGroup: /system.slice/rels-admin-bot.service
+             └─34731 /usr/bin/python3 -m bot.main
+
+Apr 27 19:01:05 localhost python3[34731]: 2026-04-27 19:01:05,078 [apscheduler.executors.default] INFO: Running job "watchdog_ping (trigger: interval[0:05:00], next run at: 2026-04-27 19:06:05 UTC)" (scheduled at 2026-04-27 19:01:05.070493+00:00)
+Apr 27 19:01:05 localhost python3[34731]: 2026-04-27 19:01:05,100 [apscheduler.executors.default] INFO: Job "watchdog_ping (trigger: interval[0:05:00], next run at: 2026-04-27 19:06:05 UTC)" executed successfully
+Apr 27 19:01:11 localhost python3[34731]: 2026-04-27 19:01:11,158 [httpx] INFO: HTTP Request: POST https://api.telegram.org/bot<REDACTED_BOT_ID>:<REDACTED_BOT_TOKEN>/getUpdates "HTTP/1.1 200 OK"
+Apr 27 19:01:21 localhost python3[34731]: 2026-04-27 19:01:21,172 [httpx] INFO: HTTP Request: POST https://api.telegram.org/bot<REDACTED_BOT_ID>:<REDACTED_BOT_TOKEN>/getUpdates "HTTP/1.1 200 OK"
+Apr 27 19:01:31 localhost python3[34731]: 2026-04-27 19:01:31,185 [httpx] INFO: HTTP Request: POST https://api.telegram.org/bot<REDACTED_BOT_ID>:<REDACTED_BOT_TOKEN>/getUpdates "HTTP/1.1 200 OK"
+Apr 27 19:01:41 localhost python3[34731]: 2026-04-27 19:01:41,198 [httpx] INFO: HTTP Request: POST https://api.telegram.org/bot<REDACTED_BOT_ID>:<REDACTED_BOT_TOKEN>/getUpdates "HTTP/1.1 200 OK"
+Apr 27 19:01:51 localhost python3[34731]: 2026-04-27 19:01:51,211 [httpx] INFO: HTTP Request: POST https://api.telegram.org/bot<REDACTED_BOT_ID>:<REDACTED_BOT_TOKEN>/getUpdates "HTTP/1.1 200 OK"
+Apr 27 19:02:01 localhost python3[34731]: 2026-04-27 19:02:01,224 [httpx] INFO: HTTP Request: POST https://api.telegram.org/bot<REDACTED_BOT_ID>:<REDACTED_BOT_TOKEN>/getUpdates "HTTP/1.1 200 OK"
+Apr 27 19:02:11 localhost python3[34731]: 2026-04-27 19:02:11,236 [httpx] INFO: HTTP Request: POST https://api.telegram.org/bot<REDACTED_BOT_ID>:<REDACTED_BOT_TOKEN>/getUpdates "HTTP/1.1 200 OK"
+Apr 27 19:02:21 localhost python3[34731]: 2026-04-27 19:02:21,248 [httpx] INFO: HTTP Request: POST https://api.telegram.org/bot<REDACTED_BOT_ID>:<REDACTED_BOT_TOKEN>/getUpdates "HTTP/1.1 200 OK"
+
+===== rels-komplekt.service (disabled) =====
+○ rels-komplekt.service - Рельс-Комплект web server
+     Loaded: loaded (/etc/systemd/system/rels-komplekt.service; disabled; vendor preset: enabled)
+     Active: inactive (dead)
+
+===== unit: rels-notify.service =====
+[Unit]
+Description=Рельс-Комплект API (gunicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=rels-app
+Group=rels-app
+WorkingDirectory=/root/projects/rels-komplekt
+RuntimeDirectory=rels-notify
+RuntimeDirectoryMode=0750
+ExecStart=/usr/local/bin/gunicorn \
+    --bind unix:/run/rels-notify/app.sock \
+    --workers 2 \
+    --timeout 60 \
+    --access-logfile - \
+    --error-logfile - \
+    notify_app:application
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rels-notify
+
+[Install]
+WantedBy=multi-user.target
+
+===== unit: rels-admin-bot.service =====
+[Unit]
+Description=Rels-Komplekt Telegram Admin Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/projects/rels-komplekt
+ExecStart=/usr/bin/python3 -m bot.main
+Restart=always
+RestartSec=5
+EnvironmentFile=/root/projects/rels-komplekt/.env
+
+[Install]
+WantedBy=multi-user.target
+
+===== unit: rels-komplekt.service =====
+[Unit]
+Description=Рельс-Комплект web server
+After=network.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/projects/rels-komplekt
+ExecStart=/usr/bin/python3 /root/projects/rels-komplekt/serve.py
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rels-komplekt
+
+[Install]
+WantedBy=multi-user.target
+
+===== ss -lnpx | grep rels-notify =====
+u_str LISTEN 0      2048                    /run/rels-notify/app.sock 261634            * 0    users:(("gunicorn",pid=26271,fd=3),("gunicorn",pid=26270,fd=3),("gunicorn",pid=26268,fd=3))
+
+===== /run/rels-notify =====
+total 0
+drwxr-x---  2 rels-app rels-app  60 Apr 16 21:58 .
+drwxr-xr-x 24 root     root     840 Apr 27 18:45 ..
+srwxrwxrwx  1 rels-app rels-app   0 Apr 16 21:58 app.sock
