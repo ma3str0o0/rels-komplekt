@@ -1,0 +1,10 @@
+# Рельс-Комплект — Python зависимости (применяется в venv на новом VPS)
+#
+# Backend API (notify_app.py, gunicorn entry point notify_app:application)
+gunicorn>=25.3,<26
+reportlab>=4.4,<5
+requests>=2.28
+
+# Telegram admin bot (bot.main)
+python-telegram-bot[job-queue]>=21.11,<22
+python-dotenv>=1.2,<2
