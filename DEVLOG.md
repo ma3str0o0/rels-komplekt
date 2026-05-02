@@ -6,6 +6,72 @@
 
 ---
 
+## [2026-05-02] — Phase 0: secret rotation (PAT + Telegram bot token)
+
+Ротация секретов перед миграцией на новый VPS Beget. Два инцидента:
+PAT в plaintext в `.git/config`, Telegram bot token утекал в systemd
+journal через `httpx` INFO-логи (`POST .../bot<TOKEN>/getUpdates`).
+
+### Создано
+- `/root/.ssh/github_deploy_rels{,.pub}` — отдельный ed25519 deploy key
+  для репо `ma3str0o0/rels-komplekt`. Публичный — добавлен в
+  GitHub → repo settings → Deploy keys (Allow write access).
+  Fingerprint: `SHA256:ZmdZQlRnWWQ2jjnr2VRo7rtfKMvrZi9DeZ/wPlTEbb8`.
+  Приватный никогда не покидает VPS.
+- `/root/.ssh/config` — Host github.com → IdentityFile github_deploy_rels,
+  IdentitiesOnly yes (изоляция от других ключей в /root/.ssh/).
+
+### Изменено
+- `.git/config` — git remote переключён с HTTPS+PAT на
+  `git@github.com:ma3str0o0/rels-komplekt.git`. PAT удалён из конфига.
+- `.env` — `TELEGRAM_BOT_TOKEN` заменён на новый (старый отозван
+  через BotFather → Revoke current token).
+- `bot/main.py` — добавлен `logging.getLogger("httpx").setLevel(WARNING)`
+  сразу после `logging.basicConfig()`. Убирает INFO-логи httpx, в которых
+  светится полный URL с токеном.
+
+### Внешние действия (вручную, не в репо)
+- GitHub → settings/tokens → старый PAT (`ghp_MJEx...`) Revoked.
+- BotFather → @relskomplekt_bot → API Token → Revoke current token,
+  получен новый, подставлен в .env.
+
+### Не изменялось
+- nginx, gunicorn (rels-notify), сертификаты, cron-задачи
+- catalog.json, HTML-страницы, assets, notify_app.py
+- остальные ключи в /root/.ssh/ (id_ed25519, rels_komplekt_rf)
+- backyard-tech.ru
+
+### Проверено
+- `ssh -T git@github.com` → "Hi ma3str0o0/rels-komplekt! You've successfully
+  authenticated" — deploy key опознан как принадлежащий именно репо.
+- `git fetch origin` через SSH работает без credentials.
+- `grep -c "ghp_" .git/config` → 0 (PAT действительно удалён).
+- `systemctl is-active rels-admin-bot` → active после рестарта.
+- В journalctl за последнюю минуту: 0 совпадений regex
+  `bot[0-9]+:[A-Za-z0-9_-]+/(getUpdates|sendMessage)` — токен в логах
+  больше не светится.
+- Application started в логах, scheduler запустил все три job
+  (watchdog, daily_digest, cleanup_metrics).
+- Ручной тест: `/start` боту в Telegram → отвечает.
+
+### Бэкапы
+- `/tmp/rels-03a-backup-20260502-145149/` — `.env`, `bot/main.py`,
+  `.git/config` (со старым PAT, оставлен временно — после полной
+  валидации миграции 03b бэкап удалить).
+
+### Косметика (не блокер)
+- При `systemctl restart rels-admin-bot` старый процесс выдал
+  `RuntimeError: Event loop is closed` в asyncio shutdown
+  (python-telegram-bot 21.x quirk на SIGTERM). Новый процесс встал
+  корректно. Если будет надоедать — отдельный issue про graceful
+  shutdown, не сегодня.
+
+### Дальше
+- Промпт 03b — настройка нового VPS Beget (85.198.102.212),
+  миграция приложения и DNS-cutover.
+
+---
+
 ## [2026-05-02] — Pre-cutover preparation
 
 Закрытие пяти подготовительных задач из промпта 02 (велись с 27 апреля,

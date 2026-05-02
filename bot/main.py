@@ -22,6 +22,10 @@ logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     level=logging.INFO,
 )
+
+# Подавляем httpx INFO-логи: они печатают URL с bot<TOKEN>/getUpdates
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
 logger = logging.getLogger("admin_bot")
 
 
