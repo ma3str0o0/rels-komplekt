@@ -19,11 +19,87 @@
   <!-- Стили -->
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/cookie-banner.css">
 
   <!-- Иконка сайта -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230369A1'/><text y='22' x='6' font-size='20' fill='white' font-family='sans-serif' font-weight='bold'>Р</text></svg>">
   <link rel="canonical" href="https://rels-komplekt.ru/">
-  <!-- Yandex.Metrika counter -->
+
+  <!-- Schema.org Organization (для поисковиков и кнопок организаций) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Рельс-Комплект",
+    "legalName": "Общество с ограниченной ответственностью «Рельс-Комплект»",
+    "url": "https://rels-komplekt.ru",
+    "email": "ooorku@mail.ru",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ул. Радищева, д. 6а, офис 702б",
+      "addressLocality": "Екатеринбург",
+      "addressRegion": "Свердловская область",
+      "postalCode": "620014",
+      "addressCountry": "RU"
+    },
+    "taxID": "6671083158",
+    "vatID": "6671083158"
+  }
+  </script>
+
+  <!-- WS-INDEX: локальные стили формы (звёздочки + simplified file input) -->
+  <style>
+    .required-mark {
+      color: var(--color-error, #d32f2f);
+      font-weight: bold;
+      margin-left: 2px;
+    }
+    .file-input-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 20px;
+      border: 2px dashed var(--color-border, #ccc);
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--color-surface, #f9f9f9);
+      color: var(--color-text-secondary, #333);
+      transition: background 0.15s, border-color 0.15s;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .file-input-label:hover {
+      background: var(--color-bg-hover, #f0f0f0);
+      border-color: var(--color-primary, #1A56A0);
+    }
+    .file-input-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .file-input-text {
+      flex: 1;
+    }
+    /* Footer with legal info — отдельный блок под основным футером */
+    .site-footer-legal {
+      background: var(--color-surface, #F8FAFC);
+      border-top: 1px solid var(--color-border, #E2E8F0);
+      padding: 24px 16px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--color-text-secondary, #475569);
+    }
+    .site-footer-legal .footer-company {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .site-footer-legal p { margin: 4px 0; }
+    .site-footer-legal .company-full { font-weight: 600; color: var(--color-text-primary, #1f2937); }
+    .site-footer-legal a { color: var(--color-primary, #1A56A0); text-decoration: underline; }
+  </style>
+
+  <!-- Yandex.Metrika counter — закомментировано в WS-INDEX (загружается через cookie-banner.js по согласию) -->
+  <!--
   <script type="text/javascript">
      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
      m[i].l=1*new Date();
@@ -39,9 +115,13 @@
      });
   </script>
   <noscript><div><img src="https://mc.yandex.ru/watch/32668705" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  -->
   <!-- /Yandex.Metrika counter -->
 </head>
 <body>
+
+  <!-- WS-INDEX: cookie-banner mount point (заполняется assets/js/cookie-banner.js) -->
+  <div id="cookie-banner-root"></div>
 
   <!-- ═══════════════════════════════════════════════════════════
        ШАПКА
@@ -321,11 +401,11 @@
             <form id="inlineRequestForm" novalidate>
               <div class="inline-form__fields">
                 <div class="form-group">
-                  <label class="form-label form-label--required" for="il-name">Ваше имя</label>
+                  <label class="form-label" for="il-name">Ваше имя <span class="required-mark" aria-label="обязательное поле">*</span></label>
                   <input class="input" type="text" id="il-name" name="name" placeholder="Иванов Иван" required autocomplete="name">
                 </div>
                 <div class="form-group">
-                  <label class="form-label form-label--required" for="il-contact">Телефон или email</label>
+                  <label class="form-label" for="il-contact">Телефон или email <span class="required-mark" aria-label="обязательное поле">*</span></label>
                   <div class="smart-contact-wrap" id="il-contact-wrap">
                     <span class="smart-contact-icon" id="il-contact-icon" aria-hidden="true">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 019.82 18.9 19.5 19.5 0 013.07 12 19.79 19.79 0 01.12 2.18a2 2 0 012-2h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.91z"/></svg>
@@ -349,42 +429,32 @@
                 </div>
               </div>
 
-              <!-- Загрузка файла -->
+              <!-- Загрузка файла (упрощённая разметка, JS-биндинги il-file* сохранены) -->
               <div class="form-group" id="il-file-group">
-                <label class="form-label" for="il-file">
-                  Прикрепить файл
-                  <span class="form-hint">Спецификация, техзадание — PDF, Word, Excel до 10 МБ</span>
-                </label>
-                <div class="file-upload" id="il-file-drop">
+                <div class="file-upload file-input-label" id="il-file-drop">
                   <input
                     type="file"
                     id="il-file"
                     name="file"
                     accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                     class="file-upload__input"
-                    aria-describedby="il-file-hint"
                   >
                   <div class="file-upload__placeholder" id="il-file-placeholder">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                      <polyline points="17 8 12 3 7 8"/>
-                      <line x1="12" y1="3" x2="12" y2="15"/>
-                    </svg>
-                    <span>Перетащите файл или <u>выберите на компьютере</u></span>
+                    <span class="file-input-icon" aria-hidden="true">📎</span>
+                    <span class="file-input-text">Прикрепите спецификацию, КП или другой документ</span>
                   </div>
                   <div class="file-upload__selected hidden" id="il-file-selected">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    <span id="il-file-name"></span>
+                    <span class="file-input-icon" aria-hidden="true">📎</span>
+                    <span id="il-file-name" class="file-input-text"></span>
                     <button type="button" class="file-upload__clear" id="il-file-clear" aria-label="Удалить файл">✕</button>
                   </div>
                 </div>
-                <span class="form-hint" id="il-file-hint">Необязательно — если у вас есть спецификация или техзадание</span>
                 <span class="form-error hidden" id="il-file-error"></span>
               </div>
 
               <label class="form-consent">
-                <input type="checkbox" name="consent">
-                <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
+                <input type="checkbox" name="consent" required>
+                <span>Я согласен(на) на обработку <a href="privacy.html" target="_blank">персональных данных</a> в соответствии с 152-ФЗ</span>
               </label>
               <button class="btn btn-primary" type="submit" style="width:100%;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -465,11 +535,11 @@
 
       <form class="modal__body" id="requestForm" novalidate>
         <div class="form-group">
-          <label class="form-label form-label--required" for="req-name">Ваше имя</label>
+          <label class="form-label" for="req-name">Ваше имя <span class="required-mark" aria-label="обязательное поле">*</span></label>
           <input class="input" type="text" id="req-name" name="name" placeholder="Иванов Иван" required autocomplete="name">
         </div>
         <div class="form-group">
-          <label class="form-label form-label--required" for="req-phone">Телефон</label>
+          <label class="form-label" for="req-phone">Телефон <span class="required-mark" aria-label="обязательное поле">*</span></label>
           <input class="input" type="tel" id="req-phone" name="phone" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
         </div>
         <div class="form-group">
@@ -479,8 +549,8 @@
 
         <div class="modal__footer">
           <label class="form-consent">
-            <input type="checkbox" name="consent">
-            <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
+            <input type="checkbox" name="consent" required>
+            <span>Я согласен(на) на обработку <a href="privacy.html" target="_blank">персональных данных</a> в соответствии с 152-ФЗ</span>
           </label>
           <button class="btn btn-primary" type="submit" style="width:100%;">
             Отправить
@@ -490,25 +560,44 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════════
+       LEGAL FOOTER (реквизиты, дисклеймер) — отдельный блок
+  ═══════════════════════════════════════════════════════════ -->
+  <footer class="site-footer-legal">
+    <div class="footer-company">
+      <p class="company-full">Общество с ограниченной ответственностью «Рельс-Комплект»</p>
+      <p class="company-ids">ИНН: 6671083158 · КПП: 667101001 · ОГРН: 1186658009988</p>
+      <p class="company-address">Юридический адрес: 620014, Свердловская область, г. Екатеринбург, ул. Радищева, д. 6а, офис 702б</p>
+      <p class="company-contact">Email: <a href="mailto:ooorku@mail.ru">ooorku@mail.ru</a></p>
+      <p class="company-disclaimer">Информация на сайте не является публичной офертой (ст. 437 ГК РФ).</p>
+      <p class="company-privacy"><a href="/privacy.html">Политика конфиденциальности</a></p>
+    </div>
+  </footer>
+
   <!-- Скрипты -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" integrity="sha384-SALc35EccAf6RzGw4iNsyj7kTPr33K7RoGzYu+7heZhT8s0GZouafRiCg1qy44AS" crossorigin="anonymous"></script>
   <script src="assets/js/main.js"></script>
-<script src="assets/js/tracker.js"></script>
-<!-- Top@Mail.Ru counter -->
-<script type="text/javascript">
-var _tmr = window._tmr || (window._tmr = []);
-_tmr.push({id: "2690827", type: "pageView", start: (new Date()).getTime()});
-(function (d, w, id) {
-  if (d.getElementById(id)) return;
-  var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
-  ts.src = "https://top-fwz1.mail.ru/js/code.js";
-  var f = function () {var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s);};
-  if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
-})(document, window, "topmailru-code");
-</script>
-<noscript><div>
-<img src="https://top-fwz1.mail.ru/counter?id=2690827;js=na" style="border:0;position:absolute;left:-9999px;" alt="Top.Mail.Ru" />
-</div></noscript>
-<!-- /Top@Mail.Ru counter -->
+  <script src="assets/js/tracker.js"></script>
+  <!-- WS-INDEX: cookie banner — управляет загрузкой счётчиков по согласию -->
+  <script src="/assets/js/cookie-banner.js" defer></script>
+
+  <!-- Top@Mail.Ru counter — закомментировано в WS-INDEX (загружается через cookie-banner.js по согласию) -->
+  <!--
+  <script type="text/javascript">
+  var _tmr = window._tmr || (window._tmr = []);
+  _tmr.push({id: "2690827", type: "pageView", start: (new Date()).getTime()});
+  (function (d, w, id) {
+    if (d.getElementById(id)) return;
+    var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
+    ts.src = "https://top-fwz1.mail.ru/js/code.js";
+    var f = function () {var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s);};
+    if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
+  })(document, window, "topmailru-code");
+  </script>
+  <noscript><div>
+  <img src="https://top-fwz1.mail.ru/counter?id=2690827;js=na" style="border:0;position:absolute;left:-9999px;" alt="Top.Mail.Ru" />
+  </div></noscript>
+  -->
+  <!-- /Top@Mail.Ru counter -->
 </body>
 </html>
