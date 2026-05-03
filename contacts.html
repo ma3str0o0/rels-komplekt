@@ -3,7 +3,7 @@
 <head>
   <script src="assets/js/theme-init.js"></script>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com; frame-src https://yandex.ru https://maps.yandex.ru; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://mc.yandex.ru https://top-fwz1.mail.ru; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com https://mc.yandex.ru https://top-fwz1.mail.ru https://top.mail.ru; frame-src https://yandex.ru https://maps.yandex.ru https://mc.yandex.ru; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Адрес, телефон и email компании Рельс-Комплект. Свяжитесь с нами для получения коммерческого предложения.">
   <title>Контакты — Рельс-Комплект</title>
@@ -19,23 +19,8 @@
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230369A1'/><text y='22' x='6' font-size='20' fill='white' font-family='sans-serif' font-weight='bold'>Р</text></svg>">
   <link rel="canonical" href="https://rels-komplekt.ru/contacts.html">
-  <!-- Yandex.Metrika counter -->
-  <script type="text/javascript">
-     (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-     m[i].l=1*new Date();
-     for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-     k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-     (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-     ym(32668705, "init", {
-          clickmap:true,
-          trackLinks:true,
-          accurateTrackBounce:true,
-          webvisor:true
-     });
-  </script>
-  <noscript><div><img src="https://mc.yandex.ru/watch/32668705" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-  <!-- /Yandex.Metrika counter -->
+  <link rel="stylesheet" href="/assets/css/cookie-banner.css">
+  <link rel="stylesheet" href="/assets/css/footer-legal.css">
 </head>
 <body>
 
@@ -206,8 +191,8 @@
             </div>
 
             <label class="form-consent">
-              <input type="checkbox" name="consent">
-              <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
+              <input type="checkbox" name="consent_pd" required>
+              <span>Я согласен(на) на обработку <a href="privacy.html" target="_blank">персональных данных</a> в соответствии с 152-ФЗ</span>
             </label>
 
             <button class="btn btn-primary btn-lg contacts-form__submit" type="submit">
@@ -232,21 +217,34 @@
   <script src="assets/js/main.js"></script>
   <script src="assets/js/contacts.js"></script>
 <script src="assets/js/tracker.js"></script>
-<!-- Top@Mail.Ru counter -->
-<script type="text/javascript">
-var _tmr = window._tmr || (window._tmr = []);
-_tmr.push({id: "2690827", type: "pageView", start: (new Date()).getTime()});
-(function (d, w, id) {
-  if (d.getElementById(id)) return;
-  var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
-  ts.src = "https://top-fwz1.mail.ru/js/code.js";
-  var f = function () {var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s);};
-  if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
-})(document, window, "topmailru-code");
-</script>
-<noscript><div>
-<img src="https://top-fwz1.mail.ru/counter?id=2690827;js=na" style="border:0;position:absolute;left:-9999px;" alt="Top.Mail.Ru" />
-</div></noscript>
-<!-- /Top@Mail.Ru counter -->
+
+<footer class="site-footer-legal">
+  <div class="footer-company">
+    <p class="company-full">Общество с ограниченной ответственностью «Рельс-Комплект»</p>
+    <p class="company-ids">ИНН: 6671083158 · КПП: 667101001 · ОГРН: 1186658009988</p>
+    <p class="company-address">Юридический адрес: 620014, Свердловская область, г. Екатеринбург, ул. Радищева, д. 6а, офис 702б</p>
+    <p class="company-contact">Email: <a href="mailto:ooorku@mail.ru">ooorku@mail.ru</a></p>
+    <p class="company-disclaimer">Информация на сайте не является публичной офертой (ст. 437 ГК РФ).</p>
+    <p class="company-privacy"><a href="/privacy.html">Политика конфиденциальности</a></p>
+  </div>
+  <script type="application/ld+json"> {"@context": "https://schema.org", "@type": "Organization",
+    "name": "Рельс-Комплект",
+    "legalName": "Общество с ограниченной ответственностью «Рельс-Комплект»",
+    "url": "https://rels-komplekt.ru",
+    "email": "ooorku@mail.ru",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ул. Радищева, д. 6а, офис 702б",
+      "addressLocality": "Екатеринбург",
+      "addressRegion": "Свердловская область",
+      "postalCode": "620014",
+      "addressCountry": "RU"
+    },
+    "taxID": "6671083158",
+    "vatID": "6671083158"
+  }
+  </script>
+</footer>
+<script src="/assets/js/cookie-banner.js" defer></script>
 </body>
 </html>

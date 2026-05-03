@@ -148,8 +148,8 @@ function _tplCta() {
             <input class="input" type="tel" name="phone" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
           </div>
           <label class="form-consent">
-            <input type="checkbox" name="consent">
-            <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
+            <input type="checkbox" name="consent_pd" required>
+            <span>Я согласен(на) на обработку <a href="privacy.html" target="_blank">персональных данных</a> в соответствии с 152-ФЗ</span>
           </label>
           <button class="btn btn-primary" type="submit">Перезвоните мне</button>
         </form>
@@ -259,8 +259,8 @@ function _tplModal() {
         </div>
         <div class="modal__footer">
           <label class="form-consent">
-            <input type="checkbox" name="consent">
-            <span>Согласен(на) на <a href="privacy.html" target="_blank">обработку персональных данных</a></span>
+            <input type="checkbox" name="consent_pd" required>
+            <span>Я согласен(на) на обработку <a href="privacy.html" target="_blank">персональных данных</a> в соответствии с 152-ФЗ</span>
           </label>
           <button class="btn btn-primary" type="submit" style="width:100%;">Получить КП</button>
         </div>
@@ -589,7 +589,7 @@ function initInlineForm() {
 
 /* ─── Проверка чекбокса согласия на обработку ПДн ───────────── */
 function _checkConsent(form) {
-  const cb = form.querySelector('[name="consent"]');
+  const cb = form.querySelector('[name="consent_pd"]') || form.querySelector('[name="consent"]');
   if (cb && !cb.checked) {
     showToast('Подтвердите согласие на обработку персональных данных', 'error');
     cb.focus();

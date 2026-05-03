@@ -3,7 +3,7 @@
 <head>
   <script src="assets/js/theme-init.js"></script>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org; frame-src https://yandex.ru https://maps.yandex.ru; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://mc.yandex.ru https://top-fwz1.mail.ru; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://mc.yandex.ru https://top-fwz1.mail.ru https://top.mail.ru; frame-src https://yandex.ru https://maps.yandex.ru https://mc.yandex.ru; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Политика конфиденциальности и обработка персональных данных ООО «РКУ» (Рельс-Комплект) в соответствии с 152-ФЗ.">
   <title>Политика конфиденциальности — Рельс-Комплект</title>
@@ -76,23 +76,8 @@
     }
   </style>
   <link rel="canonical" href="https://rels-komplekt.ru/privacy.html">
-  <!-- Yandex.Metrika counter -->
-  <script type="text/javascript">
-     (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-     m[i].l=1*new Date();
-     for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-     k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-     (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-     ym(32668705, "init", {
-          clickmap:true,
-          trackLinks:true,
-          accurateTrackBounce:true,
-          webvisor:true
-     });
-  </script>
-  <noscript><div><img src="https://mc.yandex.ru/watch/32668705" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-  <!-- /Yandex.Metrika counter -->
+  <link rel="stylesheet" href="/assets/css/cookie-banner.css">
+  <link rel="stylesheet" href="/assets/css/footer-legal.css">
 </head>
 <body>
 
@@ -250,20 +235,32 @@
           </p>
 
           <!-- 9 -->
-          <h2>9. Файлы cookie</h2>
+          <h2>9. Файлы cookie и аналитика</h2>
           <p>
             Сайт использует файлы cookie — небольшие текстовые файлы, сохраняемые браузером пользователя.
-            Cookie применяются исключительно в технических и функциональных целях:
+            Cookie применяются в следующих целях:
           </p>
           <ul>
-            <li>сохранение пользовательских настроек (например, выбранная тема оформления);</li>
-            <li>хранение состояния корзины заявок в рамках текущей сессии (localStorage).</li>
+            <li><strong>Технические и функциональные:</strong> сохранение пользовательских настроек
+              (выбранная тема оформления), хранение состояния корзины заявок в рамках текущей сессии
+              (localStorage). Эти cookie не требуют отдельного согласия пользователя.</li>
+            <li><strong>Аналитические (только при согласии):</strong> Сайт использует системы
+              веб-аналитики Яндекс.Метрика и Top.Mail.Ru для сбора обезличенной статистики посещаемости
+              (количество визитов, источники переходов, поведение на страницах). Сбор аналитических данных
+              запускается <strong>только после явного согласия пользователя</strong>, выраженного нажатием кнопки
+              «Принять» в баннере уведомления о cookie. До получения согласия скрипты аналитики
+              на странице не загружаются.</li>
           </ul>
           <p>
-            Сайт не использует рекламные, аналитические или сторонние cookie-сервисы (Google Analytics,
-            Яндекс.Метрика и т.п.). Пользователь может отключить сохранение cookie в настройках своего браузера;
-            это не влияет на доступность основного контента Сайта, однако может ограничить работу
-            некоторых функций (корзина заявок, настройки темы).
+            Согласие сохраняется в браузере пользователя (localStorage) и может быть в любой момент
+            отозвано путём очистки данных сайта в настройках браузера. Пользователь также может полностью
+            отключить сохранение cookie в настройках браузера; это не влияет на доступность основного
+            контента Сайта, однако может ограничить работу некоторых функций (корзина заявок, настройки темы).
+          </p>
+          <p>
+            Аналитические данные обрабатываются операторами соответствующих сервисов в соответствии с их
+            политиками конфиденциальности: <a href="https://yandex.ru/legal/confidential/" target="_blank" rel="noopener">Яндекс</a>,
+            <a href="https://help.mail.ru/legal/terms/top/privacy" target="_blank" rel="noopener">Mail.Ru Group</a>.
           </p>
 
           <!-- 10 -->
@@ -310,21 +307,34 @@
 
   <script src="assets/js/main.js"></script>
 <script src="assets/js/tracker.js"></script>
-<!-- Top@Mail.Ru counter -->
-<script type="text/javascript">
-var _tmr = window._tmr || (window._tmr = []);
-_tmr.push({id: "2690827", type: "pageView", start: (new Date()).getTime()});
-(function (d, w, id) {
-  if (d.getElementById(id)) return;
-  var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
-  ts.src = "https://top-fwz1.mail.ru/js/code.js";
-  var f = function () {var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s);};
-  if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
-})(document, window, "topmailru-code");
-</script>
-<noscript><div>
-<img src="https://top-fwz1.mail.ru/counter?id=2690827;js=na" style="border:0;position:absolute;left:-9999px;" alt="Top.Mail.Ru" />
-</div></noscript>
-<!-- /Top@Mail.Ru counter -->
+
+<footer class="site-footer-legal">
+  <div class="footer-company">
+    <p class="company-full">Общество с ограниченной ответственностью «Рельс-Комплект»</p>
+    <p class="company-ids">ИНН: 6671083158 · КПП: 667101001 · ОГРН: 1186658009988</p>
+    <p class="company-address">Юридический адрес: 620014, Свердловская область, г. Екатеринбург, ул. Радищева, д. 6а, офис 702б</p>
+    <p class="company-contact">Email: <a href="mailto:ooorku@mail.ru">ooorku@mail.ru</a></p>
+    <p class="company-disclaimer">Информация на сайте не является публичной офертой (ст. 437 ГК РФ).</p>
+    <p class="company-privacy"><a href="/privacy.html">Политика конфиденциальности</a></p>
+  </div>
+  <script type="application/ld+json"> {"@context": "https://schema.org", "@type": "Organization",
+    "name": "Рельс-Комплект",
+    "legalName": "Общество с ограниченной ответственностью «Рельс-Комплект»",
+    "url": "https://rels-komplekt.ru",
+    "email": "ooorku@mail.ru",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ул. Радищева, д. 6а, офис 702б",
+      "addressLocality": "Екатеринбург",
+      "addressRegion": "Свердловская область",
+      "postalCode": "620014",
+      "addressCountry": "RU"
+    },
+    "taxID": "6671083158",
+    "vatID": "6671083158"
+  }
+  </script>
+</footer>
+<script src="/assets/js/cookie-banner.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Страница не найдена — Рельс-Комплект</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230369A1'/><text y='22' x='6' font-size='20' fill='white' font-family='sans-serif' font-weight='bold'>Р</text></svg>">
+  <style>
+    .err-page {
+      min-height: 70vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .err-page__code {
+      font-size: 96px;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+      color: var(--color-primary, #1A56A0);
+      letter-spacing: -2px;
+    }
+    .err-page__msg {
+      font-size: 22px;
+      margin: 0 0 8px 0;
+      color: var(--color-text, #222);
+    }
+    .err-page__sub {
+      font-size: 15px;
+      color: var(--color-text-secondary, #666);
+      margin: 0 0 24px 0;
+    }
+    .err-page__links {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+    .err-page__link {
+      display: inline-block;
+      padding: 10px 20px;
+      background: var(--color-primary, #1A56A0);
+      color: #fff;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .err-page__link--secondary {
+      background: transparent;
+      color: var(--color-primary, #1A56A0);
+      border: 1px solid var(--color-primary, #1A56A0);
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+  <main class="err-page">
+    <div>
+      <p class="err-page__code">404</p>
+      <p class="err-page__msg">Страница не найдена</p>
+      <p class="err-page__sub">Возможно, она была перемещена или удалена. Воспользуйтесь навигацией.</p>
+      <div class="err-page__links">
+        <a class="err-page__link" href="/">На главную</a>
+        <a class="err-page__link err-page__link--secondary" href="/catalog.html">В каталог</a>
+      </div>
+    </div>
+  </main>
+  <div id="footer-placeholder"></div>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

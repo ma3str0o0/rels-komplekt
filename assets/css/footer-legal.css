@@ -1,0 +1,31 @@
+.site-footer-legal {
+  background: var(--color-surface-muted, #f5f5f5);
+  border-top: 1px solid var(--color-border, #e0e0e0);
+  padding: 24px 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted, #555);
+}
+.site-footer-legal .footer-company {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.site-footer-legal .footer-company p {
+  margin: 0 0 6px 0;
+}
+.site-footer-legal .company-full {
+  font-weight: 600;
+  color: var(--color-text, #222);
+  font-size: 14px;
+}
+.site-footer-legal .company-disclaimer {
+  margin-top: 12px;
+  font-style: italic;
+}
+.site-footer-legal .company-privacy {
+  margin-top: 8px;
+}
+.site-footer-legal a {
+  color: var(--color-primary, #1A56A0);
+  text-decoration: underline;
+}

@@ -1,11 +1,9 @@
 User-agent: *
 Allow: /
-
-# Запрещаем индексацию закрытых директорий
 Disallow: /api/
 Disallow: /data/
-Disallow: /docs/
 Disallow: /tools/
+Disallow: /docs/
 Disallow: /proxy/
 Disallow: /bot/
 Disallow: /.well-known/
