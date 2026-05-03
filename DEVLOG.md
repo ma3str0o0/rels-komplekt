@@ -6,6 +6,49 @@
 
 ---
 
+## [2026-05-03] — WS-INDEX: index.html refactor (формы + footer + cookie-banner)
+
+Параллельный workstream WS-INDEX. Только `index.html`, на одной странице.
+
+### Изменено
+- `index.html` — 6 правок:
+  - **Чекбокс 152-ФЗ** на `#inlineRequestForm` и `#requestForm`: добавлен `required`,
+    обновлён текст. `name="consent"` сохранён (бэкенд `notify_app.py` ожидает это имя —
+    переименование в `consent_pd` отвергнуто как противоречащее правилу проекта).
+  - **Красные `*`** у обязательных полей (ФИО, телефон/email): заменили
+    CSS-pseudo-element `form-label--required::after` на явный `<span class="required-mark">*</span>`.
+  - **Поле файла** упрощено: внешний `<label>` и form-hint удалены, placeholder
+    переписан как «📎 Прикрепите спецификацию, КП или другой документ». Внутренние
+    DOM-узлы сохранены — JS `assets/js/main.js::initFileUpload` зависит от их IDs.
+  - **Legal footer** (`<footer class="site-footer-legal">`) добавлен перед `</body>`
+    как отдельный блок ниже существующего JS-рендеримого функционального footer'а.
+    Реквизиты: ИНН/КПП/ОГРН, юрадрес, дисклеймер ст. 437 ГК РФ, ссылка на privacy.
+  - **Cookie-banner интеграция**: подключён `assets/css/cookie-banner.css`,
+    `<div id="cookie-banner-root">` после `<body>`, `<script src="assets/js/cookie-banner.js" defer>`
+    перед `</body>`. Inline-вставки Y.Metrika и Top@Mail.Ru закомментированы
+    HTML-комментариями (для лёгкого rollback).
+  - **Schema.org JSON-LD** (Organization) добавлен в `<head>`.
+
+### Решения
+- `name="consent"` НЕ переименовывали в `consent_pd` (противоречит исходному промпту,
+  но соответствует контракту с `notify_app.py`).
+- `novalidate` на формах сохранён — submit блокируется существующим JS `_checkConsent`,
+  не нативной валидацией.
+- Inline `<style>` в `index.html` для новых классов (`.required-mark`,
+  `.file-input-label`, `.site-footer-legal`) — техдолг, унифицировать в отдельном WS.
+
+### Гигиена коммитов
+Параллельные WS-A/WS-B оставили staged-изменения в индексе. Первый `git commit`
+с `git add index.html` всё равно увлёк их (они уже были staged до сессии).
+Откатил через `git reset --soft HEAD~1` + `git restore --staged`, перекоммитил
+чисто. Финальный коммит — только `index.html` (131 ins / 42 del).
+
+**Коммит:** `6dc9dbf`
+**Бэкап:** `/tmp/ws-index-backup-20260503-172856/index.html`
+**Сессия:** `Backyard Tech/10-Projects/rels-komplekt/sessions/2026-05-03-ws-index-form-refactor.md`
+
+---
+
 ## [2026-05-02] — Phase 0: secret rotation (PAT + Telegram bot token)
 
 Ротация секретов перед миграцией на новый VPS Beget. Два инцидента:
