@@ -425,6 +425,14 @@ function setTgSubmitLoading(loading) {
 async function handleSendTelegram(e) {
   e.preventDefault();
 
+  /* novalidate на форме отключает нативную проверку required — проверяем согласие явно */
+  const consent = e.target.querySelector('[name="consent"]');
+  if (consent && !consent.checked) {
+    window.RK?.showToast('Подтвердите согласие на обработку персональных данных', 'error');
+    consent.focus();
+    return;
+  }
+
   const contact = document.getElementById('tgContact').value.trim();
   const errEl   = document.getElementById('tgContactError');
 
@@ -513,6 +521,14 @@ function setEmailSubmitLoading(loading) {
 
 async function handleSendEmail(e) {
   e.preventDefault();
+
+  /* novalidate на форме отключает нативную проверку required — проверяем согласие явно */
+  const consent = e.target.querySelector('[name="consent"]');
+  if (consent && !consent.checked) {
+    window.RK?.showToast('Подтвердите согласие на обработку персональных данных', 'error');
+    consent.focus();
+    return;
+  }
 
   const emailTo = document.getElementById('emailTo').value.trim();
   const errEl   = document.getElementById('emailToError');
