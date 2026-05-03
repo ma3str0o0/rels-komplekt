@@ -2083,9 +2083,9 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #CBD5E1;
-  background: #fff;
-  color: #94A3B8;
+  border: 2px solid var(--color-border-dark, #CBD5E1);
+  background: var(--color-surface, #fff);
+  color: var(--color-text-muted, #94A3B8);
   font-size: 15px;
   font-weight: 700;
   display: flex;
@@ -2097,7 +2097,7 @@
 .wizard__step-label {
   font-size: 12px;
   font-weight: 500;
-  color: #94A3B8;
+  color: var(--color-text-muted, #94A3B8);
   white-space: nowrap;
   transition: color 200ms ease;
 }
@@ -2129,7 +2129,7 @@
 .wizard__connector {
   flex: 1;
   height: 2px;
-  background: #E2E8F0;
+  background: var(--color-border, #E2E8F0);
   max-width: 100px;
   margin-bottom: 22px; /* выровнять по центру кружков */
   transition: background 300ms ease;
@@ -2141,7 +2141,7 @@
 
 /* Панели шагов */
 .wizard__panel {
-  background: #fff;
+  background: var(--color-surface, #fff);
   border: 1px solid var(--color-border, #E2E8F0);
   border-radius: 12px;
   padding: var(--space-2xl);
@@ -2194,7 +2194,7 @@
   align-items: center;
   gap: var(--space-sm);
   padding: 10px 18px;
-  border: 2px solid #E2E8F0;
+  border: 2px solid var(--color-border, #E2E8F0);
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
@@ -2212,7 +2212,7 @@
 
 .radio-option:has(input:checked) {
   border-color: var(--color-primary, #0F172A);
-  background: #F1F5F9;
+  background: var(--color-surface-muted, #F1F5F9);
   color: var(--color-primary, #0F172A);
 }
 
@@ -2261,8 +2261,8 @@
 }
 
 .calc-result__info-card {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
+  background: var(--color-surface-muted, #F8FAFC);
+  border: 1px solid var(--color-border, #E2E8F0);
   border-radius: 8px;
   padding: var(--space-md);
   text-align: center;
@@ -2285,7 +2285,7 @@
   overflow-x: auto;
   margin-bottom: var(--space-lg);
   border-radius: 8px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--color-border, #E2E8F0);
 }
 
 .calc-result__table {
@@ -2295,7 +2295,7 @@
 }
 
 .calc-result__table th {
-  background: #F1F5F9;
+  background: var(--color-surface-muted, #F1F5F9);
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -2312,7 +2312,7 @@
 
 .calc-result__table td {
   padding: 12px 14px;
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid var(--color-border, #E2E8F0);
   font-size: 14px;
 }
 
@@ -2322,8 +2322,8 @@
 
 .calc-result__table tfoot td {
   font-weight: 700;
-  background: #F8FAFC;
-  border-top: 2px solid #CBD5E1;
+  background: var(--color-surface-muted, #F8FAFC);
+  border-top: 2px solid var(--color-border-dark, #CBD5E1);
   color: var(--color-primary);
   font-size: 15px;
 }
@@ -2336,7 +2336,7 @@
   gap: 12px;
   margin-top: var(--space-xl);
   padding-top: var(--space-lg);
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid var(--color-border, #E2E8F0);
 }
 
 .wizard__result-actions .btn {
@@ -2348,7 +2348,7 @@
 /* Сноска о ценах по запросу */
 .calc-price-note {
   font-size: 13px;
-  color: #64748B;
+  color: var(--color-text-muted, #64748B);
   font-style: italic;
   margin-top: var(--space-md);
 }
@@ -2368,8 +2368,8 @@
 .calc-result__card {
   flex: 1;
   min-width: 140px;
-  background: #F0F7FF;
-  border: 1px solid #BAE0FF;
+  background: var(--color-tint-blue, #F0F7FF);
+  border: 1px solid var(--color-border, #BAE0FF);
   border-radius: var(--radius-md);
   padding: var(--space-md) var(--space-lg);
   text-align: center;
@@ -2384,14 +2384,14 @@
 
 .calc-result__card-label {
   font-size: 13px;
-  color: #64748B;
+  color: var(--color-text-muted, #64748B);
   margin-top: 4px;
 }
 
 /* Итоговая строка таблицы */
 .calc-result__total-row td {
-  background: #F8FAFC;
-  border-top: 2px solid #CBD5E1;
+  background: var(--color-surface-muted, #F8FAFC);
+  border-top: 2px solid var(--color-border-dark, #CBD5E1);
   font-size: 15px;
 }
 

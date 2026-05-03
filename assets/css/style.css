@@ -2057,3 +2057,77 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-text-muted, #8B949E);
   border-color: var(--color-border, #30363D);
 }
+
+/* ── WS-B: Калькулятор шаги 2-3 — белые блоки в тёмной теме ──── */
+
+/* Прогресс-бар: метки шагов */
+[data-theme="dark"] .wizard__step-label {
+  color: var(--color-text-muted, #8B949E);
+}
+[data-theme="dark"] .wizard__step--active .wizard__step-label {
+  color: var(--color-text, #E6EDF3);
+}
+
+/* Навигация под полями */
+[data-theme="dark"] .wizard__nav {
+  border-top-color: var(--color-border, #30363D);
+}
+
+/* Итоговые карточки на шаге 3 */
+[data-theme="dark"] .calc-result__card {
+  background: var(--color-tint-blue, rgba(47, 129, 247, 0.12));
+  border-color: rgba(47, 129, 247, 0.25);
+}
+[data-theme="dark"] .calc-result__card-value {
+  color: var(--color-cta, #2F81F7);
+}
+[data-theme="dark"] .calc-result__card-label {
+  color: var(--color-text-muted, #8B949E);
+}
+
+/* Обёртка таблицы */
+[data-theme="dark"] .calc-result__table-wrap {
+  border-color: var(--color-border, #30363D);
+}
+
+/* Заголовок таблицы */
+[data-theme="dark"] .calc-result__table th {
+  background: var(--color-surface-2, #1C2128);
+  color: var(--color-text-muted, #8B949E);
+  border-bottom-color: var(--color-border, #30363D);
+}
+
+/* Ячейки тела таблицы */
+[data-theme="dark"] .calc-result__table td {
+  border-top-color: var(--color-border, #30363D);
+  color: var(--color-text, #E6EDF3);
+}
+
+/* Итоговая строка */
+[data-theme="dark"] .calc-result__total-row td {
+  background: var(--color-surface-2, #1C2128);
+  border-top-color: var(--color-border, #30363D);
+  color: var(--color-text, #E6EDF3);
+}
+
+/* Кнопки результата — разделитель */
+[data-theme="dark"] .wizard__result-actions {
+  border-top-color: var(--color-border, #30363D);
+}
+
+/* Информационные карточки (calc-result__info) */
+[data-theme="dark"] .calc-result__info-card {
+  background: var(--color-surface-2, #1C2128);
+  border-color: var(--color-border, #30363D);
+}
+[data-theme="dark"] .calc-result__info-value {
+  color: var(--color-cta, #2F81F7);
+}
+[data-theme="dark"] .calc-result__info-label {
+  color: var(--color-text-muted, #8B949E);
+}
+
+/* Сноска о ценах по запросу */
+[data-theme="dark"] .calc-price-note {
+  color: var(--color-text-muted, #8B949E);
+}
