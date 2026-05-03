@@ -6,6 +6,35 @@
 
 ---
 
+## [2026-05-03] — WS-D: картинки товаров (audit only, no-op)
+
+Закрыта без изменений. Аудит показал что предпосылка задачи неверна.
+
+### Найдено
+- Реальные картинки лежат в `assets/img/products/<id>.jpg` (поле `image`
+  в `data/catalog.json`), а не в `/uploadedFiles/eshopimages/big/`.
+- Путь `/uploadedFiles/...` намеренно закрыт `return 410` в
+  `/etc/nginx/snippets/rels-redirects.conf` — это URL-схема конкурента
+  (vsp74.ru/Уралсофт), её не индексируем.
+- На NL и Beget директории `assets/img/products/` идентичны: 84 файла,
+  4.2 МБ, побайтное совпадение по `md5sum` (diff пустой).
+- Из 158 товаров каталога 80 имеют поле `.image` (все 80 файлов на месте),
+  78 — без картинки.
+
+### Решение
+Никаких файлов не переносил, конфиги не трогал. Подробности — в
+`sessions/2026-05-03-ws-d-images.md`. Картинки для 78 товаров без `.image` —
+отдельная бизнес-задача, не часть миграции.
+
+### Техдолг (новый)
+- `data/image_map.json` — артефакт скрапинга vsp74. Поле `original_url`
+  содержит URLs `https://rels-komplekt.ru/uploadedFiles/...`, что может
+  ввести в заблуждение. Переименовать/удалить.
+- `/root/migration-backup/rels-komplekt.ru/uploadedFiles/eshopimages/` —
+  бэкап скрапа (~104 файла), удалить после cutover.
+
+---
+
 ## [2026-05-03] — WS-INDEX: index.html refactor (формы + footer + cookie-banner)
 
 Параллельный workstream WS-INDEX. Только `index.html`, на одной странице.
