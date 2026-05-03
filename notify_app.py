@@ -891,6 +891,11 @@ def application(environ, start_response):
     if method == 'POST' and path == '/api/lead':
         return _handle_lead(environ, start_response)
 
+    if method == 'GET' and path == '/api/health':
+        return _json_response(start_response, '200 OK',
+                              {'status': 'ok',
+                               'ts': int(datetime.utcnow().timestamp())})
+
     if method != 'POST' or path != '/api/notify':
         return _json_response(start_response, '404 Not Found',
                               {'ok': False, 'error': 'Not found'})
