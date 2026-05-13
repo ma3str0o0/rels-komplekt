@@ -3423,6 +3423,24 @@
   font-weight: 600;
 }
 
+/* Stack для panels калькулятора шт (По штукам / По весу) — оба в одну grid-cell,
+   чтобы при переключении не было прыжка высоты. Fade через opacity. */
+.calc-panel-stack {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.calc-panel-stack > * {
+  grid-column: 1;
+  grid-row: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+.calc-panel-stack > .calc-panel--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .calc-hint {
   font-size: 12px;
   color: #64748B;

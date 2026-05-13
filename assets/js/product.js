@@ -450,7 +450,7 @@ function renderPricingPerPiece(el, item, KZT) {
     </div>` : '';
 
   const piecesPanel = `
-    <div id="calcPiecesPanel">
+    <div id="calcPiecesPanel" class="calc-panel--active">
       <div class="calc-row">
         <label>Количество, шт</label>
         <input class="input calc-input" type="number" id="calcQty" min="1" step="1" value="${initQty}">
@@ -459,7 +459,7 @@ function renderPricingPerPiece(el, item, KZT) {
     </div>`;
 
   const weightPanel = hasWeight ? `
-    <div id="calcWeightPanel" class="hidden">
+    <div id="calcWeightPanel">
       <div class="calc-row">
         <label>Вес, кг</label>
         <input class="input calc-input" type="number" id="calcWeightKg" min="1" step="10" value="${initKg}">
@@ -467,11 +467,15 @@ function renderPricingPerPiece(el, item, KZT) {
       <div class="calc-hint" id="calcWeightHint">${hintForWeight(initKg)}</div>
     </div>` : '';
 
+  // Если есть оба panel'а (hasWeight) — оборачиваем в stack-контейнер для smooth fade
+  const panelsHTML = hasWeight
+    ? `<div class="calc-panel-stack">${piecesPanel}${weightPanel}</div>`
+    : piecesPanel;
+
   el.innerHTML = `
     <div class="product-calc-inline">
       ${tabsHTML}
-      ${piecesPanel}
-      ${weightPanel}
+      ${panelsHTML}
       <div class="calc-total">
         <span class="calc-total-label">Стоимость</span>
         <div class="calc-total-right">
@@ -494,14 +498,14 @@ function renderPricingPerPiece(el, item, KZT) {
     document.getElementById('calcCurr').textContent   = currency === 'KZT' ? '₸' : '₽';
   }
 
-  /* Переключение вкладок */
+  /* Переключение вкладок (через calc-panel--active в stack-контейнере) */
   el.querySelectorAll('.calc-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       el.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const isPieces = tab.dataset.tab === 'pieces';
-      document.getElementById('calcPiecesPanel')?.classList.toggle('hidden', !isPieces);
-      document.getElementById('calcWeightPanel')?.classList.toggle('hidden', isPieces);
+      document.getElementById('calcPiecesPanel')?.classList.toggle('calc-panel--active', isPieces);
+      document.getElementById('calcWeightPanel')?.classList.toggle('calc-panel--active', !isPieces);
     });
   });
 
