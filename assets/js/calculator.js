@@ -17,19 +17,20 @@ function escHtml(s) {
 
 /* ─── Константы ──────────────────────────────────────────────── */
 const CART_KEY      = 'cart';
-const RAIL_LENGTH_M = 12.5; // стандартная длина рельса в метрах
+const RAIL_LENGTH_M = 12.5; // дефолтная мерная длина рельса (fallback если у типа не задано)
 
-/* Веса рельсов по ГОСТ и данным каталога (кг/м).
+/* Веса рельсов по ГОСТ и данным каталога (кг/м) + мерная длина (м).
    КР-рельсы: номер = ширина головки мм, не вес! */
 const RAIL_TYPES = {
-  'Р50':   { kgPerM: 51.67,  label: 'Р50'   },
-  'Р65':   { kgPerM: 64.72,  label: 'Р65'   },
-  'Р75':   { kgPerM: 74.41,  label: 'Р75'   },
-  'КР70':  { kgPerM: 46.10,  label: 'КР70'  },
-  'КР80':  { kgPerM: 59.81,  label: 'КР80'  },
-  'КР100': { kgPerM: 83.09,  label: 'КР100' },
-  'КР120': { kgPerM: 113.47, label: 'КР120' },
-  'КР140': { kgPerM: 141.70, label: 'КР140' },
+  'Р8':    { kgPerM: 8.0,    label: 'Р8',    lengthM: 6    },
+  'Р50':   { kgPerM: 51.67,  label: 'Р50',   lengthM: 12.5 },
+  'Р65':   { kgPerM: 64.72,  label: 'Р65',   lengthM: 12.5 },
+  'Р75':   { kgPerM: 74.41,  label: 'Р75',   lengthM: 12.5 },
+  'КР70':  { kgPerM: 46.10,  label: 'КР70',  lengthM: 12   },
+  'КР80':  { kgPerM: 59.81,  label: 'КР80',  lengthM: 12   },
+  'КР100': { kgPerM: 83.09,  label: 'КР100', lengthM: 12   },
+  'КР120': { kgPerM: 113.47, label: 'КР120', lengthM: 12   },
+  'КР140': { kgPerM: 141.70, label: 'КР140', lengthM: 11   },
 };
 
 /* ─── Состояние калькулятора ─────────────────────────────────── */
@@ -138,9 +139,10 @@ function calculate() {
     document.querySelector('input[name="threadCount"]:checked').value
   );
   const railData     = RAIL_TYPES[railTypeVal];
+  const railLengthM  = railData.lengthM || RAIL_LENGTH_M;
 
-  const railCount    = Math.ceil(trackLenM / RAIL_LENGTH_M) * threads;
-  const weightT      = railCount * RAIL_LENGTH_M * railData.kgPerM / 1000;
+  const railCount    = Math.ceil(trackLenM / railLengthM) * threads;
+  const weightT      = railCount * railLengthM * railData.kgPerM / 1000;
 
   // Ищем минимальную цену по subcategory из catalog.json
   const railPrice    = findRailPrice(railTypeVal);
@@ -171,6 +173,7 @@ function calculate() {
     railTypeVal,
     railLabel:    railData.label,
     kgPerM:       railData.kgPerM,
+    railLengthM,
     trackLenM,
     threads,
     railCount,
@@ -244,7 +247,7 @@ function renderSummaryCards(r) {
       </div>
       <div class="calc-result__card">
         <div class="calc-result__card-value">${r.railCount.toLocaleString('ru-RU')}&nbsp;шт</div>
-        <div class="calc-result__card-label">Рельсов (${RAIL_LENGTH_M}&nbsp;м)</div>
+        <div class="calc-result__card-label">Рельсов (${r.railLengthM}&nbsp;м)</div>
       </div>
       ${r.sleeperCount > 0 ? `
       <div class="calc-result__card">
@@ -666,7 +669,7 @@ function handleDownloadPdf() {
       </div>
       <div class="ps-card">
         <div class="ps-card-val">${r.railCount.toLocaleString('ru-RU')}&thinsp;шт</div>
-        <div class="ps-card-lbl">Рельсов (${RAIL_LENGTH_M}&thinsp;м)</div>
+        <div class="ps-card-lbl">Рельсов (${r.railLengthM}&thinsp;м)</div>
       </div>`;
   if (r.sleeperCount > 0) {
     summaryCards += `

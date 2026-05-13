@@ -546,7 +546,7 @@ function scrollToGrid() {
 /* ─── HTML строки таблицы товара ─────────────────────────────── */
 function rowHTML(item) {
   const priceHtml = item.price !== null
-    ? `${item.price.toLocaleString('ru-RU')}&nbsp;₽/т`
+    ? `${item.price.toLocaleString('ru-RU')}&nbsp;₽/${escapeHtml(item.unit || 'т')}`
     : `<span class="text-muted">По запросу</span>`;
 
   // Определяем badge состояния по словам в названии

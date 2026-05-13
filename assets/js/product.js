@@ -38,7 +38,7 @@ async function loadCatalog() {
 /* ─── Главный рендер ─────────────────────────────────────────── */
 function renderProduct(item, catalog) {
   const pageTitle = `${item.name} — Рельс-Комплект`;
-  const pageDesc  = `Купить ${item.name} оптом. ${item.price ? fmtPrice(item.price) + ' ₽/т' : 'Цена по запросу'}. Рельс-Комплект.`;
+  const pageDesc  = `Купить ${item.name} оптом. ${item.price ? fmtPrice(item.price) + ' ₽/' + (item.unit || 'т') : 'Цена по запросу'}. Рельс-Комплект.`;
 
   document.title = pageTitle;
 
@@ -293,6 +293,11 @@ function renderPricing(item) {
     return;
   }
 
+  /* Режим «По штукам» — для unit='шт' (Р8, Р12, Р15, DIN 536) */
+  if (item.unit === 'шт') {
+    return renderPricingPerPiece(el, item, KZT);
+  }
+
   const weightPerUnit = getWeightKg(item);               // кг на рельс 12.5 м (из каталога или таблицы ГОСТ)
   const hasWeight     = weightPerUnit && weightPerUnit > 0;
   const wpm           = hasWeight ? weightPerUnit / 12.5 : null; // кг/м
@@ -406,6 +411,70 @@ function renderPricing(item) {
   });
 
   /* Переключатель валюты */
+  el.querySelectorAll('input[name="cr"]').forEach(r => {
+    r.addEventListener('change', () => { currency = r.value; updateDisplay(); });
+  });
+}
+
+/* ─── Калькулятор для unit='шт' (поштучно) ───────────────────── */
+// Используется для рельсов с пословной ценой: Р8/Р12/Р15 и DIN 536 (А45-А150).
+// Цена = qty × item.price. Hint показывает суммарные метры и кг (если есть).
+function renderPricingPerPiece(el, item, KZT) {
+  const lengthM  = item.length_m || null;        // м на штуку (из catalog)
+  const weightKg = item.weight_per_unit || null; // кг на штуку
+  const initQty  = 1;
+  const initCost = item.price * initQty;
+
+  function hintFor(qty) {
+    const parts = [];
+    if (lengthM)  parts.push(`${(lengthM * qty).toFixed(1).replace(/\.0$/, '')} м`);
+    if (weightKg) parts.push(`${Math.round(weightKg * qty)} кг`);
+    return parts.length ? `≈ ${parts.join(', ')}` : '';
+  }
+
+  const hintHTML = (lengthM || weightKg)
+    ? `<div class="calc-hint" id="calcQtyHint">${hintFor(initQty)}</div>`
+    : '';
+
+  el.innerHTML = `
+    <div class="product-calc-inline">
+      <div id="calcPiecesPanel">
+        <div class="calc-row">
+          <label>Количество, шт</label>
+          <input class="input calc-input" type="number" id="calcQty" min="1" step="1" value="${initQty}">
+        </div>
+        ${hintHTML}
+      </div>
+      <div class="calc-total">
+        <span class="calc-total-label">Стоимость</span>
+        <div class="calc-total-right">
+          <strong class="calc-total-value" id="calcResult">${fmtPrice(initCost)}</strong>
+          <span id="calcCurr">₽</span>
+          <div class="currency-toggle">
+            <label class="currency-opt"><input type="radio" name="cr" value="RUB" checked><span>RUB</span></label>
+            <label class="currency-opt"><input type="radio" name="cr" value="KZT"><span>KZT</span></label>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  let costRub  = initCost;
+  let currency = 'RUB';
+
+  function updateDisplay() {
+    const val = currency === 'KZT' ? Math.round(costRub * KZT) : costRub;
+    document.getElementById('calcResult').textContent = fmtPrice(val);
+    document.getElementById('calcCurr').textContent   = currency === 'KZT' ? '₸' : '₽';
+  }
+
+  document.getElementById('calcQty').addEventListener('input', e => {
+    const qty = Math.max(0, parseInt(e.target.value) || 0);
+    costRub = qty * item.price;
+    const hintEl = document.getElementById('calcQtyHint');
+    if (hintEl) hintEl.textContent = hintFor(qty);
+    updateDisplay();
+  });
+
   el.querySelectorAll('input[name="cr"]').forEach(r => {
     r.addEventListener('change', () => { currency = r.value; updateDisplay(); });
   });

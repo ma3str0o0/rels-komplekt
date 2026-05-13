@@ -2277,8 +2277,9 @@
         }
       ]
     },
-    "weight_per_unit": 311.25,
-    "image": null
+    "weight_per_unit": 190,
+    "image": null,
+    "length_m": 8
   },
   {
     "id": "00011763105_2",
@@ -2399,8 +2400,9 @@
         }
       ]
     },
-    "weight_per_unit": 311.25,
-    "image": null
+    "weight_per_unit": 190,
+    "image": null,
+    "length_m": 8
   },
   {
     "id": "00011779120_3",
@@ -9693,7 +9695,7 @@
     "category": "Международный стандарт рельс DIN 536",
     "subcategory": null,
     "price": 20100,
-    "unit": "т",
+    "unit": "шт",
     "in_stock": false,
     "competitor_data": {
       "description": null,
@@ -9724,7 +9726,7 @@
     "category": "Международный стандарт рельс DIN 536",
     "subcategory": null,
     "price": 28000,
-    "unit": "т",
+    "unit": "шт",
     "in_stock": false,
     "competitor_data": {
       "description": null,
@@ -9755,7 +9757,7 @@
     "category": "Международный стандарт рельс DIN 536",
     "subcategory": null,
     "price": null,
-    "unit": "т",
+    "unit": "шт",
     "in_stock": false,
     "competitor_data": {
       "description": null,
@@ -9786,7 +9788,7 @@
     "category": "Международный стандарт рельс DIN 536",
     "subcategory": null,
     "price": 6000,
-    "unit": "т",
+    "unit": "шт",
     "in_stock": false,
     "competitor_data": {
       "description": null,
@@ -9817,7 +9819,7 @@
     "category": "Международный стандарт рельс DIN 536",
     "subcategory": null,
     "price": 8600,
-    "unit": "т",
+    "unit": "шт",
     "in_stock": false,
     "competitor_data": {
       "description": null,
@@ -9848,7 +9850,7 @@
     "category": "Международный стандарт рельс DIN 536",
     "subcategory": null,
     "price": 11700,
-    "unit": "т",
+    "unit": "шт",
     "in_stock": false,
     "competitor_data": {
       "description": null,
@@ -9879,7 +9881,7 @@
     "category": "Международный стандарт рельс DIN 536",
     "subcategory": null,
     "price": 14100,
-    "unit": "т",
+    "unit": "шт",
     "in_stock": false,
     "competitor_data": {
       "description": null,

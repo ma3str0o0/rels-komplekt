@@ -666,7 +666,7 @@ function _buildEmailJSParams(data, source) {
   if (items.length) {
     itemsText = items.map((it, i) => {
       const price = it.price
-        ? `${Number(it.price).toLocaleString('ru-RU')} ₽/т`
+        ? `${Number(it.price).toLocaleString('ru-RU')} ₽/${it.unit || 'т'}`
         : 'По запросу';
       return `${i + 1}. ${it.name} — ${it.qty} ${it.unit || 'т'} × ${price}`;
     }).join('\n');
