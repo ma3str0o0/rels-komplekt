@@ -19,7 +19,7 @@ proxy/.env
 data/vsp74_scrape.json
 data/catalog_enriched.json
 data/catalog_backup.json
-data/catalog.json.bak
+data/catalog.json.bak*
 data/competitor_raw.json
 data/competitor_catalog.json
 data/competitor_details.json
