@@ -444,7 +444,7 @@ function renderPricingPerPiece(el, item, KZT) {
   }
 
   const tabsHTML = hasWeight ? `
-    <div class="calc-tabs" id="calcTabs">
+    <div class="calc-tabs calc-tabs--pill" id="calcTabs" data-active="pieces">
       <button class="calc-tab active" data-tab="pieces">По штукам</button>
       <button class="calc-tab" data-tab="weight">По весу</button>
     </div>` : '';
@@ -498,12 +498,14 @@ function renderPricingPerPiece(el, item, KZT) {
     document.getElementById('calcCurr').textContent   = currency === 'KZT' ? '₸' : '₽';
   }
 
-  /* Переключение вкладок (через calc-panel--active в stack-контейнере) */
+  /* Переключение вкладок: sliding pill через data-active, panels через calc-panel--active */
   el.querySelectorAll('.calc-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       el.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const isPieces = tab.dataset.tab === 'pieces';
+      const tabsEl = el.querySelector('.calc-tabs');
+      if (tabsEl) tabsEl.dataset.active = isPieces ? 'pieces' : 'weight';
       document.getElementById('calcPiecesPanel')?.classList.toggle('calc-panel--active', isPieces);
       document.getElementById('calcWeightPanel')?.classList.toggle('calc-panel--active', !isPieces);
     });
