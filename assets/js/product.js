@@ -416,35 +416,62 @@ function renderPricing(item) {
   });
 }
 
-/* ─── Калькулятор для unit='шт' (поштучно) ───────────────────── */
+/* ─── Калькулятор для unit='шт' (поштучно или по весу) ───────── */
 // Используется для рельсов с пословной ценой: Р8/Р12/Р15 и DIN 536 (А45-А150).
-// Цена = qty × item.price. Hint показывает суммарные метры и кг (если есть).
+// Если weight_per_unit задан — показывает 2 вкладки «По штукам» / «По весу».
+// Если нет — только «По штукам». Цена = qty × item.price.
 function renderPricingPerPiece(el, item, KZT) {
-  const lengthM  = item.length_m || null;        // м на штуку (из catalog)
-  const weightKg = item.weight_per_unit || null; // кг на штуку
-  const initQty  = 1;
-  const initCost = item.price * initQty;
+  const lengthM   = item.length_m || null;        // м на штуку
+  const weightKg  = item.weight_per_unit || null; // кг на штуку
+  const hasWeight = !!(weightKg && weightKg > 0);
+  const initQty   = 1;
+  const initKg    = hasWeight ? Math.round(weightKg * initQty) : 0;
+  const initCost  = item.price * initQty;
 
-  function hintFor(qty) {
+  function fmtNum(n) { return String(n).replace(/\.?0+$/, '') || '0'; }
+  function hintForQty(qty) {
     const parts = [];
-    if (lengthM)  parts.push(`${(lengthM * qty).toFixed(1).replace(/\.0$/, '')} м`);
+    if (lengthM)  parts.push(`${fmtNum((lengthM * qty).toFixed(1))} м`);
     if (weightKg) parts.push(`${Math.round(weightKg * qty)} кг`);
     return parts.length ? `≈ ${parts.join(', ')}` : '';
   }
+  function hintForWeight(kg) {
+    if (!hasWeight) return '';
+    const qty = kg / weightKg;
+    const parts = [`${fmtNum(qty.toFixed(2))} шт`];
+    if (lengthM) parts.push(`${fmtNum((lengthM * qty).toFixed(1))} м`);
+    return `≈ ${parts.join(', ')}`;
+  }
 
-  const hintHTML = (lengthM || weightKg)
-    ? `<div class="calc-hint" id="calcQtyHint">${hintFor(initQty)}</div>`
-    : '';
+  const tabsHTML = hasWeight ? `
+    <div class="calc-tabs" id="calcTabs">
+      <button class="calc-tab active" data-tab="pieces">По штукам</button>
+      <button class="calc-tab" data-tab="weight">По весу</button>
+    </div>` : '';
+
+  const piecesPanel = `
+    <div id="calcPiecesPanel">
+      <div class="calc-row">
+        <label>Количество, шт</label>
+        <input class="input calc-input" type="number" id="calcQty" min="1" step="1" value="${initQty}">
+      </div>
+      ${(lengthM || weightKg) ? `<div class="calc-hint" id="calcQtyHint">${hintForQty(initQty)}</div>` : ''}
+    </div>`;
+
+  const weightPanel = hasWeight ? `
+    <div id="calcWeightPanel" class="hidden">
+      <div class="calc-row">
+        <label>Вес, кг</label>
+        <input class="input calc-input" type="number" id="calcWeightKg" min="1" step="10" value="${initKg}">
+      </div>
+      <div class="calc-hint" id="calcWeightHint">${hintForWeight(initKg)}</div>
+    </div>` : '';
 
   el.innerHTML = `
     <div class="product-calc-inline">
-      <div id="calcPiecesPanel">
-        <div class="calc-row">
-          <label>Количество, шт</label>
-          <input class="input calc-input" type="number" id="calcQty" min="1" step="1" value="${initQty}">
-        </div>
-        ${hintHTML}
-      </div>
+      ${tabsHTML}
+      ${piecesPanel}
+      ${weightPanel}
       <div class="calc-total">
         <span class="calc-total-label">Стоимость</span>
         <div class="calc-total-right">
@@ -467,14 +494,38 @@ function renderPricingPerPiece(el, item, KZT) {
     document.getElementById('calcCurr').textContent   = currency === 'KZT' ? '₸' : '₽';
   }
 
+  /* Переключение вкладок */
+  el.querySelectorAll('.calc-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      el.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const isPieces = tab.dataset.tab === 'pieces';
+      document.getElementById('calcPiecesPanel')?.classList.toggle('hidden', !isPieces);
+      document.getElementById('calcWeightPanel')?.classList.toggle('hidden', isPieces);
+    });
+  });
+
+  /* Вкладка «По штукам» */
   document.getElementById('calcQty').addEventListener('input', e => {
     const qty = Math.max(0, parseInt(e.target.value) || 0);
     costRub = qty * item.price;
     const hintEl = document.getElementById('calcQtyHint');
-    if (hintEl) hintEl.textContent = hintFor(qty);
+    if (hintEl) hintEl.textContent = hintForQty(qty);
     updateDisplay();
   });
 
+  /* Вкладка «По весу» */
+  if (hasWeight) {
+    document.getElementById('calcWeightKg').addEventListener('input', e => {
+      const kg = Math.max(0, parseFloat(e.target.value) || 0);
+      const qty = kg / weightKg;
+      costRub = Math.round(qty * item.price);
+      document.getElementById('calcWeightHint').textContent = hintForWeight(kg);
+      updateDisplay();
+    });
+  }
+
+  /* Переключатель валюты */
   el.querySelectorAll('input[name="cr"]').forEach(r => {
     r.addEventListener('change', () => { currency = r.value; updateDisplay(); });
   });
