@@ -927,7 +927,10 @@ def application(environ, start_response):
             file_field = form['file'] if 'file' in form else None
             file_bytes = None
             file_name  = None
-            if file_field and file_field.filename:
+            # NB: explicit `is not None`, не `if file_field` — cgi.FieldStorage.__bool__
+            # бросает TypeError("Cannot be converted to bool.") когда self.list is None
+            # (single-file leaf node). Python 3.12 quirk, ломает форму с файлом.
+            if file_field is not None and file_field.filename:
                 raw_name = os.path.basename(file_field.filename)  # path traversal guard
                 ext = raw_name.rsplit('.', 1)[-1].lower() if '.' in raw_name else ''
                 if ext not in _ALLOWED_EXTS:
