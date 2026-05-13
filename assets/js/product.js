@@ -633,7 +633,17 @@ function _renderCompetitorData(item) {
     const sec  = document.getElementById('product-specs');
     const wrap = document.getElementById('enrichedSpecsWrap');
     if (sec && wrap) {
+      // Inject строку «Длина, м» если её нет в specs (wear-only schemas),
+      // но length_m задан в catalog. Покрывает DIN 536, КР80-140 wear,
+      // Р38, КР70 wear (24 продукта на момент WS-RENDER).
+      const lengthRow = (!('Длина, м' in cd.specs) && item.length_m != null)
+        ? `<tr>
+            <th class="specs-table__key">Длина, м</th>
+            <td class="specs-table__val">${escHtml(String(item.length_m).replace('.', ','))}</td>
+          </tr>`
+        : '';
       wrap.innerHTML = `<table class="specs-table specs-table--compact"><tbody>` +
+        lengthRow +
         Object.entries(cd.specs).map(([k, v]) => `<tr>
           <th class="specs-table__key">${escHtml(k)}</th>
           <td class="specs-table__val">${escHtml(String(v))}</td>
