@@ -197,7 +197,8 @@
       ]
     },
     "weight_per_unit": 809.0,
-    "image": "assets/img/products/00011763495.jpg"
+    "image": "assets/img/products/00011763495.jpg",
+    "length_m": 12.5
   },
   {
     "id": "00011763495_1_1",
@@ -397,7 +398,8 @@
       ]
     },
     "weight_per_unit": 809.0,
-    "image": "assets/img/products/00011763495_1_1.jpg"
+    "image": "assets/img/products/00011763495_1_1.jpg",
+    "length_m": 12.5
   },
   {
     "id": "00011763495_1",
@@ -597,7 +599,8 @@
       ]
     },
     "weight_per_unit": 809.0,
-    "image": "assets/img/products/00011763495_1.jpg"
+    "image": "assets/img/products/00011763495_1.jpg",
+    "length_m": 12.5
   },
   {
     "id": "00011766108",
@@ -797,7 +800,8 @@
       ]
     },
     "weight_per_unit": 809.0,
-    "image": null
+    "image": null,
+    "length_m": 12.5
   },
   {
     "id": "00011763495_1_1_1",
@@ -995,7 +999,8 @@
       ]
     },
     "weight_per_unit": 645.88,
-    "image": null
+    "image": null,
+    "length_m": 12.5
   },
   {
     "id": "00011763495_1_1_1_1",
@@ -1193,7 +1198,8 @@
       ]
     },
     "weight_per_unit": 645.88,
-    "image": "assets/img/products/00011763495_1_1_1_1.jpg"
+    "image": "assets/img/products/00011763495_1_1_1_1.jpg",
+    "length_m": 12.5
   },
   {
     "id": "00011766111",
@@ -1391,7 +1397,8 @@
       ]
     },
     "weight_per_unit": 645.88,
-    "image": null
+    "image": null,
+    "length_m": 12.5
   },
   {
     "id": "00011766107",
@@ -1589,7 +1596,8 @@
       ]
     },
     "weight_per_unit": 645.88,
-    "image": "assets/img/products/00011766107.jpg"
+    "image": "assets/img/products/00011766107.jpg",
+    "length_m": 12.5
   },
   {
     "id": "00011765976",

@@ -9,6 +9,27 @@ const EMAILJS_SERVICE_ID  = 'service_vc2oz9j';
 const EMAILJS_TEMPLATE_ID = 'template_e7f1ke6';
 const EMAILJS_PUBLIC_KEY  = 'FZzMmOJ5mTIGrPV3j';
 
+/* ─── Catalog helpers — длина и вес per piece ──────────────────
+   Источник правды: catalog.json fields length_m + weight_per_unit.
+   До WS-CALC-REFACTOR эти данные дублировались в product.js
+   (RAIL_WEIGHT_KG), order.js (та же таблица со stale values),
+   calculator.js (RAIL_TYPES). После refactor — единый catalog read. */
+const DEFAULT_RAIL_LENGTH_M = 12.5;
+
+function getLengthM(p) {
+  if (p && p.length_m != null) return p.length_m;
+  console.warn(
+    '[catalog-drift] product',
+    p && p.id, p && p.name,
+    'has no length_m; using fallback', DEFAULT_RAIL_LENGTH_M, 'm'
+  );
+  return DEFAULT_RAIL_LENGTH_M;
+}
+
+function getWeightPerUnit(p) {
+  return (p && p.weight_per_unit != null) ? p.weight_per_unit : null;
+}
+
 /* ─── Инициализация при загрузке DOM ─────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   // Инициализируем EmailJS если CDN загружен

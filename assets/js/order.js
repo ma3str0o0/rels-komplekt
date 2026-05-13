@@ -8,29 +8,11 @@
 
 const ORDER_KEY = 'cart';   /* должен совпадать с catalog.js */
 
-/* ─── Вес 1 шт (рельс 12.5 м), кг — зеркало из product.js ──── */
-const RAIL_WEIGHT_KG = {
-  'Рельс Р8': 100,    'Рельсы Р8': 100,
-  'Рельс Р12': 150,   'Рельсы Р12': 150,
-  'Рельс Р15': 188,   'Рельсы Р15': 188,
-  'Рельс Р18': 225,   'Рельсы Р18': 225,
-  'Рельс Р24': 300,   'Рельсы Р24': 300,
-  'Рельсы узкоколейные': 300,
-  'Рельс Р33': 413,   'Рельсы Р33': 413,
-  'Рельс Р38': 475,   'Рельсы Р38': 475,
-  'Рельс Р43': 558,   'Рельсы Р43': 558,
-  'Рельс Р50': 646,   'Рельсы Р50': 646,
-  'Рельс Р65': 809,   'Рельсы Р65': 809,
-  'Рельсы КР 70': 875,  'Рельсы КР 80': 1000,
-  'Рельсы КР 100': 1250, 'Рельсы КР 120': 1500,
-  'Рельсы КР 140': 1750,
-  'Международный стандарт рельс DIN 536': 1250,
-};
-
-/* Возвращает вес 1 шт в кг по подкатегории или категории товара */
-function getWeightKg(item) {
-  return RAIL_WEIGHT_KG[item.subcategory] || RAIL_WEIGHT_KG[item.category] || null;
-}
+/* RAIL_WEIGHT_KG dict удалён в WS-CALC-REFACTOR. Источник — catalog.json
+   (item.weight_per_unit). Helper getWeightPerUnit(p) определён в main.js.
+   Старые stale values этого dict (КР70: 875, КР80: 1000, КР100: 1250,
+   КР120: 1500, КР140: 1750) приводили к завышенным cart-totals — этот
+   refactor одновременно фиксит данный prod bug. */
 
 /* ─── Точка входа ────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
@@ -146,7 +128,7 @@ function rowHTML(item, num, catalogItem) {
   const enriched = catalogItem
     ? { ...item, subcategory: catalogItem.subcategory, category: catalogItem.category }
     : item;
-  const weightKg = getWeightKg(enriched);
+  const weightKg = getWeightPerUnit(enriched);
 
   /* ЦЕНА/Т и ЦЕНА/ШТ */
   let priceTon, pricePcs;

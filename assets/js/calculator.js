@@ -19,8 +19,12 @@ function escHtml(s) {
 const CART_KEY      = 'cart';
 const RAIL_LENGTH_M = 12.5; // дефолтная мерная длина рельса (fallback если у типа не задано)
 
-/* Веса рельсов по ГОСТ и данным каталога (кг/м) + мерная длина (м).
-   КР-рельсы: номер = ширина головки мм, не вес! */
+/* RAIL_TYPES — type-canonical data (kgPerM + lengthM) для standalone wizard.
+   Сознательно НЕ читается из catalog.json — wizard работает с type codes
+   (Р50/Р65/КР70…), а не с конкретными product IDs. Один и тот же тип
+   может иметь несколько product-вариантов (новый/с хранения/старогодный),
+   но kgPerM/lengthM канонические per type.
+   Move to data/rail-types.json in separate WS if needed. НЕ удалять при refactor. */
 const RAIL_TYPES = {
   'Р8':    { kgPerM: 8.0,    label: 'Р8',    lengthM: 6    },
   'Р50':   { kgPerM: 51.67,  label: 'Р50',   lengthM: 12.5 },

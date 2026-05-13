@@ -231,45 +231,9 @@ function renderSpecs(item) {
   ).join('');
 }
 
-/* ─── Вес 1 шт (рельс 12.5 м), кг — по подкатегории ─────────── */
-const RAIL_WEIGHT_KG = {
-  'Рельс Р8':    100,   // 8.0 кг/м × 12.5
-  'Рельсы Р8':   100,
-  'Рельс Р12':   150,   // 12.0 × 12.5
-  'Рельсы Р12':  150,
-  'Рельс Р15':   188,   // 15.1 × 12.5
-  'Рельсы Р15':  188,
-  'Рельс Р18':   225,   // 18.0 × 12.5
-  'Рельсы Р18':  225,
-  'Рельс Р24':   300,   // 24.0 × 12.5
-  'Рельсы Р24':  300,
-  'Рельсы узкоколейные': 300,
-  'Рельс Р33':   413,   // 33.0 × 12.5
-  'Рельсы Р33':  413,
-  'Рельс Р38':   475,   // 38.0 × 12.5
-  'Рельсы Р38':  475,
-  'Рельс Р43':   558,   // 44.65 × 12.5
-  'Рельсы Р43':  558,
-  'Рельс Р50':   646,   // 51.67 × 12.5
-  'Рельсы Р50':  646,
-  'Рельс Р65':   809,   // 64.72 × 12.5
-  'Рельсы Р65':  809,
-  'Рельсы КР 70':  576,    // 46.10 кг/м × 12.5 (ГОСТ, данные vsp74)
-  'Рельсы КР 80':  748,    // 59.81 кг/м × 12.5
-  'Рельсы КР 100': 1039,   // 83.09 кг/м × 12.5
-  'Рельсы КР 120': 1418,   // 113.47 кг/м × 12.5
-  'Рельсы КР 140': 1771,   // 141.70 кг/м × 12.5
-  'Международный стандарт рельс DIN 536': 1250,
-};
-
-function getWeightKg(item) {
-  // Приоритет 1: данные из catalog.json (актуальные, от ГОСТ через vsp74)
-  if (item.weight_per_unit && item.weight_per_unit > 0) {
-    return item.weight_per_unit;
-  }
-  // Приоритет 2: fallback по таблице для позиций без weight_per_unit
-  return RAIL_WEIGHT_KG[item.subcategory] || RAIL_WEIGHT_KG[item.category] || null;
-}
+/* RAIL_WEIGHT_KG dict удалён в WS-CALC-REFACTOR. Источник — catalog.json
+   (поле weight_per_unit). Helpers getLengthM(p) / getWeightPerUnit(p)
+   определены в assets/js/main.js. */
 
 /* ─── Калькулятор / блок "цена по запросу" ──────────────────── */
 function renderPricing(item) {
@@ -298,13 +262,14 @@ function renderPricing(item) {
     return renderPricingPerPiece(el, item, KZT);
   }
 
-  const weightPerUnit = getWeightKg(item);               // кг на рельс 12.5 м (из каталога или таблицы ГОСТ)
-  const hasWeight     = weightPerUnit && weightPerUnit > 0;
-  const wpm           = hasWeight ? weightPerUnit / 12.5 : null; // кг/м
+  const lengthM       = getLengthM(item);                       // м per шт (из catalog, fallback 12.5 + warn)
+  const weightPerUnit = getWeightPerUnit(item);                  // кг per шт (из catalog) или null
+  const hasWeight     = !!(weightPerUnit && weightPerUnit > 0);
+  const wpm           = hasWeight ? weightPerUnit / lengthM : null; // кг/м
   const pricePerMeter = hasWeight ? (wpm / 1000) * item.price : null; // ₽/м
 
   /* Начальные значения */
-  const initMeters   = 12.5;
+  const initMeters   = lengthM;
   const initWeightKg = hasWeight ? Math.round(initMeters * wpm) : 0;
   const initCost     = hasWeight
     ? Math.round(initMeters * pricePerMeter)
