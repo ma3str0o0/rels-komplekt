@@ -306,9 +306,48 @@ function getCondition(name) {
   return 'unknown';
 }
 
+/* ─── Нормализация Latin→Cyrillic look-alikes ────────────────── */
+// Применяется только для regex-extraction в extractRailIndex; data не меняется.
+// Покрывает кириллицу-look-alikes из старого scrape vsp74 («Рельсы P24…», «Haклaдкa…»).
+const LAT_TO_CYR = {
+  'A':'А','B':'В','C':'С','E':'Е','H':'Н','K':'К','M':'М','O':'О',
+  'P':'Р','T':'Т','X':'Х','Y':'У',
+  'a':'а','c':'с','e':'е','o':'о','p':'р','x':'х','y':'у',
+};
+function normalizeLatinToCyrillic(s) {
+  if (!s) return '';
+  return s.replace(/[A-Za-z]/g, ch => LAT_TO_CYR[ch] || ch);
+}
+
+/* ─── Числовой индекс рельса по имени → [bucket, index] ──────── */
+// Bucket 1 = Р-series (Р8, Р12 … Р65); 2 = КР-series; 3 = DIN 536 А-series.
+// Anchored на ^ — «Накладка КР100» / «Подкладка Р18» в Infinity (не rail).
+function extractRailIndex(name) {
+  const s = normalizeLatinToCyrillic(name || '');
+  let m;
+  m = /^Рельс[ыа]?\s+Р(\d+)/i.exec(s);
+  if (m) return [1, parseInt(m[1], 10)];
+  m = /^Рельс[ыа]?\s+крановы[ей]\s+КР\s*(\d+)/i.exec(s);
+  if (m) return [2, parseInt(m[1], 10)];
+  m = /^Рельс[ыа]?\s+А(\d+)\s+DIN\s+536/i.exec(s);
+  if (m) return [3, parseInt(m[1], 10)];
+  return [Infinity, 0];
+}
+
 /* ─── Сортировка массива товаров ─────────────────────────────── */
 function sortItems(items) {
   return [...items].sort((a, b) => {
+    if (sortField === 'name') {
+      const ka = extractRailIndex(a.name);
+      const kb = extractRailIndex(b.name);
+      let cmp = ka[0] - kb[0];                  // bucket asc
+      // Infinity - Infinity = NaN → секцию пропускаем, идём в alpha
+      if (Number.isNaN(cmp) || cmp === 0) {
+        cmp = ka[1] - kb[1];                    // numeric index
+        if (cmp === 0) cmp = (a.name || '').localeCompare(b.name || '', 'ru');
+      }
+      return sortDir === 'asc' ? cmp : -cmp;
+    }
     if (sortField === 'condition') {
       const wa = CONDITION_WEIGHT[getCondition(a.name)];
       const wb = CONDITION_WEIGHT[getCondition(b.name)];
@@ -390,7 +429,7 @@ function renderCards() {
     <table class="catalog-table">
       <thead>
         <tr>
-          <th>Наименование</th>
+          ${_sortThHtml('name', 'Наименование', 'col-name')}
           <th>Подкатегория</th>
           ${_sortThHtml('condition', 'Состояние', 'col-condition')}
           ${_sortThHtml('price',     'Цена',      'col-price')}
