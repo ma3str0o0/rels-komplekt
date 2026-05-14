@@ -525,7 +525,7 @@ function renderPricingPerPiece(el, item, KZT) {
 function renderActions(item) {
   const notForSale = item.availability === 'not_for_sale';
   document.getElementById('productActions').innerHTML =
-    cartBtnHTML(isInCart(item.id), notForSale) + kpBtnHTML();
+    cartBtnHTML(isInCart(item.id), notForSale) + kpBtnHTML(item);
   // Если товар снят с продажи — не вешаем toggle (кнопка disabled)
   if (!notForSale) bindCartBtn(item);
 }
@@ -549,8 +549,13 @@ function cartBtnHTML(inCart, disabled = false) {
   </button>`;
 }
 
-function kpBtnHTML() {
-  return `<button class="btn btn-lg btn-secondary" id="productKpBtn" data-modal="request">
+function kpBtnHTML(item) {
+  return `<button class="btn btn-lg btn-secondary" id="productKpBtn"
+    data-modal="request"
+    data-product-id="${escHtml(item.id)}"
+    data-product-name="${escHtml(item.name)}"
+    data-product-price="${item.price ?? ''}"
+    data-product-unit="${escHtml(item.unit || 'т')}">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
       <polyline points="14 2 14 8 20 8"/>

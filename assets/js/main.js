@@ -400,6 +400,32 @@ function initActiveNavLink() {
 }
 
 /* ─── Модальное окно заявки ─────────────────────────────────── */
+// Контекст товара для запроса КП (set'ится при клике по #productKpBtn).
+// Используется в handleRequestSubmit для подстановки items/source/message.
+let _kpProductContext = null;
+
+const _DEFAULT_MODAL_TITLE = 'Свяжитесь с нами';
+const _DEFAULT_MSG_PLACEHOLDER = 'Чем можем помочь?';
+
+function _applyKpContext(overlay, trigger) {
+  const titleEl = overlay.querySelector('#modalTitle');
+  const msgEl   = overlay.querySelector('[name="message"]');
+  if (trigger && trigger.dataset.productId) {
+    _kpProductContext = {
+      id:    trigger.dataset.productId,
+      name:  trigger.dataset.productName || '',
+      price: trigger.dataset.productPrice ? Number(trigger.dataset.productPrice) : null,
+      unit:  trigger.dataset.productUnit  || 'т',
+    };
+    if (titleEl) titleEl.textContent = `Запрос КП: ${_kpProductContext.name}`;
+    if (msgEl)   msgEl.placeholder    = `Уточните объём, сроки или другие условия по «${_kpProductContext.name}»`;
+  } else {
+    _kpProductContext = null;
+    if (titleEl) titleEl.textContent = _DEFAULT_MODAL_TITLE;
+    if (msgEl)   msgEl.placeholder    = _DEFAULT_MSG_PLACEHOLDER;
+  }
+}
+
 function initRequestModal() {
   const overlay = document.querySelector('#requestModal');
   if (!overlay) return;
@@ -409,11 +435,13 @@ function initRequestModal() {
   const form     = overlay.querySelector('#requestForm');
 
   // Открытие через event delegation — ловит и кнопки, добавленные позже
-  // (например, #productKpBtn рендерится product.js после async fetch caталога,
+  // (например, #productKpBtn рендерится product.js после async fetch каталога,
   // querySelectorAll на этапе DOMContentLoaded её бы не нашёл).
   document.addEventListener('click', e => {
     const trigger = e.target.closest('[data-modal="request"]');
-    if (trigger) openModal(overlay);
+    if (!trigger) return;
+    _applyKpContext(overlay, trigger);
+    openModal(overlay);
   });
 
   // Закрытие по кнопке
@@ -447,6 +475,13 @@ function openModal(overlay) {
 function closeModal(overlay) {
   overlay.classList.remove('open');
   document.body.style.overflow = '';
+  // Сброс контекста товара (если был запрос КП) — следующее открытие
+  // generic-заголовком «Свяжитесь с нами».
+  _kpProductContext = null;
+  const titleEl = overlay.querySelector('#modalTitle');
+  const msgEl   = overlay.querySelector('[name="message"]');
+  if (titleEl) titleEl.textContent = _DEFAULT_MODAL_TITLE;
+  if (msgEl)   msgEl.placeholder    = _DEFAULT_MSG_PLACEHOLDER;
 }
 
 /* ─── Форма "Перезвоните мне" (секция cta-contact) ──────────── */
@@ -662,11 +697,25 @@ async function handleRequestSubmit(e) {
   const data = Object.fromEntries(new FormData(form));
 
   try {
-    // Добавляем товары из корзины в данные заявки
-    try {
-      data.items = JSON.parse(localStorage.getItem('cart') || '[]');
-    } catch(e) {
-      data.items = [];
+    // Контекст товара (запрос КП с product.html) приоритетнее корзины:
+    // менеджер должен видеть какую именно позицию интересует.
+    if (_kpProductContext) {
+      data.items = [{
+        id:    _kpProductContext.id,
+        name:  _kpProductContext.name,
+        qty:   1,
+        unit:  _kpProductContext.unit,
+        price: _kpProductContext.price,
+      }];
+      // Дописываем в message что это запрос КП на конкретный товар.
+      const userMsg = (data.message || '').trim();
+      data.message = `Запрос КП: ${_kpProductContext.name}` + (userMsg ? `\n\nОт клиента:\n${userMsg}` : '');
+    } else {
+      try {
+        data.items = JSON.parse(localStorage.getItem('cart') || '[]');
+      } catch(e) {
+        data.items = [];
+      }
     }
     // Определяем тип умного поля
     if (data.contact) {
@@ -674,11 +723,15 @@ async function handleRequestSubmit(e) {
       data.phone = isEmail ? '' : data.contact;
       data.email = isEmail ? data.contact : '';
     }
-    await sendTelegram(data, 'modal');
+    const sourceTag = _kpProductContext ? 'product_kp' : 'modal';
+    const emailSourceLabel = _kpProductContext
+      ? `Запрос КП — ${_kpProductContext.name}`
+      : 'Форма заявки';
+    await sendTelegram(data, sourceTag);
     showToast('Спасибо! Мы свяжемся с вами.', 'success');
-    if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: 'request_form' } });
+    if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: sourceTag } });
     // Дублируем в EmailJS (fire-and-forget)
-    sendEmailJS(_buildEmailJSParams(data, 'Форма заявки')).catch(err => console.warn('EmailJS (modal):', err));
+    sendEmailJS(_buildEmailJSParams(data, emailSourceLabel)).catch(err => console.warn('EmailJS (modal):', err));
     form.reset();
     if (overlay) closeModal(overlay);
   } catch (err) {
