@@ -19,23 +19,81 @@ function escHtml(s) {
 const CART_KEY      = 'cart';
 const RAIL_LENGTH_M = 12.5; // дефолтная мерная длина рельса (fallback если у типа не задано)
 
-/* RAIL_TYPES — type-canonical data (kgPerM + lengthM) для standalone wizard.
-   Сознательно НЕ читается из catalog.json — wizard работает с type codes
-   (Р50/Р65/КР70…), а не с конкретными product IDs. Один и тот же тип
-   может иметь несколько product-вариантов (новый/с хранения/старогодный),
-   но kgPerM/lengthM канонические per type.
-   Move to data/rail-types.json in separate WS if needed. НЕ удалять при refactor. */
+/* RAIL_TYPES — fallback-данные, если в catalog.json нет подходящей позиции.
+   ИСТОЧНИК ПРАВДЫ — catalog.json: см. resolveRailData() ниже. Калькулятор
+   подставляет kgPerM/lengthM/price из catalog для конкретного типа
+   (предпочтительно condition='new', availability='in_stock').
+   Hardcoded значения нужны только когда позиции в каталоге нет
+   (например, временно сняты с продажи целиком). */
 const RAIL_TYPES = {
   'Р8':    { kgPerM: 8.0,    label: 'Р8',    lengthM: 6    },
   'Р50':   { kgPerM: 51.67,  label: 'Р50',   lengthM: 12.5 },
   'Р65':   { kgPerM: 64.72,  label: 'Р65',   lengthM: 12.5 },
   'Р75':   { kgPerM: 74.41,  label: 'Р75',   lengthM: 12.5 },
-  'КР70':  { kgPerM: 46.10,  label: 'КР70',  lengthM: 12   },
-  'КР80':  { kgPerM: 59.81,  label: 'КР80',  lengthM: 12   },
-  'КР100': { kgPerM: 83.09,  label: 'КР100', lengthM: 12   },
-  'КР120': { kgPerM: 113.47, label: 'КР120', lengthM: 12   },
-  'КР140': { kgPerM: 141.70, label: 'КР140', lengthM: 11   },
+  'КР70':  { kgPerM: 51.67,  label: 'КР70',  lengthM: 12   },
+  'КР80':  { kgPerM: 60.00,  label: 'КР80',  lengthM: 12   },
+  'КР100': { kgPerM: 87.00,  label: 'КР100', lengthM: 12   },
+  'КР120': { kgPerM: 115.67, label: 'КР120', lengthM: 12   },
+  'КР140': { kgPerM: 161.02, label: 'КР140', lengthM: 11   },
 };
+
+/* Поиск канонических данных рельса в каталоге.
+   Возвращает {kgPerM, lengthM, price, condition} или null. */
+function resolveRailData(railType) {
+  // Регекс с unicode-aware boundary через lookbehind/lookahead (JS \b
+   // не работает с кириллицей). «КР80» матчит «кр80», «кр 80» — но НЕ
+  // «кр800» и НЕ «р8» внутри «кр80».
+  const m = /^([а-яёa-z]+)(\d+)$/i.exec(railType);
+  let typeRe;
+  if (m) {
+    const letters = m[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    typeRe = new RegExp(`(?<![а-яёa-z])${letters}\\s*${m[2]}(?![а-яёa-z0-9])`, 'i');
+  } else {
+    const esc = railType.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    typeRe = new RegExp(`(?<![а-яёa-z0-9])${esc}(?![а-яёa-z0-9])`, 'i');
+  }
+  // Кандидаты: имя или подкатегория содержит тип, не «снят с продажи»,
+  // не накладка/подкладка (anchored на "Рельс" в начале имени).
+  const cands = catalog.filter(it => {
+    if (it.availability === 'not_for_sale') return false;
+    const name = (it.name || '').toLowerCase();
+    const sub  = (it.subcategory || '').toLowerCase();
+    if (!name.startsWith('рельс')) return false;          // только сами рельсы
+    return typeRe.test(name) || typeRe.test(sub);
+  });
+  if (cands.length === 0) return null;
+
+  /* Предпочтение: condition=new и availability=in_stock → storage → restored
+     → used. Для веса/длины нужны позиции с заполненными weight_per_unit и
+     length_m. */
+  const order = ['new', 'storage', 'restored', 'used'];
+  let pick = null;
+  for (const cond of order) {
+    const subset = cands.filter(c => c.condition === cond && c.availability === 'in_stock');
+    const withData = subset.find(c => c.weight_per_unit && c.length_m);
+    if (withData) { pick = { src: withData, cond }; break; }
+  }
+  if (!pick) {
+    // Последний fallback: любой с весом/длиной независимо от availability
+    const any = cands.find(c => c.weight_per_unit && c.length_m);
+    if (!any) return null;
+    pick = { src: any, cond: any.condition };
+  }
+
+  // Цена: минимальная среди подходящих ТОЙ ЖЕ condition (чтобы не смешивать
+  // цену нового с массой б/у).
+  const sameCond = cands.filter(c => c.condition === pick.cond &&
+                                     c.availability === 'in_stock' &&
+                                     c.price !== null);
+  const price = sameCond.length ? Math.min(...sameCond.map(c => c.price)) : null;
+
+  return {
+    kgPerM:    pick.src.weight_per_unit / pick.src.length_m,
+    lengthM:   pick.src.length_m,
+    price:     price,
+    condition: pick.cond,
+  };
+}
 
 /* ─── Состояние калькулятора ─────────────────────────────────── */
 let catalog       = [];
@@ -142,14 +200,17 @@ function calculate() {
   const threads      = parseInt(
     document.querySelector('input[name="threadCount"]:checked').value
   );
-  const railData     = RAIL_TYPES[railTypeVal];
-  const railLengthM  = railData.lengthM || RAIL_LENGTH_M;
+  // Источник правды: catalog.json. Если позиции нет — fallback на канонические
+  // значения из RAIL_TYPES (Р75 в каталоге пока нет, КР140 редкий и т.д.).
+  const fallback     = RAIL_TYPES[railTypeVal];
+  const resolved     = resolveRailData(railTypeVal);
+  const kgPerM       = resolved?.kgPerM   ?? fallback.kgPerM;
+  const railLengthM  = resolved?.lengthM  ?? fallback.lengthM ?? RAIL_LENGTH_M;
+  const railPrice    = resolved?.price    ?? null;
+  const railCondition= resolved?.condition ?? null;
 
   const railCount    = Math.ceil(trackLenM / railLengthM) * threads;
-  const weightT      = railCount * railLengthM * railData.kgPerM / 1000;
-
-  // Ищем минимальную цену по subcategory из catalog.json
-  const railPrice    = findRailPrice(railTypeVal);
+  const weightT      = railCount * railLengthM * kgPerM / 1000;
 
   /* --- Шаг 2: шпалы и скрепления --- */
   const sleeperSel   = document.getElementById('sleeperType');
@@ -175,14 +236,15 @@ function calculate() {
   /* --- Сохраняем результат --- */
   calcResult = {
     railTypeVal,
-    railLabel:    railData.label,
-    kgPerM:       railData.kgPerM,
+    railLabel:    fallback.label,
+    kgPerM,
     railLengthM,
     trackLenM,
     threads,
     railCount,
     weightT,
-    railPrice,     // null если не найдена
+    railPrice,        // null если не найдена в каталоге
+    railCondition,    // 'new'|'storage'|'restored'|'used'|null — для UI
     sleeperType,
     sleeperLabel:  sleeperOpt.text,
     sleeperCount,
@@ -201,19 +263,6 @@ function calculate() {
       extra: { rail_type: railTypeVal, total_tons: Math.round(calcResult.weightT * 100) / 100 },
     });
   }
-}
-
-/* ─── Поиск цены рельса в каталоге ──────────────────────────── */
-function findRailPrice(railType) {
-  const matches = catalog.filter(item => {
-    if (item.price === null) return false;
-    const name = (item.name || '').toLowerCase();
-    const sub  = (item.subcategory || '').toLowerCase();
-    const key  = railType.toLowerCase();
-    return name.includes(key) || sub.includes(key);
-  });
-  if (matches.length === 0) return null;
-  return Math.min(...matches.map(i => i.price));
 }
 
 /* ─── Данные по скреплениям ──────────────────────────────────── */
