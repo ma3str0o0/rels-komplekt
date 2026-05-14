@@ -13,7 +13,9 @@ const PAGE_SIZE = 24;
 let activeFilter = { type: 'all' };
 
 /* ─── Состояние сортировки ────────────────────────────────────── */
-let sortField = 'condition'; // 'condition' | 'price'
+// 'name' = по типу: первый буквенный префикс + численный индекс
+// (А45 → А55 → А65 → А100; Р8 → Р12 → … → Р75; КР70 → КР80 → КР140 и т.д.)
+let sortField = 'name';     // 'name' | 'condition' | 'price'
 let sortDir   = 'asc';      // 'asc' | 'desc'
 
 // Числовой вес состояния для сортировки (новый → первый)
@@ -354,33 +356,33 @@ function normalizeLatinToCyrillic(s) {
   return s.replace(/[A-Za-z]/g, ch => LAT_TO_CYR[ch] || ch);
 }
 
-/* ─── Числовой индекс рельса по имени → [bucket, index] ──────── */
-// Bucket 1 = Р-series (Р8, Р12 … Р65); 2 = КР-series; 3 = DIN 536 А-series.
-// Anchored на ^ — «Накладка КР100» / «Подкладка Р18» в Infinity (не rail).
-function extractRailIndex(name) {
+/* ─── Натуральный ключ сортировки по имени ───────────────────
+   Возвращает [letter_prefix, numeric_index, name_lower].
+   Берёт первое сочетание «буквы + опц. -|пробел + цифры» в имени:
+   «А45 DIN 536» → ['А', 45], «КР 70» → ['КР', 70], «Болт М22х135» → ['М', 22],
+   «Шпала тип 1» → ['тип', 1], «Подкладка Р18» → ['Р', 18].
+   Без совпадения → ['', Infinity, name_lower]. */
+function naturalSortKey(name) {
   const s = normalizeLatinToCyrillic(name || '');
-  let m;
-  m = /^Рельс[ыа]?\s+Р(\d+)/i.exec(s);
-  if (m) return [1, parseInt(m[1], 10)];
-  m = /^Рельс[ыа]?\s+крановы[ей]\s+КР\s*(\d+)/i.exec(s);
-  if (m) return [2, parseInt(m[1], 10)];
-  m = /^Рельс[ыа]?\s+А(\d+)\s+DIN\s+536/i.exec(s);
-  if (m) return [3, parseInt(m[1], 10)];
-  return [Infinity, 0];
+  const m = /([А-Яа-яA-Za-z]+)[-\s]?(\d+)/.exec(s);
+  if (m) return [m[1].toLowerCase(), parseInt(m[2], 10), s.toLowerCase()];
+  return ['', Infinity, s.toLowerCase()];
 }
 
 /* ─── Сортировка массива товаров ─────────────────────────────── */
 function sortItems(items) {
   return [...items].sort((a, b) => {
     if (sortField === 'name') {
-      const ka = extractRailIndex(a.name);
-      const kb = extractRailIndex(b.name);
-      let cmp = ka[0] - kb[0];                  // bucket asc
-      // Infinity - Infinity = NaN → секцию пропускаем, идём в alpha
-      if (Number.isNaN(cmp) || cmp === 0) {
-        cmp = ka[1] - kb[1];                    // numeric index
-        if (cmp === 0) cmp = (a.name || '').localeCompare(b.name || '', 'ru');
-      }
+      // Первичный ключ — категория (чтобы товары не перемешивались между типами).
+      // Вторичный — буквенный префикс. Третичный — численный индекс.
+      const catCmp = (a.category || '').localeCompare(b.category || '', 'ru');
+      if (catCmp !== 0) return sortDir === 'asc' ? catCmp : -catCmp;
+
+      const ka = naturalSortKey(a.name);
+      const kb = naturalSortKey(b.name);
+      let cmp = ka[0].localeCompare(kb[0], 'ru');
+      if (cmp === 0) cmp = ka[1] - kb[1];
+      if (cmp === 0) cmp = ka[2].localeCompare(kb[2], 'ru');
       return sortDir === 'asc' ? cmp : -cmp;
     }
     if (sortField === 'condition') {
