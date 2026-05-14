@@ -408,9 +408,12 @@ function initRequestModal() {
   const closeBtn = overlay.querySelector('.modal__close');
   const form     = overlay.querySelector('#requestForm');
 
-  // Открытие
-  document.querySelectorAll('[data-modal="request"]').forEach(trigger => {
-    trigger.addEventListener('click', () => openModal(overlay));
+  // Открытие через event delegation — ловит и кнопки, добавленные позже
+  // (например, #productKpBtn рендерится product.js после async fetch caталога,
+  // querySelectorAll на этапе DOMContentLoaded её бы не нашёл).
+  document.addEventListener('click', e => {
+    const trigger = e.target.closest('[data-modal="request"]');
+    if (trigger) openModal(overlay);
   });
 
   // Закрытие по кнопке
