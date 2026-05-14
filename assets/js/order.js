@@ -146,6 +146,22 @@ function rowHTML(item, num, catalogItem) {
     } else {
       pricePcs = `<td style="text-align:right; ${muted}">—</td>`;
     }
+  } else if (unit === 'м') {
+    /* Цена хранится за метр (DIN 536). Цена штуки = price × length_m, цена тонны через вес. */
+    const lengthM = enriched.length_m || null;
+    if (lengthM) {
+      const perPcs = Math.round(item.price * lengthM);
+      pricePcs = `<td style="text-align:right; font-weight:600">${fmtPrice(perPcs)}</td>`;
+    } else {
+      pricePcs = `<td style="text-align:right; ${muted}">—</td>`;
+    }
+    if (weightKg && lengthM) {
+      const wpm = weightKg / lengthM;          // кг/м
+      const perTon = Math.round((item.price / wpm) * 1000);
+      priceTon = `<td style="text-align:right; ${muted}">${fmtPrice(perTon)}</td>`;
+    } else {
+      priceTon = `<td style="text-align:right; ${muted}">—</td>`;
+    }
   } else {
     /* unit === 'шт' — цена за штуку */
     pricePcs = `<td style="text-align:right; font-weight:600">${fmtPrice(item.price)}</td>`;

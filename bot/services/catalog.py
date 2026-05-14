@@ -253,45 +253,86 @@ def set_price_request(pid: str, user_id: Optional[int] = None) -> bool:
     return update_price(pid, None, user_id=user_id)
 
 
-def set_in_stock(pid: str, value: bool, user_id: Optional[int] = None) -> bool:
-    """Выставляет in_stock у одного товара. Возвращает True если найден."""
+# Допустимые значения для condition/availability
+CONDITION_VALUES = ('new', 'storage', 'restored', 'used')
+AVAILABILITY_VALUES = ('in_stock', 'on_order', 'not_for_sale')
+
+
+def set_condition(pid: str, value: str, user_id: Optional[int] = None) -> bool:
+    """Выставляет condition товару. value ∈ CONDITION_VALUES."""
+    if value not in CONDITION_VALUES:
+        return False
     data = _load()
     for item in data:
         if item.get("id") == pid:
-            old = item.get("in_stock")
-            item["in_stock"] = bool(value)
+            old = item.get("condition")
+            item["condition"] = value
             _save(data)
-            _audit("in_stock", pid, old, bool(value), user_id)
+            _audit("condition", pid, old, value, user_id)
             return True
     return False
+
+
+def set_availability(pid: str, value: str, user_id: Optional[int] = None) -> bool:
+    """Выставляет availability товару. value ∈ AVAILABILITY_VALUES.
+    Синхронизирует in_stock bool (back-compat)."""
+    if value not in AVAILABILITY_VALUES:
+        return False
+    data = _load()
+    for item in data:
+        if item.get("id") == pid:
+            old = item.get("availability")
+            item["availability"] = value
+            item["in_stock"] = (value == "in_stock")
+            _save(data)
+            _audit("availability", pid, old, value, user_id)
+            return True
+    return False
+
+
+def bulk_set_availability(
+    value: str, category: Optional[str] = None, user_id: Optional[int] = None
+) -> int:
+    """Массовая установка availability. Если category=None — для всех.
+
+    Возвращает кол-во обновлённых позиций. Учитываем все позиции в скоупе
+    (даже если значение совпадает), чтобы вывод был предсказуемым для
+    пользователя — он попросил "поставь это значение всем".
+    """
+    if value not in AVAILABILITY_VALUES:
+        return 0
+    data = _load()
+    count = 0
+    in_stock_bool = (value == "in_stock")
+    for item in data:
+        if category is not None and item.get("category") != category:
+            continue
+        item["availability"] = value
+        item["in_stock"] = in_stock_bool
+        count += 1
+    if count:
+        _save(data)
+        _audit("bulk_availability", "*", None, f"{value}({category or 'all'})={count}", user_id)
+    return count
+
+
+def set_in_stock(pid: str, value: bool, user_id: Optional[int] = None) -> bool:
+    """Legacy-обёртка. True → availability=in_stock, False → availability=on_order.
+
+    Сохранена для обратной совместимости со старыми callback-кнопками и /instock.
+    """
+    return set_availability(pid, "in_stock" if value else "on_order", user_id=user_id)
 
 
 def bulk_set_in_stock(
     value: bool, category: Optional[str] = None, user_id: Optional[int] = None
 ) -> int:
-    """Массово выставляет in_stock. Если category=None — для всех, иначе в указанной категории.
-
-    Возвращает кол-во обновлённых позиций (включая те, у которых значение не изменилось,
-    но фактически переписано — учитываем только реально изменённые).
-    """
-    data = _load()
-    count = 0
-    changes: list[tuple[str, object, bool]] = []
-    target = bool(value)
-    for item in data:
-        if category is not None and item.get("category") != category:
-            continue
-        old = item.get("in_stock")
-        if old == target:
-            continue
-        item["in_stock"] = target
-        changes.append((item["id"], old, target))
-        count += 1
-    if count:
-        _save(data)
-        for pid, old, new in changes:
-            _audit("bulk_in_stock", pid, old, new, user_id)
-    return count
+    """Legacy-обёртка над bulk_set_availability."""
+    return bulk_set_availability(
+        "in_stock" if value else "on_order",
+        category=category,
+        user_id=user_id,
+    )
 
 
 def delete_product(pid: str, user_id: Optional[int] = None) -> bool:
@@ -324,6 +365,8 @@ def add_product(
         "price": price,
         "unit": unit,
         "in_stock": True,
+        "condition": "new",
+        "availability": "in_stock",
         "competitor_data": {},
         "weight_per_unit": weight_per_unit,
         "length_m": length_m,

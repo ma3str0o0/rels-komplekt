@@ -53,6 +53,7 @@ def small_catalog(tmp_path, monkeypatch):
             "id": "p001", "name": "Альфа товар", "page_name": "alfa-tovar",
             "category": "Кат1", "subcategory": None,
             "price": 100000, "unit": "т", "in_stock": True,
+            "condition": "new", "availability": "in_stock",
             "competitor_data": {}, "weight_per_unit": None, "length_m": None,
             "image": None,
         },
@@ -60,6 +61,7 @@ def small_catalog(tmp_path, monkeypatch):
             "id": "p002", "name": "Бета штука", "page_name": "beta-shtuka",
             "category": "Кат1", "subcategory": None,
             "price": 144000, "unit": "т", "in_stock": False,
+            "condition": "storage", "availability": "on_order",
             "competitor_data": {}, "weight_per_unit": None, "length_m": None,
             "image": None,
         },
@@ -67,6 +69,7 @@ def small_catalog(tmp_path, monkeypatch):
             "id": "p003", "name": "Гамма деталь", "page_name": "gamma-detal",
             "category": "Кат2", "subcategory": None,
             "price": None, "unit": "шт", "in_stock": True,
+            "condition": "used", "availability": "in_stock",
             "competitor_data": {}, "weight_per_unit": None, "length_m": None,
             "image": None,
         },
@@ -237,29 +240,209 @@ class TestSetInStock:
 
 
 class TestBulkSetInStock:
+    """Тесты для legacy-обёртки bulk_set_in_stock над bulk_set_availability.
+
+    Изменение семантики (после миграции на availability): count теперь
+    включает все позиции в скоупе, не только реально изменённые. Это
+    осознанное решение — пользователь сказал "сделай это всем", и хочет
+    знать, к скольким позициям применилось.
+    """
+
     def test_bulk_set_in_stock_by_category(self, small_catalog):
-        # Кат1: p001 (True), p002 (False). Ставим False — изменится только p001.
+        # Кат1: p001 + p002 → обе в скоупе, обе становятся False (on_order).
         count = svc.bulk_set_in_stock(False, category="Кат1")
-        assert count == 1
+        assert count == 2
         svc._cache_mtime = 0.0
         assert svc.get_product("p001")["in_stock"] is False
         assert svc.get_product("p002")["in_stock"] is False
+        # availability синхронизирован
+        assert svc.get_product("p001")["availability"] == "on_order"
+        assert svc.get_product("p002")["availability"] == "on_order"
 
     def test_bulk_set_in_stock_all_no_category(self, small_catalog):
-        # Все: p001=True, p002=False, p003=True. Ставим True — поменяется только p002.
+        # Все 3 в скоупе — все становятся in_stock.
         count = svc.bulk_set_in_stock(True, category=None)
-        assert count == 1
+        assert count == 3
         svc._cache_mtime = 0.0
+        assert svc.get_product("p001")["in_stock"] is True
         assert svc.get_product("p002")["in_stock"] is True
+        assert svc.get_product("p003")["in_stock"] is True
 
     def test_bulk_set_in_stock_all_flip_false(self, small_catalog):
-        # Все → False: должны измениться p001 (True→False) и p003 (True→False), всего 2
+        # Все 3 в скоупе → все становятся False
         count = svc.bulk_set_in_stock(False, category=None)
-        assert count == 2
+        assert count == 3
 
     def test_bulk_set_in_stock_nonexistent_category(self, small_catalog):
         count = svc.bulk_set_in_stock(True, category="НетТакой")
         assert count == 0
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# set_condition
+# ══════════════════════════════════════════════════════════════════════════
+
+
+class TestSetCondition:
+    def test_valid_value_persists(self, small_catalog):
+        assert svc.set_condition("p001", "used", user_id=42) is True
+        svc._cache_mtime = 0.0
+        assert svc.get_product("p001")["condition"] == "used"
+
+    def test_all_valid_values_accepted(self, small_catalog):
+        for v in svc.CONDITION_VALUES:
+            assert svc.set_condition("p001", v) is True
+            svc._cache_mtime = 0.0
+            assert svc.get_product("p001")["condition"] == v
+
+    def test_invalid_value_rejected(self, small_catalog):
+        # До вызова — condition="new"
+        assert svc.get_product("p001")["condition"] == "new"
+        assert svc.set_condition("p001", "banana") is False
+        svc._cache_mtime = 0.0
+        # Поле не изменилось
+        assert svc.get_product("p001")["condition"] == "new"
+
+    def test_unknown_id_returns_false(self, small_catalog):
+        assert svc.set_condition("no-such-id", "new") is False
+
+    def test_audit_log_written(self, small_catalog, tmp_path):
+        audit_path = tmp_path / "catalog_audit.log"
+        assert svc.set_condition("p001", "used", user_id=42) is True
+        assert audit_path.exists()
+        content = audit_path.read_text(encoding="utf-8")
+        assert "op=condition" in content
+        assert "pid=p001" in content
+        assert "user_id=42" in content
+        assert "old=new" in content
+        assert "new=used" in content
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# set_availability
+# ══════════════════════════════════════════════════════════════════════════
+
+
+class TestSetAvailability:
+    def test_in_stock_sets_bool_true(self, small_catalog):
+        # p002 был on_order / in_stock=False
+        assert svc.set_availability("p002", "in_stock") is True
+        svc._cache_mtime = 0.0
+        item = svc.get_product("p002")
+        assert item["availability"] == "in_stock"
+        assert item["in_stock"] is True
+
+    def test_on_order_sets_bool_false(self, small_catalog):
+        assert svc.set_availability("p001", "on_order") is True
+        svc._cache_mtime = 0.0
+        item = svc.get_product("p001")
+        assert item["availability"] == "on_order"
+        assert item["in_stock"] is False
+
+    def test_not_for_sale_sets_bool_false(self, small_catalog):
+        assert svc.set_availability("p001", "not_for_sale") is True
+        svc._cache_mtime = 0.0
+        item = svc.get_product("p001")
+        assert item["availability"] == "not_for_sale"
+        assert item["in_stock"] is False
+
+    def test_invalid_value_rejected(self, small_catalog):
+        before = svc.get_product("p001")["availability"]
+        assert svc.set_availability("p001", "banana") is False
+        svc._cache_mtime = 0.0
+        assert svc.get_product("p001")["availability"] == before
+
+    def test_unknown_id_returns_false(self, small_catalog):
+        assert svc.set_availability("no-such-id", "in_stock") is False
+
+    def test_audit_log_written(self, small_catalog, tmp_path):
+        audit_path = tmp_path / "catalog_audit.log"
+        assert svc.set_availability("p001", "not_for_sale", user_id=7) is True
+        content = audit_path.read_text(encoding="utf-8")
+        assert "op=availability" in content
+        assert "pid=p001" in content
+        assert "user_id=7" in content
+        assert "new=not_for_sale" in content
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# bulk_set_availability
+# ══════════════════════════════════════════════════════════════════════════
+
+
+class TestBulkSetAvailability:
+    def test_all_items(self, small_catalog):
+        count = svc.bulk_set_availability("on_order")
+        assert count == 3
+        svc._cache_mtime = 0.0
+        for pid in ("p001", "p002", "p003"):
+            item = svc.get_product(pid)
+            assert item["availability"] == "on_order"
+            assert item["in_stock"] is False
+
+    def test_by_category(self, small_catalog):
+        # Кат1: p001 + p002. Кат2: p003 — не трогаем.
+        count = svc.bulk_set_availability("not_for_sale", category="Кат1")
+        assert count == 2
+        svc._cache_mtime = 0.0
+        assert svc.get_product("p001")["availability"] == "not_for_sale"
+        assert svc.get_product("p001")["in_stock"] is False
+        assert svc.get_product("p002")["availability"] == "not_for_sale"
+        # p003 нетронут
+        assert svc.get_product("p003")["availability"] == "in_stock"
+
+    def test_invalid_value_returns_zero(self, small_catalog):
+        count = svc.bulk_set_availability("banana")
+        assert count == 0
+        svc._cache_mtime = 0.0
+        # Никакой записи не изменилось
+        assert svc.get_product("p001")["availability"] == "in_stock"
+
+    def test_nonexistent_category_returns_zero(self, small_catalog):
+        count = svc.bulk_set_availability("in_stock", category="НетТакой")
+        assert count == 0
+
+    def test_in_stock_value_sets_bool_true(self, small_catalog):
+        # p002 был on_order
+        svc.bulk_set_availability("in_stock", category="Кат1")
+        svc._cache_mtime = 0.0
+        assert svc.get_product("p002")["in_stock"] is True
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# Legacy-обёртка set_in_stock → set_availability
+# ══════════════════════════════════════════════════════════════════════════
+
+
+class TestLegacyInStockWrapper:
+    def test_set_in_stock_true_maps_to_in_stock_avail(self, small_catalog):
+        # p002 был on_order / in_stock=False
+        assert svc.set_in_stock("p002", True) is True
+        svc._cache_mtime = 0.0
+        item = svc.get_product("p002")
+        assert item["availability"] == "in_stock"
+        assert item["in_stock"] is True
+
+    def test_set_in_stock_false_maps_to_on_order(self, small_catalog):
+        # p001 был in_stock
+        assert svc.set_in_stock("p001", False) is True
+        svc._cache_mtime = 0.0
+        item = svc.get_product("p001")
+        assert item["availability"] == "on_order"
+        assert item["in_stock"] is False
+
+    def test_bulk_wrapper_true_maps_to_in_stock(self, small_catalog):
+        # все в Кат1: ставим in_stock
+        count = svc.bulk_set_in_stock(True, category="Кат1")
+        assert count == 2
+        svc._cache_mtime = 0.0
+        assert svc.get_product("p002")["availability"] == "in_stock"
+
+    def test_bulk_wrapper_false_maps_to_on_order(self, small_catalog):
+        count = svc.bulk_set_in_stock(False, category=None)
+        assert count == 3
+        svc._cache_mtime = 0.0
+        assert svc.get_product("p001")["availability"] == "on_order"
 
 
 # ══════════════════════════════════════════════════════════════════════════

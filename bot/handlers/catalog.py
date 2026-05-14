@@ -17,10 +17,12 @@ from telegram.ext import (
 from bot.config import ADMIN_IDS
 from bot.middleware.auth import admin_only, admin_only_cb
 from bot.services.catalog import (
-    add_product, apply_markup, bulk_set_in_stock, bulk_update_prices,
-    delete_product, find_products, get_categories, get_product,
-    get_product_count, get_stock_summary, parse_csv_prices,
-    quick_adjust_price, set_in_stock, set_price_request, update_price,
+    AVAILABILITY_VALUES, CONDITION_VALUES,
+    add_product, apply_markup, bulk_set_availability, bulk_set_in_stock,
+    bulk_update_prices, delete_product, find_products, get_categories,
+    get_product, get_product_count, get_stock_summary, parse_csv_prices,
+    quick_adjust_price, set_availability, set_condition, set_in_stock,
+    set_price_request, update_price,
 )
 from bot.utils.formatting import format_price
 from bot.utils.ui import SECT_MSG_KEY, edit_screen, send_screen
@@ -47,6 +49,37 @@ _MARKUP_CAT_KEY  = "cat_markup_cat"
 _FIND_RESULTS    = "cat_find_results"
 
 
+# ── Лейблы для condition / availability ───────────────────────────────────
+
+COND_LABELS = {
+    'new':       '🆕 Новое',
+    'storage':   '📦 С хранения',
+    'restored':  '♻️ Восстановленный',
+    'used':      '👷 Б/У',
+}
+
+# Короткие лейблы для кнопок (чтобы влезли в ряд)
+COND_LABELS_SHORT = {
+    'new':       '🆕 Новое',
+    'storage':   '📦 Хранение',
+    'restored':  '♻️ Восст.',
+    'used':      '👷 Б/У',
+}
+
+AVAIL_LABELS = {
+    'in_stock':     '🟢 В наличии',
+    'on_order':     '🟡 Под заказ',
+    'not_for_sale': '⚫ Снят с продажи',
+}
+
+# Короткие лейблы для кнопок
+AVAIL_LABELS_SHORT = {
+    'in_stock':     '🟢 В наличии',
+    'on_order':     '🟡 Под заказ',
+    'not_for_sale': '⚫ Снят',
+}
+
+
 # ── Клавиатуры ────────────────────────────────────────────────────────────
 
 
@@ -65,15 +98,22 @@ def catalog_menu_keyboard() -> InlineKeyboardMarkup:
 
 
 def product_keyboard(pid: str, item: Optional[dict] = None, show_delete: bool = False) -> InlineKeyboardMarkup:
-    """Клавиатура карточки товара с быстрыми корректировками цены.
+    """Клавиатура карточки товара с быстрыми корректировками цены,
+    редактированием availability и condition.
 
     Если item передан и price is None — quick-adjust кнопки скрываются.
     Если item не передан — пытаемся подгрузить (back-compat для старого кода).
+    Активное значение availability/condition помечается галочкой "✓ " в начале.
     """
     if item is None:
         item = get_product(pid) or {}
     has_price = item.get("price") is not None
-    in_stock  = bool(item.get("in_stock"))
+
+    # Текущие значения. Если поле отсутствует — back-compat fallback от in_stock
+    current_avail = item.get("availability")
+    if current_avail is None:
+        current_avail = "in_stock" if item.get("in_stock") else "on_order"
+    current_cond = item.get("condition")  # может быть None у старых записей
 
     rows: list = []
 
@@ -87,19 +127,31 @@ def product_keyboard(pid: str, item: Optional[dict] = None, show_delete: bool = 
             InlineKeyboardButton("+10%", callback_data=f"cat_adj_{pid}_10"),
         ])
 
-    # Своя цена / наличие / по запросу
-    stock_btn = (
-        InlineKeyboardButton("🔴 Снять с наличия", callback_data=f"cat_stock_{pid}")
-        if in_stock else
-        InlineKeyboardButton("🟢 В наличии",       callback_data=f"cat_stock_{pid}")
-    )
+    # Своя цена / по запросу
     rows.append([
         InlineKeyboardButton("💯 Своя цена",  callback_data=f"cat_price_{pid}"),
-        stock_btn,
         InlineKeyboardButton("По запросу",    callback_data=f"cat_req_{pid}"),
     ])
 
-    # Fallback: явная кнопка ручного ввода (та же что и «Своя цена», для совместимости)
+    # Availability — 3 кнопки, активная с галочкой
+    avail_row = []
+    for v in AVAILABILITY_VALUES:
+        label = AVAIL_LABELS_SHORT[v]
+        if v == current_avail:
+            label = f"✓ {label}"
+        avail_row.append(InlineKeyboardButton(label, callback_data=f"cat_avail_{pid}_{v}"))
+    rows.append(avail_row)
+
+    # Condition — 4 кнопки, активная с галочкой
+    cond_row = []
+    for v in CONDITION_VALUES:
+        label = COND_LABELS_SHORT[v]
+        if v == current_cond:
+            label = f"✓ {label}"
+        cond_row.append(InlineKeyboardButton(label, callback_data=f"cat_cond_{pid}_{v}"))
+    rows.append(cond_row)
+
+    # Fallback: явная кнопка ручного ввода цены (та же что и «Своя цена», для совместимости)
     rows.append([InlineKeyboardButton("✏️ Изменить вручную", callback_data=f"cat_price_{pid}")])
 
     if show_delete:
@@ -126,17 +178,26 @@ def _cancel_kb(back: str = "cat_menu") -> InlineKeyboardMarkup:
 
 def _product_text(item: dict) -> str:
     price_str = format_price(item.get("price"))
-    stock_icon = "✅" if item.get("in_stock") else "❌"
     cat = item.get("category", "—")
     sub = item.get("subcategory") or ""
     cat_line = f"{cat}" + (f" / {sub}" if sub else "")
+
+    # condition / availability — с fallback на in_stock для старых записей
+    cond = item.get("condition")
+    cond_label = COND_LABELS.get(cond, "—") if cond else "—"
+
+    avail = item.get("availability")
+    if avail is None:
+        avail = "in_stock" if item.get("in_stock") else "on_order"
+    avail_label = AVAIL_LABELS.get(avail, "—")
+
     lines = [
         f"📦 <b>{item['name']}</b>",
         f"<code>{item['id']}</code>",
         "",
         f"<blockquote>💰 Цена: <b>{price_str}</b> / {item.get('unit','т')}\n"
         f"📁 {cat_line}\n"
-        f"{stock_icon} {'В наличии' if item.get('in_stock') else 'Нет в наличии'}</blockquote>",
+        f"✓ Состояние: <b>{cond_label}</b> | Наличие: <b>{avail_label}</b></blockquote>",
     ]
     # Подсказка, если цена не задана — quick-adjust кнопки скрыты
     if item.get("price") is None:
@@ -716,16 +777,64 @@ async def handle_catalog_callback(update: Update, context: ContextTypes.DEFAULT_
         await query.answer("✅ Цена сброшена → «По запросу»")
         await show_product(msg, pid)
 
-    # ── Toggle in_stock: cat_stock_<pid> ──────────────────────────────────
+    # ── Toggle in_stock (legacy): cat_stock_<pid> ─────────────────────────
+    # Оставлено для совместимости с закешированными сообщениями старого UI.
+    # Тогглит между in_stock и on_order (а не not_for_sale).
     elif data.startswith("cat_stock_"):
         pid = data[len("cat_stock_"):]
         item = get_product(pid)
         if not item:
             await query.answer("❌ Товар не найден.", show_alert=True)
             return
-        new_val = not bool(item.get("in_stock"))
-        set_in_stock(pid, new_val, user_id=user_id)
-        await query.answer("🟢 В наличии" if new_val else "🔴 Снят с наличия")
+        # текущее значение — приоритет availability, fallback на in_stock
+        current = item.get("availability") or ("in_stock" if item.get("in_stock") else "on_order")
+        new_val = "on_order" if current == "in_stock" else "in_stock"
+        set_availability(pid, new_val, user_id=user_id)
+        await query.answer(AVAIL_LABELS[new_val])
+        await show_product(msg, pid)
+
+    # ── Set availability: cat_avail_<pid>_<value> ─────────────────────────
+    # value может содержать '_' (in_stock, on_order, not_for_sale) — парсим
+    # суффикс, перебирая известные значения, чтобы корректно отделить pid.
+    elif data.startswith("cat_avail_"):
+        rest = data[len("cat_avail_"):]
+        pid = None
+        value = None
+        for v in AVAILABILITY_VALUES:
+            suffix = f"_{v}"
+            if rest.endswith(suffix):
+                pid = rest[: -len(suffix)]
+                value = v
+                break
+        if not pid or not value:
+            await query.answer("❌ Неверный формат.", show_alert=True)
+            return
+        ok = set_availability(pid, value, user_id=user_id)
+        if not ok:
+            await query.answer("❌ Товар не найден.", show_alert=True)
+            return
+        await query.answer(f"✅ Наличие: {AVAIL_LABELS[value]}")
+        await show_product(msg, pid)
+
+    # ── Set condition: cat_cond_<pid>_<value> ─────────────────────────────
+    elif data.startswith("cat_cond_"):
+        rest = data[len("cat_cond_"):]
+        pid = None
+        value = None
+        for v in CONDITION_VALUES:
+            suffix = f"_{v}"
+            if rest.endswith(suffix):
+                pid = rest[: -len(suffix)]
+                value = v
+                break
+        if not pid or not value:
+            await query.answer("❌ Неверный формат.", show_alert=True)
+            return
+        ok = set_condition(pid, value, user_id=user_id)
+        if not ok:
+            await query.answer("❌ Товар не найден.", show_alert=True)
+            return
+        await query.answer(f"✅ Состояние: {COND_LABELS[value]}")
         await show_product(msg, pid)
 
     elif data.startswith("cat_del_"):
@@ -941,5 +1050,101 @@ async def instock_command(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         f"✅ <b>Массовое обновление по категории</b>\n\n"
         f"<blockquote>Категория: {target}\n"
         f"in_stock={value}\n"
+        f"Изменено позиций: <b>{count}</b></blockquote>"
+    )
+
+
+# ── /avail команда ────────────────────────────────────────────────────────
+
+# Алиасы для удобства ввода — короткие варианты значений availability
+_AVAIL_ALIASES = {
+    "in_stock":     "in_stock",
+    "instock":      "in_stock",
+    "stock":        "in_stock",
+    "on_order":     "on_order",
+    "order":        "on_order",
+    "onorder":      "on_order",
+    "not_for_sale": "not_for_sale",
+    "notsale":      "not_for_sale",
+    "not_sale":     "not_for_sale",
+    "off":          "not_for_sale",
+}
+
+
+def _parse_avail(s: str) -> Optional[str]:
+    """Нормализует строку → одно из AVAILABILITY_VALUES или None."""
+    return _AVAIL_ALIASES.get(s.strip().lower())
+
+
+@admin_only
+async def avail_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Использование:
+      /avail <id> in_stock|on_order|not_for_sale          — одиночный
+      /avail all in_stock|on_order|not_for_sale           — массово все
+      /avail «Категория» in_stock|on_order|not_for_sale   — массово по категории
+
+    Алиасы: instock/stock → in_stock; order/onorder → on_order;
+            notsale/not_sale/off → not_for_sale.
+    """
+    args = context.args or []
+    if len(args) < 2:
+        await send_screen(update, context,
+            "ℹ️ Использование:\n"
+            "<code>/avail &lt;id&gt; in_stock|on_order|not_for_sale</code>\n"
+            "<code>/avail all in_stock|on_order|not_for_sale</code>\n"
+            "<code>/avail «Категория» in_stock|on_order|not_for_sale</code>\n\n"
+            "<blockquote>Алиасы: <code>instock</code>, <code>order</code>, <code>notsale</code></blockquote>"
+        )
+        return
+
+    value = _parse_avail(args[-1])
+    if value is None:
+        await send_screen(update, context,
+            "❌ Последний аргумент должен быть одним из: "
+            "<code>in_stock</code>, <code>on_order</code>, <code>not_for_sale</code> "
+            "(или алиасы: <code>instock</code>, <code>order</code>, <code>notsale</code>)."
+        )
+        return
+
+    target = " ".join(args[:-1]).strip().strip("«»\"'")
+    user_id = update.effective_user.id
+
+    # all → массовая операция без фильтра по категории
+    if target.lower() == "all":
+        count = bulk_set_availability(value, category=None, user_id=user_id)
+        await send_screen(update, context,
+            f"✅ <b>Массовое обновление</b>\n\n"
+            f"<blockquote>Установлено availability={value} ({AVAIL_LABELS[value]})\n"
+            f"Изменено позиций: <b>{count}</b></blockquote>"
+        )
+        return
+
+    # Одиночный товар? — пробуем как id
+    item = get_product(target)
+    if item:
+        ok = set_availability(target, value, user_id=user_id)
+        if ok:
+            await send_screen(update, context,
+                f"✅ <code>{target}</code> → {AVAIL_LABELS[value]}"
+            )
+        else:
+            await send_screen(update, context, f"❌ Товар <code>{target}</code> не найден.")
+        return
+
+    # Иначе — трактуем как название категории
+    cats = get_categories()
+    if target not in cats:
+        cats_list = "\n".join(f"  · {c}" for c in cats[:8]) or "  (нет категорий)"
+        await send_screen(update, context,
+            f"❌ Товар или категория «{target}» не найдены.\n\n"
+            f"<blockquote><b>Существующие категории (топ-8):</b>\n{cats_list}</blockquote>"
+        )
+        return
+
+    count = bulk_set_availability(value, category=target, user_id=user_id)
+    await send_screen(update, context,
+        f"✅ <b>Массовое обновление по категории</b>\n\n"
+        f"<blockquote>Категория: {target}\n"
+        f"availability={value} ({AVAIL_LABELS[value]})\n"
         f"Изменено позиций: <b>{count}</b></blockquote>"
     )

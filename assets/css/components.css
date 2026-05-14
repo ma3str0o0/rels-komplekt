@@ -563,6 +563,11 @@
   color: #475569;
 }
 
+.badge--purple {
+  background: #EDE9FE;
+  color: #5B21B6;
+}
+
 /* ─── Таблица ───────────────────────────────────────────────── */
 .table-wrapper {
   overflow-x: auto;
@@ -2924,6 +2929,10 @@
 [data-theme="dark"] .badge--orange {
   background: rgba(210, 118, 11, 0.18);
   color: #E3B341;
+}
+[data-theme="dark"] .badge--purple {
+  background: rgba(139, 92, 246, 0.18);
+  color: #C4B5FD;
 }
 
 /* Кнопка-иконка темы — контраст на тёмной шапке */

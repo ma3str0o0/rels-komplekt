@@ -17,7 +17,7 @@ let sortField = 'condition'; // 'condition' | 'price'
 let sortDir   = 'asc';      // 'asc' | 'desc'
 
 // Числовой вес состояния для сортировки (новый → первый)
-const CONDITION_WEIGHT = { 'new': 0, 'storage': 1, 'used': 2, 'unknown': 3 };
+const CONDITION_WEIGHT = { 'new': 0, 'storage': 1, 'restored': 2, 'used': 3, 'unknown': 4 };
 
 /* ─── Состояние фильтров ─────────────────────────────────────── */
 const state = {
@@ -341,14 +341,6 @@ function initCategoryFilter() {
   }
 }
 
-/* ─── Определение состояния товара по названию ───────────────── */
-function getCondition(name) {
-  if (/новы[йе]|ГОСТ/i.test(name))    return 'new';
-  if (/хранени[яе]/i.test(name))       return 'storage';
-  if (/б\/у|старогодн/i.test(name))    return 'used';
-  return 'unknown';
-}
-
 /* ─── Нормализация Latin→Cyrillic look-alikes ────────────────── */
 // Применяется только для regex-extraction в extractRailIndex; data не меняется.
 // Покрывает кириллицу-look-alikes из старого scrape vsp74 («Рельсы P24…», «Haклaдкa…»).
@@ -392,8 +384,8 @@ function sortItems(items) {
       return sortDir === 'asc' ? cmp : -cmp;
     }
     if (sortField === 'condition') {
-      const wa = CONDITION_WEIGHT[getCondition(a.name)];
-      const wb = CONDITION_WEIGHT[getCondition(b.name)];
+      const wa = CONDITION_WEIGHT[a.condition] ?? CONDITION_WEIGHT.unknown;
+      const wb = CONDITION_WEIGHT[b.condition] ?? CONDITION_WEIGHT.unknown;
       return sortDir === 'asc' ? wa - wb : wb - wa;
     }
     if (sortField === 'price') {
@@ -586,22 +578,26 @@ function scrollToGrid() {
   window.scrollTo({ top, behavior: 'smooth' });
 }
 
+/* ─── Бейдж состояния товара (item.condition) ────────────────── */
+// new → зелёный, storage → синий, restored → фиолетовый, used → серый
+function conditionBadgeHtml(condition) {
+  switch (condition) {
+    case 'new':      return `<span class="badge badge--green">Новое</span>`;
+    case 'storage':  return `<span class="badge badge--blue">С хранения</span>`;
+    case 'restored': return `<span class="badge badge--purple">Восстановленный</span>`;
+    case 'used':     return `<span class="badge badge--gray">Б/У</span>`;
+    default:         return '';
+  }
+}
+
 /* ─── HTML строки таблицы товара ─────────────────────────────── */
 function rowHTML(item) {
   const priceHtml = item.price !== null
     ? `${item.price.toLocaleString('ru-RU')}&nbsp;₽/${escapeHtml(item.unit || 'т')}`
     : `<span class="text-muted">По запросу</span>`;
 
-  // Определяем badge состояния по словам в названии
-  const nameLower = item.name.toLowerCase();
-  let stateBadge = '';
-  if (/новый|новые|гост/.test(nameLower)) {
-    stateBadge = `<span class="badge badge--green">Новый</span>`;
-  } else if (/хранени[яе]/.test(nameLower)) {
-    stateBadge = `<span class="badge badge--orange">С хранения</span>`;
-  } else if (/б\/у|старогодн/.test(nameLower)) {
-    stateBadge = `<span class="badge">Б/У</span>`;
-  }
+  // Бейдж состояния — из item.condition (поле в catalog.json)
+  const stateBadge = conditionBadgeHtml(item.condition);
 
   const inCart = isInCart(item.id);
   const href   = `product.html?id=${encodeURIComponent(item.id)}`;

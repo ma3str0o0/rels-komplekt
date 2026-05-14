@@ -203,22 +203,33 @@ function renderPriceDisplay(item) {
   }
 }
 
-/* ─── Определение состояния товара из названия ───────────────── */
-function detectCondition(name) {
-  const lc = name.toLowerCase();
-  if (/нов(ый|ые|ая|ое|ых|ом|ому)/.test(lc)) return 'Новый';
-  if (/хранени/.test(lc))                     return 'С хранения';
-  if (/б\/у|старогодн/.test(lc))              return 'Б/У';
-  return 'Уточнить';
+/* ─── Лейбл состояния товара (item.condition → текст) ────────── */
+function condLabel(condition) {
+  switch (condition) {
+    case 'new':      return 'Новое';
+    case 'storage':  return 'С хранения';
+    case 'restored': return 'Восстановленный';
+    case 'used':     return 'Б/У';
+    default:         return 'Уточнить';
+  }
+}
+
+/* ─── Бейдж наличия (item.availability) ──────────────────────── */
+function availabilityBadgeHtml(availability) {
+  switch (availability) {
+    case 'in_stock':     return `<span class="badge badge--green">В наличии</span>`;
+    case 'on_order':     return `<span class="badge badge--orange">Под заказ</span>`;
+    case 'not_for_sale': return `<span class="badge badge--gray">Снят с продажи</span>`;
+    default:
+      // Неизвестное/пустое значение — серый бейдж «Уточнить»
+      return `<span class="badge badge--gray">Уточнить</span>`;
+  }
 }
 
 /* ─── Таблица характеристик ──────────────────────────────────── */
 function renderSpecs(item) {
-  const condition = detectCondition(item.name);
-
-  const stockCell = item.in_stock
-    ? `<span class="badge badge--green">В наличии</span>`
-    : `<span class="badge badge--gray">Под заказ</span>`;
+  const condition  = condLabel(item.condition);
+  const stockCell  = availabilityBadgeHtml(item.availability);
 
   const rows = [
     ['Состояние',      escHtml(condition)],
@@ -265,11 +276,14 @@ function renderPricing(item) {
     return renderPricingPerPiece(el, item, KZT);
   }
 
+  const isPerMeter    = item.unit === 'м';                       // DIN 536: цена хранится уже как ₽/м
   const lengthM       = getLengthM(item);                       // м per шт (из catalog, fallback 12.5 + warn)
   const weightPerUnit = getWeightPerUnit(item);                  // кг per шт (из catalog) или null
   const hasWeight     = !!(weightPerUnit && weightPerUnit > 0);
   const wpm           = hasWeight ? weightPerUnit / lengthM : null; // кг/м
-  const pricePerMeter = hasWeight ? (wpm / 1000) * item.price : null; // ₽/м
+  const pricePerMeter = isPerMeter
+    ? item.price                                                 // цена уже за метр — не конвертируем
+    : (hasWeight ? (wpm / 1000) * item.price : null);            // ₽/т → ₽/м через массу
 
   /* Начальные значения */
   const initMeters   = lengthM;
@@ -366,7 +380,9 @@ function renderPricing(item) {
       const kg = Math.max(0, parseFloat(e.target.value) || 0);
       const m  = Math.round((kg / wpm) * 10) / 10;
       document.getElementById('calcWeightHint').textContent = `≈ ${m} м`;
-      costRub = Math.round((kg / 1000) * item.price);
+      costRub = isPerMeter
+        ? Math.round(m * item.price)            // ₽/м × метры
+        : Math.round((kg / 1000) * item.price); // ₽/т × тонны
       updateDisplay();
     });
   }
@@ -507,12 +523,20 @@ function renderPricingPerPiece(el, item, KZT) {
 
 /* ─── Кнопки действий ────────────────────────────────────────── */
 function renderActions(item) {
+  const notForSale = item.availability === 'not_for_sale';
   document.getElementById('productActions').innerHTML =
-    cartBtnHTML(isInCart(item.id)) + kpBtnHTML();
-  bindCartBtn(item);
+    cartBtnHTML(isInCart(item.id), notForSale) + kpBtnHTML();
+  // Если товар снят с продажи — не вешаем toggle (кнопка disabled)
+  if (!notForSale) bindCartBtn(item);
 }
 
-function cartBtnHTML(inCart) {
+function cartBtnHTML(inCart, disabled = false) {
+  if (disabled) {
+    return `<button class="btn btn-lg btn-secondary product-cart-btn" id="productCartBtn" disabled aria-disabled="true" title="Товар снят с продажи">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+      Снят с продажи
+    </button>`;
+  }
   if (inCart) {
     return `<button class="btn btn-lg btn-accent product-cart-btn product-cart-btn--added" id="productCartBtn" aria-pressed="true">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
