@@ -1,35 +1,21 @@
 """
 Ежедневный дайджест — отправляется в 09:00 по Екатеринбургу (04:00 UTC).
 """
-import json
 import logging
 from datetime import date, timedelta
 
 from telegram.ext import ContextTypes
 
-from bot.config import ADMIN_IDS, PROJECT_DIR
+from bot.config import ADMIN_IDS
+from bot.services.catalog import get_product
 from bot.services.metrics import db_exists, get_stats, get_top_products
 
 log = logging.getLogger(__name__)
 
-_CATALOG_PATH = PROJECT_DIR / "data" / "catalog.json"
-_catalog_cache: dict = {}
-
-
-def _load_catalog() -> dict:
-    if _catalog_cache:
-        return _catalog_cache
-    try:
-        with open(_CATALOG_PATH, encoding='utf-8') as f:
-            for item in json.load(f):
-                _catalog_cache[item['id']] = item.get('name', item['id'])
-    except Exception:
-        pass
-    return _catalog_cache
-
 
 def _short_name(pid: str, max_len: int = 20) -> str:
-    name = _load_catalog().get(pid, pid)
+    item = get_product(pid)
+    name = item['name'] if item else pid
     return name[:max_len] + '…' if len(name) > max_len else name
 
 
