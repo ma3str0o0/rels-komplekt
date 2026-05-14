@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderProduct(item, catalog);
   updateCartBadge();
 
+  // После async-рендера гарантируем верх страницы (см. main.js scrollRestoration).
+  if (!window.location.hash) window.scrollTo(0, 0);
+
   // Обработчики лайтбокса
   document.getElementById('lightboxClose')?.addEventListener('click', closeLightbox);
   document.getElementById('lightboxBackdrop')?.addEventListener('click', closeLightbox);

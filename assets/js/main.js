@@ -4,6 +4,13 @@
 
 'use strict';
 
+/* ─── Отключаем авто-восстановление скролла браузером ──────────
+   На страницах с async-рендером (catalog.json → fetch → DOM) браузер
+   восстанавливает позицию ДО того, как контент разрисован, и оставляет
+   страницу проскроленной "вниз" относительно итоговой высоты. Скроллим
+   сами явно в catalog.js / product.js после рендера. */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
 /* ─── EmailJS ─────────────────────────────────────────────────── */
 const EMAILJS_SERVICE_ID  = 'service_vc2oz9j';
 const EMAILJS_TEMPLATE_ID = 'template_e7f1ke6';

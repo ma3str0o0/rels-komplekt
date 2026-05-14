@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   applyFilters();
   bindEvents();
   updateCartBadge();
+  // После async-рендера гарантируем верх страницы (если нет hash-якоря).
+  if (!window.location.hash) window.scrollTo(0, 0);
 });
 
 /* ─── Кэш DOM ────────────────────────────────────────────────── */
@@ -94,6 +96,26 @@ function saveCatalogState() {
       priceFilter: state.priceFilter,
     }));
   } catch(e) { /* sessionStorage недоступен */ }
+}
+
+/* ─── Синхронизация URL с текущим состоянием ──────────────────
+   Источник правды при reload: URL. Пишем replaceState (без новой записи
+   в истории), чтобы фильтры/поиск сохранялись при обновлении страницы. */
+function syncUrlFromState() {
+  const params = new URLSearchParams();
+
+  switch (activeFilter.type) {
+    case 'category':       params.set('cat',  activeFilter.value); break;
+    case 'subcategory':    params.set('sub',  activeFilter.value); break;
+    case 'multi-category': params.set('cats', activeFilter.value.join('|')); break;
+    // 'all' — ничего не пишем
+  }
+  if (state.search)              params.set('q', state.search);
+  if (state.priceFilter !== 'all') params.set('p', state.priceFilter);
+
+  const qs = params.toString();
+  const url = location.pathname + (qs ? '?' + qs : '') + location.hash;
+  history.replaceState(null, '', url);
 }
 
 /* ─── Восстановление визуального состояния дерева категорий ──── */
@@ -204,6 +226,7 @@ function initCategoryFilter() {
 
       state.page = 1;
       applyFilters();
+      syncUrlFromState();
     });
   });
 
@@ -223,15 +246,35 @@ function initCategoryFilter() {
 
       state.page = 1;
       applyFilters();
+      syncUrlFromState();
     });
   });
 
-  // Обработка URL-параметров ?cat= и ?cats= при загрузке
+  // Обработка URL-параметров при загрузке: ?cat= / ?cats= / ?sub= / ?q= / ?p=
   const params    = new URLSearchParams(location.search);
   const catParam  = params.get('cat');
   const catsParam = params.get('cats');
+  const subParam  = params.get('sub');
+  const qParam    = params.get('q');
+  const pParam    = params.get('p');
 
-  if (catsParam) {
+  // Поиск и прайс-фильтр восстанавливаем независимо от категории
+  if (qParam) {
+    state.search = qParam;
+    if (dom.searchInput) dom.searchInput.value = qParam;
+  }
+  if (pParam === 'priced' || pParam === 'all') {
+    state.priceFilter = pParam;
+    document.querySelectorAll('input[name="priceFilter"]')
+      .forEach(r => { r.checked = r.value === pParam; });
+  }
+
+  if (subParam) {
+    // Подкатегория из URL
+    const decoded = decodeURIComponent(subParam);
+    activeFilter = { type: 'subcategory', value: decoded };
+    applyCategoryFilterUI(activeFilter);
+  } else if (catsParam) {
     // Мультикатегория — значения через | (например: Рельсы широкой колеи|Рельсы Р50)
     const cats = decodeURIComponent(catsParam).split('|');
     activeFilter = { type: 'multi-category', value: cats };
@@ -645,6 +688,7 @@ function bindEvents() {
       document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
     }
     applyFilters();
+    syncUrlFromState();
     // Трекинг поиска с задержкой 1с (отправляем после паузы, не на каждый символ)
     clearTimeout(_searchTrackTimer);
     const q = e.target.value.trim();
@@ -660,6 +704,7 @@ function bindEvents() {
     radio.addEventListener('change', e => {
       state.priceFilter = e.target.value;
       applyFilters();
+      syncUrlFromState();
     });
   });
 
@@ -698,6 +743,7 @@ function resetFilters() {
   document.querySelector('.cat-tree__cat[data-cat=""]')?.classList.add('active');
 
   applyFilters();
+  syncUrlFromState();
 }
 
 /* ─── Мобильный drawer ───────────────────────────────────────── */
