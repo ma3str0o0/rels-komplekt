@@ -38,8 +38,10 @@ const RAIL_TYPES = {
 };
 
 /* Поиск канонических данных рельса в каталоге.
+   allowUsed=false → только condition='new'.
+   allowUsed=true  → любой condition, берём самый дешёвый вариант.
    Возвращает {kgPerM, lengthM, price, condition} или null. */
-function resolveRailData(railType) {
+function resolveRailData(railType, allowUsed = false) {
   // Регекс с unicode-aware boundary через lookbehind/lookahead (JS \b
    // не работает с кириллицей). «КР80» матчит «кр80», «кр 80» — но НЕ
   // «кр800» и НЕ «р8» внутри «кр80».
@@ -63,35 +65,32 @@ function resolveRailData(railType) {
   });
   if (cands.length === 0) return null;
 
-  /* Предпочтение: condition=new и availability=in_stock → storage → restored
-     → used. Для веса/длины нужны позиции с заполненными weight_per_unit и
-     length_m. */
-  const order = ['new', 'storage', 'restored', 'used'];
-  let pick = null;
-  for (const cond of order) {
-    const subset = cands.filter(c => c.condition === cond && c.availability === 'in_stock');
-    const withData = subset.find(c => c.weight_per_unit && c.length_m);
-    if (withData) { pick = { src: withData, cond }; break; }
-  }
-  if (!pick) {
-    // Последний fallback: любой с весом/длиной независимо от availability
-    const any = cands.find(c => c.weight_per_unit && c.length_m);
-    if (!any) return null;
-    pick = { src: any, cond: any.condition };
-  }
+  /* Если б/у НЕ разрешены — оставляем только новые. */
+  let pool = allowUsed ? cands : cands.filter(c => c.condition === 'new');
+  if (pool.length === 0) return null;
 
-  // Цена: минимальная среди подходящих ТОЙ ЖЕ condition (чтобы не смешивать
-  // цену нового с массой б/у).
-  const sameCond = cands.filter(c => c.condition === pick.cond &&
-                                     c.availability === 'in_stock' &&
-                                     c.price !== null);
-  const price = sameCond.length ? Math.min(...sameCond.map(c => c.price)) : null;
+  /* Среди pool — берём в наличии с заполненными вес+длина. */
+  const ready = pool.filter(c => c.availability === 'in_stock' &&
+                                 c.weight_per_unit && c.length_m);
+  let picked;
+  if (ready.length > 0) {
+    // С ценой → берём с минимальной ценой (выгоднее клиенту).
+    // Без цены → берём первый просто чтобы иметь вес/длину.
+    const priced = ready.filter(c => c.price !== null);
+    picked = priced.length
+      ? priced.reduce((a, b) => (a.price <= b.price ? a : b))
+      : ready[0];
+  } else {
+    // Fallback: хоть какая-то запись с весом/длиной.
+    picked = pool.find(c => c.weight_per_unit && c.length_m);
+    if (!picked) return null;
+  }
 
   return {
-    kgPerM:    pick.src.weight_per_unit / pick.src.length_m,
-    lengthM:   pick.src.length_m,
-    price:     price,
-    condition: pick.cond,
+    kgPerM:    picked.weight_per_unit / picked.length_m,
+    lengthM:   picked.length_m,
+    price:     picked.price,
+    condition: picked.condition,
   };
 }
 
@@ -200,10 +199,11 @@ function calculate() {
   const threads      = parseInt(
     document.querySelector('input[name="threadCount"]:checked').value
   );
+  const allowUsed    = !!document.getElementById('allowUsed')?.checked;
   // Источник правды: catalog.json. Если позиции нет — fallback на канонические
   // значения из RAIL_TYPES (Р75 в каталоге пока нет, КР140 редкий и т.д.).
   const fallback     = RAIL_TYPES[railTypeVal];
-  const resolved     = resolveRailData(railTypeVal);
+  const resolved     = resolveRailData(railTypeVal, allowUsed);
   const kgPerM       = resolved?.kgPerM   ?? fallback.kgPerM;
   const railLengthM  = resolved?.lengthM  ?? fallback.lengthM ?? RAIL_LENGTH_M;
   const railPrice    = resolved?.price    ?? null;
@@ -322,7 +322,7 @@ function renderTable(r) {
   else hasPriceOnRequest = true;
 
   rows.push({
-    name:     `Рельс ${r.railLabel} (${r.kgPerM}\u00a0кг/м)`,
+    name:     `Рельс ${r.railLabel} (${r.kgPerM.toFixed(2)}\u00a0кг/м)${(({'new':' — новые','storage':' — с хранения','restored':' — восстановленные','used':' — б/у'})[r.railCondition]||'')}`,
     qty:      r.weightT < 10 ? r.weightT.toFixed(2) : Math.round(r.weightT),
     unit:     'т',
     priceStr: railCostPerT !== null ? `${fmtPrice(railCostPerT)}&nbsp;₽/т` : '—',
