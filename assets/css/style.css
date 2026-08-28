@@ -653,6 +653,68 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-cta);
 }
 
+/* ─── QR-код бота MAX ────────────────────────────────────────── */
+/* Футер тёмный в ОБЕИХ темах (#0F172A в светлой, #010409 в тёмной),
+   поэтому белая подложка задана безусловно и НЕ зависит от [data-theme].
+   Прозрачные светлые модули дали бы чёрное по чёрному. */
+.footer-max {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.footer-max__code {
+  display: block;
+  background-color: #FFFFFF;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  line-height: 0;
+  transition: box-shadow var(--transition-fast);
+}
+
+.footer-max__code img {
+  display: block;
+  width: 110px;
+  height: 110px;
+}
+
+/* Подпись — цвет контактов (#CBD5E1), не приглушённый #94A3B8:
+   QR это способ связи, а не второстепенный текст. */
+.footer-max__label {
+  font-size: var(--font-size-sm);
+  color: #CBD5E1;
+  transition: color var(--transition-fast);
+}
+
+.footer-max:hover .footer-max__label {
+  color: #fff;
+}
+
+.footer-max:hover .footer-max__code {
+  box-shadow: 0 0 0 2px var(--color-cta);
+}
+
+.footer-max:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 4px;
+  border-radius: var(--radius-md);
+}
+
+/* Мобильный: .footer__grid схлопывается в 1fr, .footer__brand занимает
+   всю ширину. Блок остаётся в потоке под контактами и прижат влево, как
+   весь столбец — inline-flex не даёт ему растянуться на всю ширину.
+   96px: ниже 90px скан с чужого телефона становится ненадёжным. */
+@media (max-width: 767px) {
+  .footer-max__code img {
+    width: 96px;
+    height: 96px;
+  }
+}
+
 .footer__col-title {
   font-size: var(--font-size-sm);
   font-weight: 600;

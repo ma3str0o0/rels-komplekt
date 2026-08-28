@@ -213,6 +213,12 @@ function _tplFooterOnly() {
               <span>г. Екатеринбург, ул. Радищева, д. 6а, оф. 702б</span>
             </div>
           </div>
+          <a class="footer-max" href="https://max.ru/id6671083158_bot" target="_blank" rel="noopener noreferrer" aria-label="Написать боту Рельс-Комплект в мессенджере MAX">
+            <span class="footer-max__code">
+              <img src="/assets/img/qr-max-bot.svg" alt="" width="110" height="110" loading="lazy">
+            </span>
+            <span class="footer-max__label">Мы в Max</span>
+          </a>
         </div>
         <div>
           <div class="footer__col-title">Разделы</div>
