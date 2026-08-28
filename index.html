@@ -3,7 +3,7 @@
 <head>
   <script src="assets/js/theme-init.js"></script>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com; frame-src https://yandex.ru https://maps.yandex.ru; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://smartcaptcha.yandexcloud.net; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com https://smartcaptcha.yandexcloud.net; frame-src https://yandex.ru https://maps.yandex.ru https://smartcaptcha.yandexcloud.net; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Оптовые поставки рельсов, шпал и крепежа. Широкий ассортимент, быстрая отгрузка, работаем с юридическими лицами по всей России.">
   <meta name="keywords" content="рельсы оптом, рельсы Р65, крановые рельсы, шпалы, рельсовый крепёж, рельсы купить">
@@ -452,6 +452,9 @@
                 <span class="form-error hidden" id="il-file-error"></span>
               </div>
 
+              <!-- Yandex SmartCaptcha (рендерится JS только если задан sitekey) -->
+              <div class="smart-captcha-wrap"></div>
+
               <label class="form-consent">
                 <input type="checkbox" name="consent" required>
                 <span>Я согласен(на) на обработку <a href="privacy.html" target="_blank">персональных данных</a> в соответствии с 152-ФЗ</span>
@@ -576,6 +579,7 @@
 
   <!-- Скрипты -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" integrity="sha384-SALc35EccAf6RzGw4iNsyj7kTPr33K7RoGzYu+7heZhT8s0GZouafRiCg1qy44AS" crossorigin="anonymous"></script>
+  <script src="assets/js/captcha-config.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/tracker.js"></script>
   <!-- WS-INDEX: cookie banner — управляет загрузкой счётчиков по согласию -->

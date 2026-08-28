@@ -3,7 +3,7 @@
 <head>
   <script src="assets/js/theme-init.js"></script>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://mc.yandex.ru https://top-fwz1.mail.ru; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com https://mc.yandex.ru https://top-fwz1.mail.ru https://top.mail.ru; frame-src https://yandex.ru https://maps.yandex.ru https://mc.yandex.ru; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://mc.yandex.ru https://top-fwz1.mail.ru https://smartcaptcha.yandexcloud.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com https://mc.yandex.ru https://top-fwz1.mail.ru https://top.mail.ru https://smartcaptcha.yandexcloud.net; frame-src https://yandex.ru https://maps.yandex.ru https://mc.yandex.ru https://smartcaptcha.yandexcloud.net; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Рассчитайте стоимость и количество материалов для укладки рельсового пути. Рельсы, шпалы, крепёж — всё в одном расчёте.">
   <title>Калькулятор пути — Рельс-Комплект</title>
@@ -285,6 +285,79 @@
     </div>
   </div>
 
+  <!-- Модальное окно: rich-form «Добавить в заявку» (cs- = calc spec) -->
+  <div class="modal-overlay" id="calcSpecModal" role="dialog" aria-modal="true"
+       aria-labelledby="calcSpecTitle">
+    <div class="modal">
+      <div class="modal__header">
+        <h3 class="modal__title" id="calcSpecTitle">Оставить заявку по расчёту</h3>
+        <button class="modal__close" id="calcSpecClose" aria-label="Закрыть диалог">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="inline-form__sub" style="margin-top:0;">Заполните форму — мы пришлём подтверждение спецификации и КП</p>
+        <form id="calcSpecForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="cs-name">Ваше имя <span class="required-mark" aria-label="обязательное поле">*</span></label>
+            <input class="input" type="text" id="cs-name" name="name" placeholder="Иванов Иван" required autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cs-contact">Телефон или email <span class="required-mark" aria-label="обязательное поле">*</span></label>
+            <div class="smart-contact-wrap" id="cs-contact-wrap">
+              <span class="smart-contact-icon" id="cs-contact-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 019.82 18.9 19.5 19.5 0 013.07 12 19.79 19.79 0 01.12 2.18a2 2 0 012-2h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.91z"/></svg>
+              </span>
+              <input class="input smart-contact-input" type="text" id="cs-contact" name="contact"
+                     placeholder="Телефон или email" required autocomplete="off"
+                     aria-label="Телефон или email для связи">
+              <span class="smart-contact-hint" id="cs-contact-hint"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cs-comment">Комментарий</label>
+            <textarea class="textarea" id="cs-comment" name="message" rows="3"
+                      placeholder="Сроки, регион доставки, требования к документации…"></textarea>
+          </div>
+
+          <!-- Загрузка файла -->
+          <div class="form-group" id="cs-file-group">
+            <div class="file-upload file-input-label" id="cs-file-drop">
+              <input type="file" id="cs-file" name="file"
+                     accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                     class="file-upload__input">
+              <div class="file-upload__placeholder" id="cs-file-placeholder">
+                <span class="file-input-icon" aria-hidden="true">📎</span>
+                <span class="file-input-text">Прикрепите доп. файл (ТЗ, чертёж, КП)</span>
+              </div>
+              <div class="file-upload__selected hidden" id="cs-file-selected">
+                <span class="file-input-icon" aria-hidden="true">📎</span>
+                <span id="cs-file-name" class="file-input-text"></span>
+                <button type="button" class="file-upload__clear" id="cs-file-clear" aria-label="Удалить файл">✕</button>
+              </div>
+            </div>
+            <span class="form-error hidden" id="cs-file-error"></span>
+          </div>
+
+          <!-- Виджет Yandex SmartCaptcha (рендерится JS только если задан sitekey) -->
+          <div class="smart-captcha-wrap"></div>
+
+          <div class="modal__footer">
+            <label class="form-consent">
+              <input type="checkbox" name="consent" required>
+              <span>Я согласен(на) на обработку <a href="privacy.html" target="_blank">персональных данных</a> в соответствии с 152-ФЗ</span>
+            </label>
+            <button type="submit" class="btn btn-primary" style="width:100%;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Отправить заявку
+            </button>
+          </div>
+          <p class="modal__note">Менеджер свяжется с вами и пришлёт КП с фиксированными ценами</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Модальное окно: отправка спецификации на email -->
   <div class="modal-overlay" id="emailModal" role="dialog" aria-modal="true"
        aria-labelledby="emailModalTitle">
@@ -336,6 +409,7 @@
   </div>
 
   <!-- Скрипты -->
+  <script src="assets/js/captcha-config.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
           integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk"

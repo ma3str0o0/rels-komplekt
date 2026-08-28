@@ -46,10 +46,17 @@ async function render() {
   const wrap  = document.getElementById('orderContent');
   if (!wrap) return;
 
+  // Очищаем секцию формы (если перерисовываемся после удаления позиций
+  // и корзина опустела — форма должна тоже исчезнуть).
+  const formHost = document.getElementById('orderFormHost');
+  if (formHost) formHost.innerHTML = '';
+  const formSection = document.getElementById('orderFormSection');
+
   if (items.length === 0) {
     wrap.innerHTML = emptyStateHTML();
     wrap.querySelector('#goToCatalog')
         ?.addEventListener('click', () => { window.location.href = 'catalog.html'; });
+    if (formSection) formSection.hidden = true;
     return;
   }
 
@@ -57,6 +64,10 @@ async function render() {
   const catalog = await loadCatalog();
   wrap.innerHTML = tableHTML(items, catalog);
   bindTableEvents(items);
+
+  /* Рендерим rich-form под таблицей */
+  if (formSection) formSection.hidden = false;
+  renderOrderForm();
 }
 
 /* ─── HTML таблицы ───────────────────────────────────────────── */
@@ -115,9 +126,124 @@ function tableHTML(items, catalog) {
       </a>
       <button class="btn btn-accent" id="submitOrderBtn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Отправить заявку
+        Перейти к оформлению
       </button>
     </div>`;
+}
+
+/* ─── HTML rich-form секции (id-префикс 'o-' = order) ────────── */
+function orderFormHTML() {
+  return `
+    <div class="inline-form" id="orderFormCard">
+      <h2 class="inline-form__title">Оформить заявку</h2>
+      <p class="inline-form__sub">Заполните форму — пришлём КП с фиксированными ценами и сроками</p>
+
+      <form id="orderForm" novalidate>
+        <div class="inline-form__fields">
+          <div class="form-group">
+            <label class="form-label" for="o-name">Ваше имя <span class="required-mark" aria-label="обязательное поле">*</span></label>
+            <input class="input" type="text" id="o-name" name="name" placeholder="Иванов Иван" required autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="o-contact">Телефон или email <span class="required-mark" aria-label="обязательное поле">*</span></label>
+            <div class="smart-contact-wrap" id="o-contact-wrap">
+              <span class="smart-contact-icon" id="o-contact-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 019.82 18.9 19.5 19.5 0 013.07 12 19.79 19.79 0 01.12 2.18a2 2 0 012-2h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.91z"/></svg>
+              </span>
+              <input class="input smart-contact-input" type="text" id="o-contact" name="contact"
+                     placeholder="Телефон или email" required autocomplete="off"
+                     aria-label="Телефон или email для связи">
+              <span class="smart-contact-hint" id="o-contact-hint"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="o-comment">Комментарий</label>
+            <textarea class="textarea" id="o-comment" name="message" rows="3"
+                      placeholder="Регион доставки, сроки, дополнительные требования…"></textarea>
+          </div>
+        </div>
+
+        <!-- Файл (ТЗ, чертёж, КП) -->
+        <div class="form-group" id="o-file-group">
+          <div class="file-upload file-input-label" id="o-file-drop">
+            <input type="file" id="o-file" name="file"
+                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                   class="file-upload__input">
+            <div class="file-upload__placeholder" id="o-file-placeholder">
+              <span class="file-input-icon" aria-hidden="true">📎</span>
+              <span class="file-input-text">Прикрепите спецификацию, ТЗ или КП</span>
+            </div>
+            <div class="file-upload__selected hidden" id="o-file-selected">
+              <span class="file-input-icon" aria-hidden="true">📎</span>
+              <span id="o-file-name" class="file-input-text"></span>
+              <button type="button" class="file-upload__clear" id="o-file-clear" aria-label="Удалить файл">✕</button>
+            </div>
+          </div>
+          <span class="form-error hidden" id="o-file-error"></span>
+        </div>
+
+        <!-- Yandex SmartCaptcha (рендерится JS только если задан sitekey) -->
+        <div class="smart-captcha-wrap"></div>
+
+        <label class="form-consent">
+          <input type="checkbox" name="consent" required>
+          <span>Я согласен(на) на обработку <a href="privacy.html" target="_blank">персональных данных</a> в соответствии с 152-ФЗ</span>
+        </label>
+        <button class="btn btn-primary" type="submit" style="width:100%;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Отправить заявку
+        </button>
+      </form>
+    </div>`;
+}
+
+/* ─── Рендер + инициализация rich-form секции ────────────────── */
+function renderOrderForm() {
+  const host = document.getElementById('orderFormHost');
+  if (!host) return;
+  host.innerHTML = orderFormHTML();
+
+  // Инициализируем умное поле + honeypot/timing для свежей формы.
+  window.RK?.initSmartContactFields?.();
+
+  // Honeypot+form_started_at (initRichForm рассчитывает что они уже есть).
+  const form = host.querySelector('#orderForm');
+  if (form && !form.querySelector('input[name="website"]')) {
+    const hp = document.createElement('input');
+    hp.type = 'text'; hp.name = 'website'; hp.tabIndex = -1;
+    hp.autocomplete = 'off';
+    hp.setAttribute('aria-hidden', 'true');
+    hp.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;opacity:0;';
+    form.appendChild(hp);
+  }
+  if (form && !form.querySelector('input[name="form_started_at"]')) {
+    const ts = document.createElement('input');
+    ts.type = 'hidden'; ts.name = 'form_started_at'; ts.value = String(Date.now());
+    form.appendChild(ts);
+  }
+
+  // Если капча включена — отрендерим виджет в новой форме
+  window.RK?.loadSmartCaptchaIfNeeded?.();
+
+  // Подключаем submit-handler через единый rich-form helper.
+  window.RK?.initRichForm?.('#orderForm', {
+    source:     'cart_order',
+    emailLabel: 'Корзина / заявка',
+    filePrefix: 'o',
+    getItems: () => {
+      // Items — текущая корзина (без локальной денормализации).
+      try {
+        return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]');
+      } catch { return []; }
+    },
+    onSuccess: () => {
+      // Очищаем корзину после успешной отправки.
+      saveItems([]);
+      updateCartBadge();
+      // Перерисовываем — покажется empty-state.
+      render();
+    },
+  });
 }
 
 /* ─── HTML одной строки таблицы ──────────────────────────────── */
@@ -253,9 +379,14 @@ function bindTableEvents(items) {
     });
   });
 
-  /* Отправить заявку */
+  /* Перейти к оформлению — плавно скроллим к rich-form секции */
   document.getElementById('submitOrderBtn')?.addEventListener('click', () => {
-    window.RK?.openModal(document.getElementById('requestModal'));
+    const target = document.getElementById('orderFormCard') || document.getElementById('orderFormSection');
+    if (!target) return;
+    const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height') || '72');
+    const top = target.getBoundingClientRect().top + window.scrollY - offset - 16;
+    window.scrollTo({ top, behavior: 'smooth' });
+    setTimeout(() => target.querySelector('input[name="name"]')?.focus(), 600);
   });
 }
 

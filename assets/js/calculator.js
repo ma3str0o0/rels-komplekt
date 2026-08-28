@@ -402,8 +402,91 @@ function bindResultActions() {
   });
   document.getElementById('emailModalForm').addEventListener('submit', handleSendEmail);
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { closeTgModal(); closeEmailModal(); }
+    if (e.key === 'Escape') { closeTgModal(); closeEmailModal(); closeCalcSpecModal(); }
   });
+
+  /* ── Rich-form модалка «Добавить в заявку» ─────────────────────
+     initRichForm() инжектит submit-handler, honeypot, captcha, file-
+     upload UX. items/message/source — динамически из calcResult. */
+  if (window.RK?.initRichForm) {
+    window.RK.initRichForm('#calcSpecForm', {
+      source:     'calculator_spec',
+      emailLabel: 'Калькулятор — заявка',
+      filePrefix: 'cs',
+      getItems:        () => buildCalcItems(calcResult),
+      getExtraMessage: () => buildCalcMessagePrefix(calcResult),
+      onSuccess: () => closeCalcSpecModal(),
+    });
+    // smart-contact-input для cs-contact (initSmartContactFields в main.js
+    // вызывался на DOMContentLoaded — модалка тогда уже в DOM, всё ок).
+  }
+
+  document.getElementById('calcSpecClose')?.addEventListener('click', closeCalcSpecModal);
+  document.getElementById('calcSpecModal')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeCalcSpecModal();
+  });
+}
+
+/* ─── Помощники для rich-form модалки (cs-) ─────────────────────── */
+function buildCalcItems(r) {
+  if (!r) return [];
+  const items = [];
+  // Рельсы
+  items.push({
+    id:    `rail-${r.railTypeVal}`,
+    name:  `Рельс ${r.railLabel} — ${r.weightT < 10 ? r.weightT.toFixed(2) : Math.round(r.weightT)} т`,
+    qty:   r.weightT < 10 ? parseFloat(r.weightT.toFixed(2)) : Math.round(r.weightT),
+    unit:  'т',
+    price: r.railPrice,
+  });
+  // Шпалы
+  if (r.sleeperType !== 'none' && r.sleeperCount > 0) {
+    items.push({
+      id:    `sleeper-${r.sleeperType}`,
+      name:  r.sleeperLabel,
+      qty:   r.sleeperCount,
+      unit:  'шт',
+      price: r.sleeperPrice,
+    });
+  }
+  // Скрепления
+  if (r.fastenType !== 'none' && r.fastenQty > 0) {
+    items.push({
+      id:    `fasten-${r.fastenType}`,
+      name:  r.fastenLabel,
+      qty:   r.fastenQty,
+      unit:  r.fastenUnit,
+      price: null,
+    });
+  }
+  return items;
+}
+
+function buildCalcMessagePrefix(r) {
+  if (!r) return '';
+  const condMap = {
+    'new':      'новые',
+    'storage':  'с хранения',
+    'restored': 'восстановленные',
+    'used':     'б/у',
+  };
+  const condStr = r.railCondition ? `, ${condMap[r.railCondition] || r.railCondition}` : '';
+  return `Расчёт пути: ${r.trackLenM} м, ${r.threads} нит., рельс ${r.railLabel} (${r.kgPerM.toFixed(2)} кг/м${condStr})`;
+}
+
+function openCalcSpecModal() {
+  const overlay = document.getElementById('calcSpecModal');
+  if (!overlay) return;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => overlay.querySelector('input[name="name"]')?.focus());
+}
+
+function closeCalcSpecModal() {
+  const overlay = document.getElementById('calcSpecModal');
+  if (!overlay) return;
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function handleAddToCart() {
@@ -452,7 +535,12 @@ function handleAddToCart() {
 
   saveCart(cart);
   updateCartBadge();
-  window.location.href = 'order.html';
+
+  // Старая логика — redirect на order.html — заменена на открытие
+  // rich-form модалки. Позиции в корзине сохраняем для совместимости
+  // (если пользователь захочет позже перейти на order.html). Заявка
+  // отправится напрямую из модалки с items=buildCalcItems(calcResult).
+  openCalcSpecModal();
 }
 
 /* ─── Telegram-модальное окно ────────────────────────────────── */
@@ -524,6 +612,18 @@ async function handleSendTelegram(e) {
     items.push({ name: r.fastenLabel, qty: r.fastenQty, unit: r.fastenUnit, price: null });
   }
 
+  /* Anti-bot: honeypot + timing + smartcaptcha (если включена) */
+  const tgForm = document.getElementById('tgModalForm');
+  const honeypot = tgForm?.querySelector('input[name="website"]')?.value || '';
+  const startedAt = Number(tgForm?.querySelector('input[name="form_started_at"]')?.value || 0);
+  let smartToken = '';
+  if (window.RK_CAPTCHA_SITEKEY && window.smartCaptcha) {
+    const wrap = tgForm?.querySelector('.smart-captcha-wrap');
+    const wid = wrap?.dataset.widgetId;
+    try { smartToken = window.smartCaptcha.getResponse(wid ? Number(wid) : undefined) || ''; }
+    catch { /* noop */ }
+  }
+
   try {
     const res = await fetch('/api/lead', {
       method:  'POST',
@@ -534,6 +634,9 @@ async function handleSendTelegram(e) {
         source:  'calculator',
         message: `Путь: ${r.trackLenM} м, ${r.threads} нит., рельс ${r.railLabel} (${r.kgPerM} кг/м)`,
         items,
+        website: honeypot,
+        form_started_at: startedAt,
+        'smart-token': smartToken,
       }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);

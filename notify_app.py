@@ -59,6 +59,11 @@ SMTP_USER    = os.environ.get('SMTP_USER', '')
 SMTP_PASS    = os.environ.get('SMTP_PASS', '')
 NOTIFY_EMAIL = os.environ.get('NOTIFY_EMAIL', 'ooorku@mail.ru')
 
+# Yandex SmartCaptcha — graceful: пусто = пропускаем проверку.
+SMARTCAPTCHA_SECRET = os.environ.get('SMARTCAPTCHA_SECRET', '').strip()
+# Минимальное время между загрузкой формы и submit (anti-bot timing).
+ANTIBOT_MIN_SECONDS = float(os.environ.get('ANTIBOT_MIN_SECONDS', '3.0'))
+
 # Цвета бренда
 C_BLUE = colors.HexColor('#0A2463')
 C_RED  = colors.HexColor('#C44536')
@@ -669,13 +674,17 @@ _rl_lead      : dict = {}
 _rl_lead_lock = threading.Lock()
 
 _LEAD_SOURCE_NAMES = {
-    'order':      '📋 Заявка',
-    'modal':      '📋 Форма',
-    'callback':   '📞 Перезвоните',
-    'contacts':   '📬 Контакты',
-    'calculator': '🔢 Калькулятор',
-    'cart':       '🛒 Корзина',
-    'quick':      '⚡ Быстрый',
+    'order':            '📋 Заявка',
+    'modal':            '📋 Форма',
+    'callback':         '📞 Перезвоните',
+    'contacts':         '📬 Контакты',
+    'calculator':       '🔢 Калькулятор',
+    'calculator_spec':  '🔢 Калькулятор (заявка)',
+    'cart':             '🛒 Корзина',
+    'cart_order':       '🛒 Корзина (rich)',
+    'quick':            '⚡ Быстрый',
+    'index_inline':     '🏠 Главная (inline)',
+    'product_kp':       '🔩 КП с товара',
 }
 
 
@@ -797,6 +806,15 @@ def _handle_lead(environ, start_response):
     message = str(data.get('message', '') or '').strip()[:1000]
     source  = str(data.get('source',  '') or '').strip()[:50]
 
+    # Anti-bot: honeypot + timing → silent 200 OK (бот думает что прошло)
+    if _is_bot_submission(data):
+        return _json_response(start_response, '200 OK', {'ok': True})
+
+    # SmartCaptcha (если SMARTCAPTCHA_SECRET задан)
+    if not _verify_smartcaptcha(str(data.get('smart-token') or ''), ip):
+        return _json_response(start_response, '400 Bad Request',
+                              {'ok': False, 'error': 'Captcha verification failed'})
+
     if not name or not contact:
         return _json_response(start_response, '400 Bad Request',
                               {'ok': False, 'error': 'Missing name or contact'})
@@ -840,6 +858,71 @@ _CONTACT_RE      = re.compile(
     r'|[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}'    # email
     r'|@[a-zA-Z][a-zA-Z0-9_]{2,31})$'                         # telegram @username
 )
+
+
+# ══════════════════════════════════════
+# Anti-bot: honeypot + timing + SmartCaptcha
+# ══════════════════════════════════════
+def _is_bot_submission(body: dict) -> bool:
+    """Проверка honeypot + минимальное время заполнения формы.
+
+    True → запрос похож на бота (silent reject, ответим 200 ОК).
+    False → пропускаем дальше в обработку.
+
+    Поля:
+        website         — honeypot (скрытый input). Боты заполняют, люди — нет.
+        form_started_at — timestamp (мс) загрузки формы клиентом.
+                          Если форма submit'ится быстрее ANTIBOT_MIN_SECONDS —
+                          считаем ботом.
+    """
+    import time
+    # Honeypot: непустое значение = бот
+    if str(body.get('website') or '').strip():
+        log.info('anti-bot: honeypot tripped')
+        return True
+    # Timing: < ANTIBOT_MIN_SECONDS = бот
+    try:
+        started_at_ms = float(body.get('form_started_at') or 0)
+    except (TypeError, ValueError):
+        started_at_ms = 0
+    if started_at_ms > 0:
+        elapsed_s = time.time() - (started_at_ms / 1000.0)
+        if 0 <= elapsed_s < ANTIBOT_MIN_SECONDS:
+            log.info('anti-bot: timing trap (%.2fs < %.2fs)',
+                     elapsed_s, ANTIBOT_MIN_SECONDS)
+            return True
+    return False
+
+
+def _verify_smartcaptcha(token: str, ip: str) -> bool:
+    """Проверка smart-token через Yandex SmartCaptcha API.
+
+    Возвращает True → токен валиден или капча отключена (нет секрета).
+    Возвращает False → токен невалиден.
+    """
+    if not SMARTCAPTCHA_SECRET:
+        return True  # graceful degradation — капча не настроена
+    if not token:
+        log.info('smartcaptcha: token missing')
+        return False
+    try:
+        resp = requests.post(
+            'https://smartcaptcha.yandexcloud.net/validate',
+            data={'secret': SMARTCAPTCHA_SECRET, 'token': token, 'ip': ip},
+            timeout=5,
+        )
+        if not resp.ok:
+            log.warning('smartcaptcha: HTTP %s', resp.status_code)
+            return False
+        ok = (resp.json() or {}).get('status') == 'ok'
+        if not ok:
+            log.info('smartcaptcha: invalid token (response=%s)', resp.text[:200])
+        return ok
+    except Exception as e:
+        log.error('smartcaptcha: request error: %s', e)
+        # Fail-open: если Yandex недоступен — пропускаем (чтобы не уронить
+        # форму при сетевых проблемах). Альтернатива fail-close обсуждаема.
+        return True
 
 
 # ══════════════════════════════════════
@@ -910,6 +993,10 @@ def application(environ, start_response):
                 'name':    form.getvalue('name', '').strip(),
                 'contact': form.getvalue('contact', '').strip(),
                 'message': form.getvalue('message', '').strip(),
+                # Anti-bot поля — пробрасываем как есть
+                'website':         form.getvalue('website', ''),
+                'form_started_at': form.getvalue('form_started_at', ''),
+                'smart-token':     form.getvalue('smart-token', ''),
             }
             # Items — JSON строка с ограничением размера
             items_raw = form.getvalue('items', '')
@@ -955,6 +1042,20 @@ def application(environ, start_response):
         log.error('Parse error: %s', e)
         return _json_response(start_response, '400 Bad Request',
                               {'ok': False, 'error': 'Invalid request'})
+
+    # ── Anti-bot: honeypot + timing (silent 200 OK для ботов) ─────
+    if _is_bot_submission(body):
+        return _json_response(start_response, '200 OK', {'ok': True})
+
+    # ── SmartCaptcha (если задан SMARTCAPTCHA_SECRET) ──────────────
+    ip_for_captcha = (
+        environ.get('HTTP_X_FORWARDED_FOR', '').split(',')[0].strip()
+        or environ.get('HTTP_X_REAL_IP', '')
+        or environ.get('REMOTE_ADDR', '')
+    )
+    if not _verify_smartcaptcha(str(body.get('smart-token') or ''), ip_for_captcha):
+        return _json_response(start_response, '400 Bad Request',
+                              {'ok': False, 'error': 'Captcha verification failed'})
 
     # ── Валидация обязательных полей ──────────────────────────────
     name    = body.get('name', '').strip()[:200]

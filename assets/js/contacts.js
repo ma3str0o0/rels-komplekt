@@ -78,6 +78,19 @@ async function sendContactForm(data) {
   const origHTML = btn?.innerHTML || '';
   if (btn) { btn.disabled = true; btn.textContent = 'Отправка...'; }
 
+  // Anti-bot поля: honeypot, timing, smart-token (если включена капча).
+  const form = document.getElementById('contactsForm');
+  const honeypot = form?.querySelector('input[name="website"]')?.value || '';
+  const startedAt = Number(form?.querySelector('input[name="form_started_at"]')?.value || 0);
+  let smartToken = '';
+  if (window.RK_CAPTCHA_SITEKEY && window.smartCaptcha) {
+    const wrap = form?.querySelector('.smart-captcha-wrap');
+    const widgetId = wrap?.dataset.widgetId;
+    try {
+      smartToken = window.smartCaptcha.getResponse(widgetId ? Number(widgetId) : undefined) || '';
+    } catch { /* noop */ }
+  }
+
   try {
     await fetch('/api/lead', {
       method: 'POST',
@@ -87,6 +100,9 @@ async function sendContactForm(data) {
         contact: data.phone,
         message: data.message || '',
         source:  'contacts',
+        website: honeypot,
+        form_started_at: startedAt,
+        'smart-token': smartToken,
       }),
     });
   } catch (e) {

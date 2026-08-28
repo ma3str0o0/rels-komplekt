@@ -3,7 +3,7 @@
 <head>
   <script src="assets/js/theme-init.js"></script>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://mc.yandex.ru https://top-fwz1.mail.ru; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com https://mc.yandex.ru https://top-fwz1.mail.ru https://top.mail.ru; frame-src https://yandex.ru https://maps.yandex.ru https://mc.yandex.ru; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://mc.yandex.ru https://top-fwz1.mail.ru https://smartcaptcha.yandexcloud.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://api.emailjs.com https://mc.yandex.ru https://top-fwz1.mail.ru https://top.mail.ru https://smartcaptcha.yandexcloud.net; frame-src https://yandex.ru https://maps.yandex.ru https://mc.yandex.ru https://smartcaptcha.yandexcloud.net; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Оформите заявку на поставку рельсовых материалов. Укажите позиции и данные предприятия — мы подготовим коммерческое предложение.">
   <title>Оформление заявки — Рельс-Комплект</title>
@@ -179,25 +179,12 @@
   </main>
 
   <!-- ═══════════════════════════════════════════════════════════
-       СЕКЦИЯ "ОСТАЛИСЬ ВОПРОСЫ?"
+       РИЧ-ФОРМА ЗАЯВКИ (рендерится из order.js если в корзине
+       есть позиции; иначе показывается empty-state выше).
   ═══════════════════════════════════════════════════════════ -->
-  <section class="cta-contact" aria-label="Обратная связь">
+  <section class="section section--sm" id="orderFormSection" aria-label="Форма заявки">
     <div class="container">
-      <div class="cta-contact__card">
-        <h2 class="cta-contact__title">Остались вопросы?</h2>
-        <p class="cta-contact__sub">Свяжитесь с нами — ответим в течение часа</p>
-        <form class="cta-contact__form" novalidate>
-          <div class="cta-contact__fields">
-            <input class="input" type="text" name="name" placeholder="Ваше имя" required autocomplete="name">
-            <input class="input" type="tel" name="phone" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
-          </div>
-          <label class="form-consent">
-            <input type="checkbox" name="consent_pd" required>
-            <span>Я согласен(на) на обработку <a href="privacy.html" target="_blank">персональных данных</a> в соответствии с 152-ФЗ</span>
-          </label>
-          <button class="btn btn-primary" type="submit">Перезвоните мне</button>
-        </form>
-      </div>
+      <div id="orderFormHost"></div>
     </div>
   </section>
 
@@ -239,6 +226,10 @@
     </div>
   </div>
 
+  <script src="assets/js/captcha-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+          integrity="sha384-SALc35EccAf6RzGw4iNsyj7kTPr33K7RoGzYu+7heZhT8s0GZouafRiCg1qy44AS"
+          crossorigin="anonymous"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/order.js"></script>
 <script src="assets/js/tracker.js"></script>

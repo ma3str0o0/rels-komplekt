@@ -54,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initCtaContactForm();
   initPhoneMask();
   initSmoothScroll();
+  _injectAntiBotFields();   // honeypot + form_started_at для всех форм
+  _loadSmartCaptchaIfNeeded();
 });
 
 /* ─── Загрузка общих компонентов (шапка, футер, модал) ───────── */
@@ -285,6 +287,8 @@ function _tplModal() {
           <label class="form-label" for="req-message">Сообщение</label>
           <textarea class="textarea" id="req-message" name="message" rows="3" placeholder="Чем можем помочь?"></textarea>
         </div>
+        <!-- Yandex SmartCaptcha (рендерится JS только если задан sitekey) -->
+        <div class="smart-captcha-wrap"></div>
         <div class="modal__footer">
           <label class="form-consent">
             <input type="checkbox" name="consent_pd" required>
@@ -502,10 +506,15 @@ function initCtaContactForm() {
         return;
       }
       try {
+        const honeypot = form.querySelector('input[name="website"]')?.value || '';
+        const startedAt = Number(form.querySelector('input[name="form_started_at"]')?.value || 0);
         await sendTelegram({
           name: nameField.value.trim(),
           phone: phoneField.value.trim(),
-          message: 'Запрос "Перезвоните мне"'
+          message: 'Запрос "Перезвоните мне"',
+          website: honeypot,
+          form_started_at: startedAt,
+          smartToken: _getCaptchaToken(form),
         }, 'callback');
         form.reset();
         showToast('Спасибо! Перезвоним вам.', 'success');
@@ -574,52 +583,233 @@ function initFileUpload() {
   });
 }
 
-/* ─── Инлайн-форма на главной странице ──────────────────────── */
-function initInlineForm() {
-  const form = document.querySelector('#inlineRequestForm');
+/* ─── Honeypot + timing-trap для всех форм ──────────────────────
+   Боты часто:
+     • заполняют любые input'ы (включая скрытые) — ловим honeypot'ом;
+     • отправляют форму за <1 секунды — сравним timestamp с серверным
+       временем + дельтой по `form_started_at`. */
+function _injectAntiBotFields() {
+  document.querySelectorAll('form').forEach(form => {
+    if (form.dataset.antibotInjected === '1') return;
+    form.dataset.antibotInjected = '1';
+    form.dataset.initTs = String(Date.now());
+
+    if (!form.querySelector('input[name="website"]')) {
+      const hp = document.createElement('input');
+      hp.type = 'text';
+      hp.name = 'website';
+      hp.tabIndex = -1;
+      hp.autocomplete = 'off';
+      hp.setAttribute('aria-hidden', 'true');
+      hp.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;opacity:0;';
+      form.appendChild(hp);
+    }
+    if (!form.querySelector('input[name="form_started_at"]')) {
+      const ts = document.createElement('input');
+      ts.type = 'hidden';
+      ts.name = 'form_started_at';
+      ts.value = String(Date.now());
+      form.appendChild(ts);
+    }
+  });
+}
+
+/* ─── Загрузка Yandex SmartCaptcha (graceful) ───────────────────
+   Если RK_CAPTCHA_SITEKEY пуст → ничего не делаем.
+   Иначе подгружаем JS виджета и рендерим виджет в каждой
+   `<div class="smart-captcha-wrap">` внутри форм. */
+function _renderPendingCaptchas() {
+  const key = (window.RK_CAPTCHA_SITEKEY || '').trim();
+  if (!key || !window.smartCaptcha) return;
+  document.querySelectorAll('.smart-captcha-wrap').forEach(el => {
+    if (el.dataset.captchaRendered === '1') return;
+    try {
+      const widgetId = window.smartCaptcha.render(el, { sitekey: key });
+      if (widgetId != null) {
+        el.dataset.captchaRendered = '1';
+        el.dataset.widgetId = String(widgetId);
+      }
+    } catch (e) {
+      console.warn('[smart-captcha] render error:', e);
+    }
+  });
+}
+
+function _loadSmartCaptchaIfNeeded() {
+  const key = (window.RK_CAPTCHA_SITEKEY || '').trim();
+  if (!key) return;
+
+  // Один раз загружаем скрипт; виджет рендерим в callback'е onload.
+  window.onSmartCaptchaLoad = _renderPendingCaptchas;
+
+  if (document.querySelector('script[data-rk-captcha-loader]')) {
+    // Уже загружено — просто рендерим виджеты для новых форм.
+    _renderPendingCaptchas();
+    return;
+  }
+  const s = document.createElement('script');
+  s.src = 'https://smartcaptcha.yandexcloud.net/captcha.js?render=onload&onload=onSmartCaptchaLoad';
+  s.async = true;
+  s.defer = true;
+  s.dataset.rkCaptchaLoader = '1';
+  document.head.appendChild(s);
+}
+
+/* ─── Получить smart-token из виджета (если активирован) ──────── */
+function _getCaptchaToken(form) {
+  if (!window.RK_CAPTCHA_SITEKEY) return '';
+  const wrap = form.querySelector('.smart-captcha-wrap');
+  if (!wrap || wrap.dataset.captchaRendered !== '1') return '';
+  const id = wrap.dataset.widgetId;
+  try {
+    return window.smartCaptcha?.getResponse(id ? Number(id) : undefined) || '';
+  } catch (e) {
+    return '';
+  }
+}
+
+function _resetCaptcha(form) {
+  if (!window.RK_CAPTCHA_SITEKEY) return;
+  const wrap = form.querySelector('.smart-captcha-wrap');
+  if (!wrap || wrap.dataset.captchaRendered !== '1') return;
+  const id = wrap.dataset.widgetId;
+  try {
+    window.smartCaptcha?.reset(id ? Number(id) : undefined);
+  } catch (e) { /* noop */ }
+}
+
+/* ─── Сброс файлового виджета (по префиксу id) ─────────────────── */
+function _resetFileWidget(prefix) {
+  const placeholder = document.getElementById(`${prefix}-file-placeholder`);
+  const selected    = document.getElementById(`${prefix}-file-selected`);
+  const nameEl      = document.getElementById(`${prefix}-file-name`);
+  placeholder?.classList.remove('hidden');
+  selected?.classList.add('hidden');
+  if (nameEl) nameEl.textContent = '';
+}
+
+/* ─── Универсальный rich-form helper ────────────────────────────
+   Используется для:
+     • #inlineRequestForm  (index.html)
+     • #calcSpecForm       (calculator.html модалка)
+     • #orderForm          (order.html inline-секция)
+   Опции:
+     • source          — тэг для /api/lead и аналитики
+     • emailLabel      — человекочитаемая метка для EmailJS
+     • filePrefix      — префикс id'шников file-upload (по умолч.
+                          выводится из form.id первой парой букв)
+     • getItems        — () => [items]  для items payload
+     • getExtraMessage — () => string   префикс к message
+     • onSuccess       — () => void     hook после успеха (закрыть
+                          модалку, очистить корзину и т.д.)
+*/
+function initRichForm(formSelector, options = {}) {
+  const form = document.querySelector(formSelector);
   if (!form) return;
+  if (form.dataset.richFormInited === '1') return;
+  form.dataset.richFormInited = '1';
+
+  const {
+    source       = 'site',
+    emailLabel   = 'Форма сайта',
+    filePrefix,
+    getItems     = () => [],
+    getExtraMessage = () => '',
+    onSuccess    = () => {},
+  } = options;
+
+  // Авто-определение filePrefix: ищем input[name="file"] и берём префикс
+  // его id (например, il-file → "il", cs-file → "cs", o-file → "o").
+  let prefix = filePrefix;
+  if (!prefix) {
+    const f = form.querySelector('input[type="file"][name="file"]');
+    if (f && f.id) {
+      const m = /^(.+)-file$/.exec(f.id);
+      if (m) prefix = m[1];
+    }
+  }
+
+  // initFileUpload() в main.js привязан к жёстким id 'il-file*'. Для
+  // других префиксов используем общий мини-обработчик.
+  if (prefix && prefix !== 'il') {
+    _bindGenericFileUpload(prefix);
+  }
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const btn     = form.querySelector('[type="submit"]');
     const name    = form.querySelector('[name="name"]')?.value.trim();
     const contact = form.querySelector('[name="contact"]')?.value.trim();
-    const message = form.querySelector('[name="message"]')?.value.trim();
+    let   message = form.querySelector('[name="message"]')?.value.trim() || '';
 
-    if (!name)    { form.querySelector('[name="name"]').focus(); return; }
+    if (!name)    { form.querySelector('[name="name"]')?.focus();    return; }
     if (!contact || !isValidContact(contact)) {
-      form.querySelector('[name="contact"]').focus();
+      form.querySelector('[name="contact"]')?.focus();
       return;
     }
     if (!_checkConsent(form)) return;
     if (_isThrottled()) { showToast('Подождите немного перед повторной отправкой.', 'error'); return; }
 
+    // Авто-префикс к message (например, спецификация калькулятора)
+    const extra = (typeof getExtraMessage === 'function') ? (getExtraMessage() || '') : '';
+    if (extra) {
+      message = message ? `${extra}\n\nКомментарий клиента:\n${message}` : extra;
+    }
+
+    // Items
+    let items = [];
+    try {
+      const raw = (typeof getItems === 'function') ? getItems() : [];
+      if (Array.isArray(raw)) items = raw;
+    } catch (err) {
+      console.warn('[rich-form] getItems error:', err);
+    }
+
+    // Anti-bot поля
+    const honeypot = form.querySelector('input[name="website"]')?.value || '';
+    const startedAt = Number(form.querySelector('input[name="form_started_at"]')?.value || 0);
+    const smartToken = _getCaptchaToken(form);
+
     btn.disabled = true;
-    const origText = btn.textContent;
+    const origHtml = btn.innerHTML;
     btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;margin:0 auto;"></span>';
 
-    const isEmail  = contact.includes('@');
-    const fileInput = document.getElementById('il-file');
-    const file      = fileInput?.files?.[0];
+    const fileInput = prefix ? document.getElementById(`${prefix}-file`) : null;
+    const file = fileInput?.files?.[0] || null;
 
-    // Формируем запрос: multipart если есть файл, иначе JSON
+    // Файл или items вместе с файлом → multipart на /api/notify.
+    // Только базовые поля без файла → JSON на /api/lead.
     let fetchOptions;
+    let fetchUrl;
     if (file) {
       const fd = new FormData();
       fd.append('name',    name);
       fd.append('contact', contact);
-      fd.append('message', message || '');
+      fd.append('message', message);
+      fd.append('source',  source);
+      fd.append('website', honeypot);
+      fd.append('form_started_at', String(startedAt));
+      if (smartToken) fd.append('smart-token', smartToken);
+      if (items.length) fd.append('items', JSON.stringify(items));
       fd.append('file', file, file.name);
       fetchOptions = { method: 'POST', body: fd };
+      fetchUrl = '/api/notify';
     } else {
       fetchOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, contact, message: message || '', source: 'order' }),
+        body: JSON.stringify({
+          name, contact, message,
+          source,
+          items,
+          website: honeypot,
+          form_started_at: startedAt,
+          'smart-token': smartToken,
+        }),
       };
+      fetchUrl = '/api/lead';
     }
 
-    const fetchUrl = file ? '/api/notify' : '/api/lead';
     try {
       const res = await fetch(fetchUrl, fetchOptions);
       if (!res.ok) {
@@ -627,29 +817,104 @@ function initInlineForm() {
         throw new Error(err.error || `HTTP ${res.status}`);
       }
       showToast('Спасибо! Мы свяжемся с вами.', 'success');
-      if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: 'order_form' } });
-      // Дублируем в EmailJS (fire-and-forget, не блокирует UX)
+      if (window.rkTrack) window.rkTrack('form_submit', { extra: { form: source } });
+      // Дублируем в EmailJS (fire-and-forget)
       sendEmailJS(_buildEmailJSParams(
-        { name, contact, message: message || '' },
-        'Главная страница'
-      )).catch(err => console.warn('EmailJS (inline):', err));
+        { name, contact, message, items },
+        emailLabel
+      )).catch(err => console.warn('EmailJS:', err));
+
       form.reset();
-      // Сбрасываем file upload UI
-      document.getElementById('il-file-placeholder')?.classList.remove('hidden');
-      document.getElementById('il-file-selected')?.classList.add('hidden');
-      if (document.getElementById('il-file-name')) document.getElementById('il-file-name').textContent = '';
-      document.querySelectorAll('#inlineRequestForm .smart-contact-wrap').forEach(w => {
+      // Сбрасываем file-upload UI (если был)
+      if (prefix) _resetFileWidget(prefix);
+      // Сбрасываем подсказку smart-contact-input
+      form.querySelectorAll('.smart-contact-wrap').forEach(w => {
         w.dataset.type = '';
         const hint = w.querySelector('.smart-contact-hint');
         if (hint) hint.textContent = '';
       });
+      // Обновляем form_started_at для следующей отправки
+      const tsField = form.querySelector('input[name="form_started_at"]');
+      if (tsField) tsField.value = String(Date.now());
+      _resetCaptcha(form);
+      try { onSuccess(); } catch (e) { console.warn('[rich-form] onSuccess error:', e); }
     } catch(err) {
       console.error('Ошибка отправки:', err);
       showToast('Ошибка отправки. Позвоните нам напрямую.', 'error');
     } finally {
       btn.disabled = false;
-      btn.textContent = origText;
+      btn.innerHTML = origHtml;
     }
+  });
+}
+
+/* ─── Generic file-upload binder для произвольного префикса ─────
+   Дублирует логику initFileUpload(), но работает с любыми id'шниками
+   `<prefix>-file`, `<prefix>-file-drop`, и т.д.
+*/
+function _bindGenericFileUpload(prefix) {
+  const input       = document.getElementById(`${prefix}-file`);
+  const drop        = document.getElementById(`${prefix}-file-drop`);
+  const placeholder = document.getElementById(`${prefix}-file-placeholder`);
+  const selected    = document.getElementById(`${prefix}-file-selected`);
+  const nameEl      = document.getElementById(`${prefix}-file-name`);
+  const clearBtn    = document.getElementById(`${prefix}-file-clear`);
+  const errorEl     = document.getElementById(`${prefix}-file-error`);
+  if (!input || input.dataset.fileBound === '1') return;
+  input.dataset.fileBound = '1';
+
+  const MAX_SIZE = 10 * 1024 * 1024;
+  const ALLOWED  = ['.pdf','.doc','.docx','.xls','.xlsx','.jpg','.jpeg','.png'];
+
+  function showFile(file) {
+    if (!file) return;
+    if (file.size > MAX_SIZE) {
+      if (errorEl) { errorEl.textContent = 'Файл слишком большой (максимум 10 МБ)'; errorEl.classList.remove('hidden'); }
+      input.value = '';
+      return;
+    }
+    const ext = '.' + file.name.split('.').pop().toLowerCase();
+    if (!ALLOWED.includes(ext)) {
+      if (errorEl) { errorEl.textContent = 'Формат не поддерживается. Допустимо: PDF, Word, Excel, JPG, PNG'; errorEl.classList.remove('hidden'); }
+      input.value = '';
+      return;
+    }
+    errorEl?.classList.add('hidden');
+    if (nameEl) nameEl.textContent = file.name;
+    placeholder?.classList.add('hidden');
+    selected?.classList.remove('hidden');
+  }
+
+  function clearFile() {
+    input.value = '';
+    placeholder?.classList.remove('hidden');
+    selected?.classList.add('hidden');
+    if (nameEl) nameEl.textContent = '';
+    errorEl?.classList.add('hidden');
+  }
+
+  input.addEventListener('change', () => { if (input.files[0]) showFile(input.files[0]); });
+  clearBtn?.addEventListener('click', (e) => { e.stopPropagation(); clearFile(); });
+
+  if (drop) {
+    drop.addEventListener('dragover',  (e) => { e.preventDefault(); drop.classList.add('drag-over'); });
+    drop.addEventListener('dragleave', ()  => drop.classList.remove('drag-over'));
+    drop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      drop.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) { input.files = e.dataTransfer.files; showFile(file); }
+    });
+  }
+}
+
+/* ─── Инлайн-форма на главной странице ──────────────────────────
+   Тонкая обёртка над initRichForm — все собственно фичи живут там. */
+function initInlineForm() {
+  initRichForm('#inlineRequestForm', {
+    source:     'index_inline',
+    emailLabel: 'Главная страница',
+    filePrefix: 'il',
   });
 }
 
@@ -723,6 +988,10 @@ async function handleRequestSubmit(e) {
       data.phone = isEmail ? '' : data.contact;
       data.email = isEmail ? data.contact : '';
     }
+    // Anti-bot: токены/timing уже в data из FormData (website,
+    // form_started_at) — пробрасываем как есть. smart-token достаём
+    // из активного виджета капчи.
+    data.smartToken = _getCaptchaToken(form);
     const sourceTag = _kpProductContext ? 'product_kp' : 'modal';
     const emailSourceLabel = _kpProductContext
       ? `Запрос КП — ${_kpProductContext.name}`
@@ -773,7 +1042,10 @@ async function sendEmailJS(params) {
   return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
 }
 
-/* ─── Отправка заявки через /api/lead ────────────────────────── */
+/* ─── Отправка заявки через /api/lead ──────────────────────────
+   Anti-bot поля передаются через data.{website,form_started_at,
+   smartToken}. handleRequestSubmit() и handleSendTelegram() их
+   достают из соответствующих form-полей и кладут в data. */
 async function sendTelegram(data, source) {
   const res = await fetch('/api/lead', {
     method: 'POST',
@@ -784,6 +1056,9 @@ async function sendTelegram(data, source) {
       message: data.message || '',
       source:  source       || 'site',
       items:   data.items   || [],
+      website:         data.website         || '',
+      form_started_at: data.form_started_at || 0,
+      'smart-token':   data.smartToken      || '',
     }),
   });
   if (!res.ok) {
@@ -875,6 +1150,10 @@ function initPhoneMask() {
 /* ─── Умное поле: телефон или email ─────────────────────────── */
 function initSmartContactFields() {
   document.querySelectorAll('.smart-contact-input').forEach(input => {
+    // Идемпотентность: повторный вызов (например, после renderOrderForm)
+    // не должен дублировать слушатели.
+    if (input.dataset.smartInited === '1') return;
+    input.dataset.smartInited = '1';
     const wrap = input.closest('.smart-contact-wrap');
     const icon = wrap?.querySelector('.smart-contact-icon');
     const hint = wrap?.querySelector('.smart-contact-hint');
@@ -1154,4 +1433,7 @@ window.RK = {
   formatPrice,
   validateForm,
   loadComponents,
+  initRichForm,
+  initSmartContactFields,
+  loadSmartCaptchaIfNeeded: _loadSmartCaptchaIfNeeded,
 };
