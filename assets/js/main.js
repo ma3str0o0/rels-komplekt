@@ -213,12 +213,6 @@ function _tplFooterOnly() {
               <span>г. Екатеринбург, ул. Радищева, д. 6а, оф. 702б</span>
             </div>
           </div>
-          <a class="footer-max" href="https://max.ru/id6671083158_bot" target="_blank" rel="noopener noreferrer" aria-label="Написать боту Рельс-Комплект в мессенджере MAX">
-            <span class="footer-max__code">
-              <img src="/assets/img/qr-max-bot.svg" alt="" width="110" height="110" loading="lazy">
-            </span>
-            <span class="footer-max__label">Мы в Max</span>
-          </a>
         </div>
         <div>
           <div class="footer__col-title">Разделы</div>
@@ -240,6 +234,14 @@ function _tplFooterOnly() {
             <a href="catalog.html?cat=%D0%9A%D1%80%D0%B5%D0%BF%D0%B5%D0%B6+%D0%B6%D0%B5%D0%BB%D0%B5%D0%B7%D0%BD%D0%BE%D0%B4%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D1%8B%D0%B9" class="footer__nav-link">Крепёж железнодорожный</a>
             <a href="catalog.html?cat=%D0%91%D0%BE%D0%BB%D1%82%D1%8B+%D1%81%D1%82%D1%8B%D0%BA%D0%BE%D0%B2%D1%8B%D0%B5" class="footer__nav-link">Болты стыковые</a>
           </nav>
+        </div>
+        <div>
+          <div class="footer__col-title">Мы в Max</div>
+          <a class="footer-max" href="https://max.ru/id6671083158_bot" target="_blank" rel="noopener noreferrer" aria-label="Написать боту Рельс-Комплект в мессенджере MAX">
+            <span class="footer-max__code">
+              <img src="/assets/img/qr-max-bot.svg" alt="" width="110" height="110" loading="lazy">
+            </span>
+          </a>
         </div>
       </div>
       <div class="footer__bottom">

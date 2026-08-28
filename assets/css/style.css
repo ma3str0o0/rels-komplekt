@@ -604,6 +604,17 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Четвёртая колонка под QR — только с 1024px. Ниже места на неё нет:
+   auto-колонка съедает ~38px у каждой текстовой, и пункты навигации
+   начинают переноситься на вторую строку. В 768–1023px блок уходит
+   второй строкой сетки под .footer__brand — со своим заголовком,
+   выровненный по левому краю колонки. */
+@media (min-width: 1024px) {
+  .footer__grid {
+    grid-template-columns: 2fr 1fr 1fr auto;
+  }
+}
+
 .footer__brand {}
 
 .footer__logo {
@@ -659,10 +670,6 @@ h1, h2, h3, h4, h5, h6 {
    Прозрачные светлые модули дали бы чёрное по чёрному. */
 .footer-max {
   display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-  margin-top: var(--space-lg);
   text-decoration: none;
   cursor: pointer;
 }
@@ -682,18 +689,6 @@ h1, h2, h3, h4, h5, h6 {
   height: 110px;
 }
 
-/* Подпись — цвет контактов (#CBD5E1), не приглушённый #94A3B8:
-   QR это способ связи, а не второстепенный текст. */
-.footer-max__label {
-  font-size: var(--font-size-sm);
-  color: #CBD5E1;
-  transition: color var(--transition-fast);
-}
-
-.footer-max:hover .footer-max__label {
-  color: #fff;
-}
-
 .footer-max:hover .footer-max__code {
   box-shadow: 0 0 0 2px var(--color-cta);
 }
@@ -704,9 +699,9 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-md);
 }
 
-/* Мобильный: .footer__grid схлопывается в 1fr, .footer__brand занимает
-   всю ширину. Блок остаётся в потоке под контактами и прижат влево, как
-   весь столбец — inline-flex не даёт ему растянуться на всю ширину.
+/* Мобильный: .footer__grid схлопывается в 1fr, колонка встаёт последней
+   в стопке и прижата влево, как остальные — inline-flex не даёт ссылке
+   растянуться на всю ширину.
    96px: ниже 90px скан с чужого телефона становится ненадёжным. */
 @media (max-width: 767px) {
   .footer-max__code img {
